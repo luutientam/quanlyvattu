@@ -1,3 +1,6 @@
+
+quanlyvattu
+
 --  1. Quản lý nhà cung cấp (Suppliers)
 
 
@@ -160,3 +163,14 @@ CREATE TABLE chi_tiet_don_hang_mua (
     FOREIGN KEY (ma_don_hang) REFERENCES don_hang_mua(ma_don_hang),
     FOREIGN KEY (ma_vat_tu) REFERENCES vat_tu(ma_vat_tu)
 );
+
+-- loai vat tu 
+CREATE TABLE loai_vat_tu (
+    ma_loai_vat_tu INT AUTO_INCREMENT PRIMARY KEY,
+    ten_loai_vat_tu VARCHAR(255) NOT NULL,
+    mo_ta TEXT,
+    ngay_tao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ALTER TABLE vat_tu
+ADD COLUMN ma_loai_vat_tu INT,
+ADD FOREIGN KEY (ma_loai_vat_tu) REFERENCES loai_vat_tu(ma_loai_vat_tu);
