@@ -1,20 +1,24 @@
 <?php
 // Bắt đầu phiên
 // Kiểm tra xem người dùng đã đăng nhập hay chưa
+
+// 
 if (isset($_SESSION['user_id'])) {
     // Nếu đã đăng nhập, chuyển hướng đến trang phù hợp dựa trên vai trò
     if ($_SESSION['role'] === 'Admin') {
         header("Location: quanlyvattu/");
     } elseif ($_SESSION['role'] === 'Quản lý kho') {
-        header("Location: view/Quan");
+        header("Location: quanlyvattu");
     }
     exit();
 }
 
+
+
 // Kiểm tra xem form đăng nhập đã được gửi đi hay chưa
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once 'Database.php';
-    require_once 'src/models/User.php'; 
+    require_once 'src/models/User.php';
     require_once "model/Auth.php";
 
     $username = $_POST['username'];
@@ -39,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: views/admin/dashboard.php");
         } elseif ($user['loai_tai_khoan'] === 'Quản lý kho') {
             header("Location: views/faculty/dashboard.php");
-        } 
+        }
         exit();
     } else {
         $error = "Tên đăng nhập hoặc mật khẩu không đúng.";
