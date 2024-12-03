@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Vật Tư</title>
-    <link rel="stylesheet" href="stylee.css">
+    <link rel="stylesheet" href="./Css/style.css">
     <style>
     .content {
         padding: 20px;
@@ -229,23 +223,5 @@
         modal.style.display = "none";
         form.reset();
     });
-
-
-    const menuItems = document.querySelectorAll('.navbar ul li a');
-
-    // Lặp qua từng mục và gắn sự kiện click
-    menuItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault(); // Ngăn hành vi mặc định (chuyển trang)
-
-            // Xóa lớp 'active' khỏi tất cả các mục
-            menuItems.forEach(link => link.classList.remove('active'));
-
-            // Thêm lớp 'active' vào mục hiện tại
-            this.classList.add('active');
-        });
-    });
     </script>
 </body>
-
-</html>
