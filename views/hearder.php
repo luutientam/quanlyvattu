@@ -12,7 +12,7 @@ session_start();
 
 <body>
     <header class="navbar">
-        <div class="logo">Quản Lý Vật Tư</div>
+        <div class="logo">QLVT</div>
         <nav>
             <ul>
                 <li><a href="index.php" class="<?= !isset($_GET['act']) ? 'active' : '' ?>">Vật Tư</a></li>
