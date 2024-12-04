@@ -6,6 +6,8 @@ class Database {
     private $password = "";
     public $conn;
 
+/*************  ✨ Codeium Command ⭐  *************/
+/******  232147d4-34ee-4b6d-a1ee-84b641147639  *******/
     public function getConnection() {
         $this->conn = null;
         try {
