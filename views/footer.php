@@ -1,15 +1,16 @@
 <head>
-    <link rel="stylesheet" href="./Css/footer.css">
+
+
 </head>
 
 <body>
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-left">
-                <h3>About Us</h3>
+                <h3>Về Chúng Tôi</h3>
                 <p>
-                    We provide the best services and products for your needs.
-                    Our commitment is to deliver excellence in every aspect.
+                    Chúng tôi cung cấp các dịch vụ và sản phẩm tốt nhất cho nhu cầu của bạn. Cam kết của chúng tôi là
+                    mang lại sự xuất sắc trong mọi khía cạnh.
                 </p>
             </div>
             <div class="footer-middle">
@@ -33,9 +34,9 @@
             <div class="footer-right">
                 <h3>Liên hệ với chúng tôi</h3>
                 <p>
-                    Email: contact@yourwebsite.com <br>
-                    Phone: +123 456 7890 <br>
-                    Address: 123 Main Street, City, Country
+                    <i class='bx bx-envelope'></i> quanlyvattu@gmail.com <br>
+                    <i class='bx bx-phone-call'></i> +84968686868 <br>
+                    <i class='bx bx-location-plus'></i> 54 Triều Khúc, Thanh Xuân, Hà Nội
                 </p>
             </div>
         </div>
