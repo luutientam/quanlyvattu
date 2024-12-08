@@ -31,6 +31,7 @@ class UserModel {
             die("Lỗi truy vấn: " . $this->dbConnection->error);
         }
     }
+    
 }
 
 ?>

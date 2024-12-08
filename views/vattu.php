@@ -9,6 +9,14 @@
     }
     </style>
 </head>
+<?php
+// views/index.php
+require_once '../controllers/MainController.php';
+
+$controller = new MainController();
+$loaiVatTu = $controller->getLoaiVatTu();
+$danhSachVatTu = $controller->getDanhSachVatTu();
+?>
 
 <body>
 
@@ -27,27 +35,11 @@
             <button class="btn-search">Tìm kiếm</button>
             <select name="loai-vat-tu" id="loai-vat-tu">
                 <option value="all">Tất cả loại vật tư</option>
-                <?php
-            // Kết nối tới cơ sở dữ liệu
-                          $conn = mysqli_connect("localhost","root","","quanlyvattu");
-
-            // Truy vấn dữ liệu từ bảng users
-                          $sql = "SELECT * FROM loai_vat_tu";
-                          $result = mysqli_query($conn, $sql);
-
-            // Kiểm tra và hiển thị dữ liệu
-            
-                          if (mysqli_num_rows($result) > 0) {
-                            while ($row = mysqli_fetch_assoc($result)) {
-                            echo '<option value="loai1">'.$row['ten_loai_vat_tu'].'</option>';
-                        }
-                        } else {
-                            
-                        }
-
-            // Đóng kết nối
-                          mysqli_close($conn);
-                        ?>
+                <?php foreach ($loaiVatTu as $loai) { ?>
+                <option value="<?= $loai['ma_loai_vat_tu'] ?>">
+                    <?= $loai['ten_loai_vat_tu'] ?>
+                </option>
+                <?php } ?>
             </select>
         </div>
 
@@ -71,32 +63,25 @@
                 </tr>
             </thead>
             <tbody>
-                <?php
-                  $conn = mysqli_connect("localhost","root","","quanlyvattu");
-        $sql = "SELECT * FROM vat_tu vt join loai_vat_tu lvt on lvt.ma_loai_vat_tu = vt.ma_loai_vat_tu";
-        $result = mysqli_query($conn, $sql);
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                echo '<tr>
-                <td>'.$row["ma_vat_tu"].'</td>
-                <td>'.$row["ten_vat_tu"].'</td>
-                <td>'.$row["mo_ta"].'</td>
-                <td>'.$row["don_vi"].'</td>
-                <td>'.$row["gia"].'</td>
-                <td>'.$row["ma_nha_cung_cap"].'</td>
-                <td>'.$row["so_luong_toi_thieu"].'</td>
-                <td>'.$row["so_luong_ton"].'</td>
-                <td>'.$row["ngay_tao"].'</td>
-                <td>'.$row["ten_loai_vat_tu"].'</td>
+                <?php foreach ($danhSachVatTu as $vatTu) { ?>
+                <tr>
+                    <td><?= $vatTu['ma_vat_tu'] ?></td>
+                    <td><?= $vatTu['ten_vat_tu'] ?></td>
+                    <td><?= $vatTu['mo_ta'] ?></td>
+                    <td><?= $vatTu['don_vi'] ?></td>
+                    <td><?= $vatTu['gia'] ?></td>
+                    <td><?= $vatTu['ma_nha_cung_cap'] ?></td>
+                    <td><?= $vatTu['so_luong_toi_thieu'] ?></td>
+                    <td><?= $vatTu['so_luong_ton'] ?></td>
+                    <td><?= $vatTu['ngay_tao'] ?></td>
+                    <td><?= $vatTu['ten_loai_vat_tu'] ?></td>
+                    <td>
+                        <a href="xoasv.php?ID=<?= $vatTu['ma_vat_tu'] ?>">Xóa</a>
+                        <a href="suasv.php?ID=<?= $vatTu['ma_vat_tu'] ?>">Sửa</a>
+                    </td>
+                </tr>
+                <?php } ?>
 
-                <td><a href="xoasv.php?ID='.$row["ma_vat_tu"].'">Xoa</a>
-                     <a href="suasv.php?ID='.$row["ma_vat_tu"].'">Sua</a></td>
-                </tr>';
-            }
-        }else{
-            echo "khong co du lieu";
-        }
-    ?>
             </tbody>
         </table>
     </main>
@@ -140,40 +125,19 @@
                     <input type="number" id="so_luong_ton" name="so_luong_ton" required>
                 </div>
                 <div class="form-group">
-                    <label for="ngay_tao">Ngày tạo:</label>
-                    <input type="date" id="ngay_tao" name="ngay_tao" required>
-                </div>
-                <div class="form-group">
                     <label for="loai_vat_tu">Loại Vật Tư:</label>
                     <select id="loai_vat_tu" name="loai_vat_tu" required>
-                        <?php
-            // Kết nối tới cơ sở dữ liệu
-                          $conn = mysqli_connect("localhost","root","","quanlyvattu");
-
-            // Truy vấn dữ liệu từ bảng users
-                          $sql = "SELECT * FROM loai_vat_tu";
-                          $result = mysqli_query($conn, $sql);
-
-            // Kiểm tra và hiển thị dữ liệu
-            
-                          if (mysqli_num_rows($result) > 0) {
-                            while ($row = mysqli_fetch_assoc($result)) {
-                            echo '<option value="loai1">'.$row['ten_loai_vat_tu'].'</option>';
-                        }
-                        } else {
-                            
-                        }
-
-            // Đóng kết nối
-                          mysqli_close($conn);
-                        ?>
+                        <?php foreach ($loaiVatTu as $loai) { ?>
+                        <option value="<?= $loai['ma_loai_vat_tu'] ?>">
+                            <?= $loai['ten_loai_vat_tu'] ?>
+                        </option>
+                        <?php } ?>
                     </select>
                 </div>
                 <button type="submit" class="btn-submit">Thêm</button>
             </form>
         </div>
     </div>
-
     <script>
     // Modal xử lý
     const modal = document.getElementById("modal");
