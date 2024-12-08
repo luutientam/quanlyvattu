@@ -1,6 +1,5 @@
 <?php
 class UserModel {
-
     private $dbConnection;
 
     // Constructor nhận đối tượng mysqli
@@ -10,23 +9,29 @@ class UserModel {
 
     // Phương thức đăng nhập
     public function login($username, $password) {
-        // Truy vấn cơ sở dữ liệu để tìm người dùng
-        $sql = "SELECT * FROM nguoi_dung WHERE ten_nguoi_dung = '$username' AND mat_khau = '$password'";
-        try{
-            $result = mysqli_query($this->dbConnection, $sql);
-        }catch(Exception $e){
-            return false;
-        }
-       
-
-        // Nếu có kết quả, trả về thông tin người dùng, nếu không, trả về false
-        if ($result && mysqli_num_rows($result) > 0) {
-            // Sử dụng fetch_assoc để lấy kết quả dưới dạng mảng
-            return mysqli_fetch_assoc($result);
+        // Câu truy vấn SQL
+        $query = "SELECT * FROM nguoi_dung WHERE ten_nguoi_dung = ? AND mat_khau = ?";
+        
+        // Chuẩn bị câu truy vấn SQL
+        if ($stmt = $this->dbConnection->prepare($query)) {
+            // Gắn giá trị vào câu truy vấn
+            $stmt->bind_param("ss", $username, $password); // "ss" nghĩa là cả hai là kiểu string
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $user = $result->fetch_assoc();
+            
+            // Kiểm tra kết quả
+            if ($user) {
+                return $user;  // Trả về thông tin người dùng nếu tìm thấy
+            } else {
+                return null;  // Trả về null nếu không có người dùng nào khớp
+            }
         } else {
-            return false; // Không tìm thấy người dùng
+            // Trả về thông báo lỗi nếu không thể chuẩn bị câu truy vấn
+            die("Lỗi truy vấn: " . $this->dbConnection->error);
         }
     }
     
 }
+
 ?>

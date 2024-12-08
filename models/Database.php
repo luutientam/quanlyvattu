@@ -8,11 +8,15 @@ class Database {
 
     // Tạo kết nối trong constructor
     public function __construct() {
+
         $this->connect();
     }
 
     // Phương thức tạo kết nối
     private function connect() {
+
+        // Sử dụng mysqli để kết nối
+
         $this->connection = new mysqli($this->host, $this->username, $this->password, $this->dbname);
 
         // Kiểm tra kết nối
@@ -22,7 +26,6 @@ class Database {
             echo "Kết nối database thành công.<br>";
         }
     }
-
     // Trả về kết nối mysqli
     public function getConnection() {
         return $this->connection;
@@ -35,4 +38,5 @@ class Database {
         }
     }
 }
+
 ?>
