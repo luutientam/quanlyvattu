@@ -1,6 +1,4 @@
 <head>
-
-
 </head>
 
 <body>
@@ -41,7 +39,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 Your Website. All Rights Reserved.</p>
+            <p>&copy; 2024 Your Website ok anh em. All Rights Reserved.</p>
         </div>
     </footer>
 </body>
