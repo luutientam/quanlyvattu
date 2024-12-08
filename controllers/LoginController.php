@@ -3,7 +3,14 @@ session_start();
 
 require_once './models/Database.php';  // Kết nối đến cơ sở dữ liệu
 require_once './models/UserModel.php'; // Model xử lý đăng nhập
+// Tạo kết nối cơ sở dữ liệu
+// Tạo kết nối cơ sở dữ liệu
+$db = new Database();
+$connection = $db->getConnection();
 
+// Khởi tạo LoginController với kết nối database
+$loginController = new LoginController($connection);
+$error = $loginController->login();
 class LoginController {
 
     private $userModel;
@@ -28,9 +35,9 @@ class LoginController {
                 $_SESSION['role'] = $user['ma_vai_tro']; // Vai trò
 
                 // Chuyển hướng dựa trên vai trò
-                if ($user['ma_vai_tro'] == 1) {
+                if ($user['ma_vai_tro'] === 1) {
                     header("Location: controllers/index.php");
-                } elseif ($user['ma_vai_tro'] == 2) {
+                } elseif ($user['ma_vai_tro'] === 2) {
                     header("Location: controllers/index.php");
                 }
                 exit();
@@ -42,11 +49,6 @@ class LoginController {
     }
 }
 
-// Tạo kết nối cơ sở dữ liệu
-$db = new Database();
-$connection = $db->getConnection();
 
-// Khởi tạo LoginController với kết nối database
-$loginController = new LoginController($connection);
-$error = $loginController->login();
+
 ?>
