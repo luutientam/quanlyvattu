@@ -9,9 +9,10 @@ class MainController {
         return $loaiVatTuModel->getLoaiVatTu();
     }
 
-    public function getDanhSachVatTu() {
+    public function getDanhSachVatTu($keyword) {
         $vatTuModel = new VatTuModel();
-        return $vatTuModel->getDanhSachVatTu();
+        return $vatTuModel->getDanhSachVatTu($keyword);
     }
+    
 }
 ?>

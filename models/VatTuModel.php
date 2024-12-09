@@ -1,9 +1,8 @@
 <?php
-
+require_once "Database.php";
 
 class VatTuModel {
-    
-    public function getDanhSachVatTu() {
+    public function getDanhSachVatTu($keyword) {
         $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
 
         if (!$conn) {
@@ -11,7 +10,7 @@ class VatTuModel {
             return [];
         }
 
-        $sql = "SELECT * FROM vat_tu JOIN loai_vat_tu ON loai_vat_tu.ma_loai_vat_tu = vat_tu.ma_loai_vat_tu";
+        $sql = "SELECT * FROM vat_tu JOIN loai_vat_tu ON loai_vat_tu.ma_loai_vat_tu = vat_tu.ma_loai_vat_tu where ten_vat_tu like N'%".$keyword."%'";
         $result = mysqli_query($conn, $sql);
 
         if ($result) {
@@ -34,7 +33,7 @@ class VatTuModel {
             echo "Kết nối thất bại: " . mysqli_connect_error();
             return [];
         }
-        $sql = "INSERT INTO VatTu (ma_vat_tu, ten_vat_tu, mo_ta, don_vi, gia, ma_nha_cung_cap, so_luong_toi_thieu, so_luong_ton, loai_vat_tu) 
+        $sql = "INSERT INTO vat_tu (ma_vat_tu, ten_vat_tu, mo_ta, don_vi, gia, ma_nha_cung_cap, so_luong_toi_thieu, so_luong_ton, ma_loai_vat_tu) 
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->$conn->prepare($sql);
         return $stmt->execute([
@@ -46,8 +45,14 @@ class VatTuModel {
             $data['ma_nha_cung_cap'],
             $data['so_luong_toi_thieu'],
             $data['so_luong_ton'],
-            $data['loai_vat_tu']
+            $data['ma_loai_vat_tu']
         ]);
     }
+    // public function xoaVatTu($maVatTu) {
+    //     $sql = "DELETE FROM vat_tu WHERE ma_vat_tu = :ma_vat_tu";
+    //     $stmt = $this->db->prepare($sql);
+    //     $stmt->bindParam(':ma_vat_tu', $maVatTu);
+    //     return $stmt->execute();
+    // }
 }
 ?>
