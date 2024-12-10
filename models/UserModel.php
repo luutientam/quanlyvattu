@@ -10,23 +10,33 @@ class UserModel {
 
     // Phương thức đăng nhập
     public function login($username, $password) {
-        // Truy vấn cơ sở dữ liệu để tìm người dùng
-        $sql = "SELECT * FROM nguoi_dung WHERE ten_nguoi_dung = '$username' AND mat_khau = '$password'";
-        try{
-            $result = mysqli_query($this->dbConnection, $sql);
-        }catch(Exception $e){
+        // Chuẩn bị câu lệnh SQL an toàn
+        $stmt = $this->dbConnection->prepare("SELECT * FROM nguoi_dung WHERE ten_nguoi_dung = ? AND mat_khau = ?");
+        
+        if ($stmt === false) {
+            die("Lỗi chuẩn bị câu lệnh: " . $this->dbConnection->error);
+        }
+    
+        // Gán giá trị cho câu lệnh chuẩn bị
+        $stmt->bind_param("ss", $username, $password);
+    
+        // Thực thi câu lệnh
+        if (!$stmt->execute()) {
+            die("Lỗi khi thực thi câu lệnh: " . $stmt->error);
+        }
+    
+        // Lấy kết quả từ câu lệnh chuẩn bị
+        $result = $stmt->get_result();
+    
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc();
+        } else {
+            // Sửa lỗi, tránh thông báo không mong muốn
             return false;
         }
-       
-
-        // Nếu có kết quả, trả về thông tin người dùng, nếu không, trả về false
-        if ($result && mysqli_num_rows($result) > 0) {
-            // Sử dụng fetch_assoc để lấy kết quả dưới dạng mảng
-            return mysqli_fetch_assoc($result);
-        } else {
-            return false; // Không tìm thấy người dùng
-        }
     }
+    
+    
     
 }
 ?>
