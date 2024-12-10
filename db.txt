@@ -1,0 +1,171 @@
+
+quanlyvattu
+
+--  1. Quản lý nhà cung cấp (Suppliers)
+
+
+CREATE TABLE nha_cung_cap (
+    ma_nha_cung_cap INT AUTO_INCREMENT PRIMARY KEY,
+    ten_nha_cung_cap VARCHAR(255) NOT NULL,
+    ten_lien_he VARCHAR(255),
+    so_dien_thoai VARCHAR(15),
+    email VARCHAR(100),
+    dia_chi TEXT,
+    ngay_tao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- 2. Quản lý vật tư (Materials)
+
+CREATE TABLE vat_tu (
+    ma_vat_tu INT AUTO_INCREMENT PRIMARY KEY,
+    ten_vat_tu VARCHAR(255) NOT NULL,
+    mo_ta TEXT,
+    don_vi VARCHAR(50),
+    gia DECIMAL(10, 2),
+    ma_nha_cung_cap INT,
+    so_luong_toi_thieu INT DEFAULT 0,
+    so_luong_ton INT DEFAULT 0,
+    ngay_tao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ma_nha_cung_cap) REFERENCES nha_cung_cap(ma_nha_cung_cap)
+);
+
+
+-- 3. Quản lý kho (Warehouses)
+
+CREATE TABLE kho (
+    ma_kho INT AUTO_INCREMENT PRIMARY KEY,
+    ten_kho VARCHAR(255) NOT NULL,
+    dia_chi TEXT,
+    mo_ta TEXT,
+    ngay_tao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- 6. Quản lý tồn kho (Inventory Management)
+
+CREATE TABLE ton_kho (
+    ma_ton_kho INT AUTO_INCREMENT PRIMARY KEY,
+    ma_vat_tu INT,
+    ma_kho INT,
+    so_luong_ton INT DEFAULT 0,
+    ngay_cap_nhat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ma_vat_tu) REFERENCES vat_tu(ma_vat_tu),
+    FOREIGN KEY (ma_kho) REFERENCES kho(ma_kho)
+);
+
+
+
+-- 9. Quản lý người dùng và phân quyền (User Management)
+CREATE TABLE vai_tro_nguoi_dung (
+    ma_vai_tro INT AUTO_INCREMENT PRIMARY KEY,
+    ten_vai_tro VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE nguoi_dung (
+    ma_nguoi_dung INT AUTO_INCREMENT PRIMARY KEY,
+    ten_nguoi_dung VARCHAR(255) NOT NULL,
+    mat_khau VARCHAR(255) NOT NULL,
+    email VARCHAR(100),
+    ma_vai_tro INT,
+    ngay_tao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ma_vai_tro) REFERENCES vai_tro_nguoi_dung(ma_vai_tro)
+);
+
+-- 10. Nhật ký hoạt động (Audit Logs)
+
+
+CREATE TABLE nhat_ky (
+    ma_nhat_ky INT AUTO_INCREMENT PRIMARY KEY,
+    ma_nguoi_dung INT,
+    hanh_dong VARCHAR(255),
+    ngay_thuc_hien TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ghi_chu TEXT,
+    FOREIGN KEY (ma_nguoi_dung) REFERENCES nguoi_dung(ma_nguoi_dung)
+);
+
+
+-- 11. Báo cáo và thống kê (Reports)
+
+CREATE TABLE bao_cao (
+    ma_bao_cao INT AUTO_INCREMENT PRIMARY KEY,
+    loai_bao_cao VARCHAR(255),
+    noi_dung TEXT,
+    ngay_tao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ma_nguoi_tao INT,
+    FOREIGN KEY (ma_nguoi_tao) REFERENCES nguoi_dung(ma_nguoi_dung)
+);
+
+
+-- 4. Quản lý nhập kho (Stock In)
+
+CREATE TABLE nhap_kho (
+    ma_nhap_kho INT AUTO_INCREMENT PRIMARY KEY,
+    ma_vat_tu INT,
+    ma_kho INT,
+    so_luong INT NOT NULL,
+    gia_tri DECIMAL(10, 2),
+    ngay_nhap TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ghi_chu TEXT,
+    ma_nguoi_nhap INT,
+    FOREIGN KEY (ma_vat_tu) REFERENCES vat_tu(ma_vat_tu),
+    FOREIGN KEY (ma_kho) REFERENCES kho(ma_kho),
+    FOREIGN KEY (ma_nguoi_nhap) REFERENCES nguoi_dung(ma_nguoi_dung)
+);
+
+
+-- 5. Quản lý xuất kho (Stock Out)
+
+CREATE TABLE xuat_kho (
+    ma_xuat_kho INT AUTO_INCREMENT PRIMARY KEY,
+    ma_vat_tu INT,
+    ma_kho INT,
+    so_luong INT NOT NULL,
+    ngay_xuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ma_nguoi_xuat INT,
+    ghi_chu TEXT,
+    FOREIGN KEY (ma_vat_tu) REFERENCES vat_tu(ma_vat_tu),
+    FOREIGN KEY (ma_kho) REFERENCES kho(ma_kho),
+    FOREIGN KEY (ma_nguoi_xuat) REFERENCES nguoi_dung(ma_nguoi_dung)
+);
+
+
+
+-- 7. Quản lý đơn hàng mua (Purchase Orders)
+
+CREATE TABLE don_hang_mua (
+    ma_don_hang INT AUTO_INCREMENT PRIMARY KEY,
+    ma_nha_cung_cap INT,
+    ngay_dat_hang TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ngay_giao_hang DATE,
+    tong_gia_tri DECIMAL(10, 2),
+    trang_thai VARCHAR(50) DEFAULT 'Dang cho',
+    ma_nguoi_tao INT,
+    FOREIGN KEY (ma_nha_cung_cap) REFERENCES nha_cung_cap(ma_nha_cung_cap),
+    FOREIGN KEY (ma_nguoi_tao) REFERENCES nguoi_dung(ma_nguoi_dung)
+);
+
+--  8. Chi tiết đơn hàng mua
+
+
+CREATE TABLE chi_tiet_don_hang_mua (
+    ma_chi_tiet INT AUTO_INCREMENT PRIMARY KEY,
+    ma_don_hang INT,
+    ma_vat_tu INT,
+    so_luong INT,
+    don_gia DECIMAL(10, 2),
+    thanh_tien DECIMAL(10, 2),
+    FOREIGN KEY (ma_don_hang) REFERENCES don_hang_mua(ma_don_hang),
+    FOREIGN KEY (ma_vat_tu) REFERENCES vat_tu(ma_vat_tu)
+);
+
+-- loai vat tu 
+CREATE TABLE loai_vat_tu (
+    ma_loai_vat_tu INT AUTO_INCREMENT PRIMARY KEY,
+    ten_loai_vat_tu VARCHAR(255) NOT NULL,
+    mo_ta TEXT,
+    ngay_tao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ALTER TABLE vat_tu
+ADD COLUMN ma_loai_vat_tu INT,
+ADD FOREIGN KEY (ma_loai_vat_tu) REFERENCES loai_vat_tu(ma_loai_vat_tu);
