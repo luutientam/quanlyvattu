@@ -1,6 +1,5 @@
 <?php
 class UserModel {
-
     private $dbConnection;
 
     // Constructor nhận đối tượng mysqli
@@ -10,6 +9,7 @@ class UserModel {
 
     // Phương thức đăng nhập
     public function login($username, $password) {
+
         // Chuẩn bị câu lệnh SQL an toàn
         $stmt = $this->dbConnection->prepare("SELECT * FROM nguoi_dung WHERE ten_nguoi_dung = ? AND mat_khau = ?");
         
@@ -35,8 +35,6 @@ class UserModel {
             return false;
         }
     }
-    
-    
-    
 }
+
 ?>
