@@ -21,11 +21,7 @@ class Database {
             die("Kết nối thất bại: " . $this->connection->connect_error);
         }
     }
-<<<<<<< HEAD
-
-=======
-    // Trả về kết nối mysqli
->>>>>>> origin/branch-cua-mot-thanh-vien-ten-la-thang
+    
     public function getConnection() {
         return $this->connection;
     }
