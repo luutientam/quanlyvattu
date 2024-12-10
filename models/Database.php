@@ -21,7 +21,6 @@ class Database {
             die("Kết nối thất bại: " . $this->connection->connect_error);
         }
     }
-    
     public function getConnection() {
         return $this->connection;
     }
