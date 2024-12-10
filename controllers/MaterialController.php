@@ -1,27 +1,9 @@
 <?php
 require_once '../models/MaterialModel.php';
-require_once '../models/Database.php';
 
 class MaterialController {
-    private $materialModel;
-
-    public function __construct() {
-        $db = new Database();
-        $this->materialModel = new MaterialModel($db->getConnection());
-    }
-
-    public function index() {
-        $materials = $this->materialModel->getAllMaterials();
-        $categories = $this->materialModel->getAllCategories();
-        require_once '../views/materials/index.php';
-    }
-
-    public function create() {
-        $categories = $this->materialModel->getAllCategories();
-        require_once '../views/materials/create.php';
-    }
-
-    public function store() {
+    public function addMaterial() {
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'ma_vat_tu' => $_POST['ma_vat_tu'],
@@ -32,12 +14,32 @@ class MaterialController {
                 'ma_nha_cung_cap' => $_POST['ma_nha_cung_cap'],
                 'so_luong_toi_thieu' => $_POST['so_luong_toi_thieu'],
                 'so_luong_ton' => $_POST['so_luong_ton'],
-                'ngay_tao' => $_POST['ngay_tao'],
-                'ma_loai_vat_tu' => $_POST['loai_vat_tu'],
+                'ma_loai_vat_tu' => $_POST['loai_vat_tu']
             ];
-            $this->materialModel->addMaterial($data);
-            header('Location: ../public/index.php');
+            $materialModel = new MaterialModel();
+            if ($materialModel->addMaterial($data)) {
+                header('Location: ../index.php');
+                exit();
+            } else {
+                echo "Không thể thêm dữ liệu!";
+            }
         }
     }
+    public function deleteVatTu() {
+        if (isset($_GET['id'])) {
+            $id = $_GET['id'];
+            $materialModel = new MaterialModel();
+    
+            if ($materialModel->deleteVatTu($id)) {
+                header('Location: ../index.php?message=success');
+            } else {
+                header('Location: ../index.php?message=error');
+            }
+            exit();
+        }
+    }
+    
 }
+$controller = new MaterialController();
+$controller->addMaterial();
 ?>

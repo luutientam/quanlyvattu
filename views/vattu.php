@@ -15,7 +15,14 @@ require_once '../controllers/MainController.php';
 
 $controller = new MainController();
 $loaiVatTu = $controller->getLoaiVatTu();
-$danhSachVatTu = $controller->getDanhSachVatTu();
+if ($_SERVER['REQUEST_METHOD'] == "POST"){
+    $keyword = $_POST['txtTimKiem'];
+    $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
+}else{
+    $keyword = '';
+    $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
+}
+
 ?>
 
 <body>
@@ -30,18 +37,20 @@ $danhSachVatTu = $controller->getDanhSachVatTu();
     <!-- Nội dung chính -->
     <main class="content">
         <!-- Thanh tìm kiếm -->
-        <div class="search-bar">
-            <input type="text" placeholder="Tìm kiếm vật tư..." name="txtTimKiem">
-            <button class="btn-search">Tìm kiếm</button>
-            <select name="loai-vat-tu" id="loai-vat-tu">
-                <option value="all">Tất cả loại vật tư</option>
-                <?php foreach ($loaiVatTu as $loai) { ?>
-                <option value="<?= $loai['ma_loai_vat_tu'] ?>">
-                    <?= $loai['ten_loai_vat_tu'] ?>
-                </option>
-                <?php } ?>
-            </select>
-        </div>
+        <form method="POST">
+            <div class="search-bar">
+                <input type="text" placeholder="Tìm kiếm vật tư..." name="txtTimKiem">
+                <button class="btn-search">Tìm kiếm</button>
+                <select name="loai-vat-tu" id="loai-vat-tu">
+                    <option value="all">Tất cả loại vật tư</option>
+                    <?php foreach ($loaiVatTu as $loai) { ?>
+                    <option value="<?= $loai['ma_loai_vat_tu'] ?>">
+                        <?= $loai['ten_loai_vat_tu'] ?>
+                    </option>
+                    <?php } ?>
+                </select>
+            </div>
+        </form>
 
         <!-- Bảng danh sách vật tư -->
         <h2>Danh Sách Vật Tư</h2>
@@ -76,7 +85,9 @@ $danhSachVatTu = $controller->getDanhSachVatTu();
                     <td><?= $vatTu['ngay_tao'] ?></td>
                     <td><?= $vatTu['ten_loai_vat_tu'] ?></td>
                     <td>
-                        <a href="xoasv.php?ID=<?= $vatTu['ma_vat_tu'] ?>">Xóa</a>
+                        <a href="../controllers/delete_material.php?id=<?= $vatTu['ma_vat_tu'] ?>"
+                            onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
+
                         <a href="suasv.php?ID=<?= $vatTu['ma_vat_tu'] ?>">Sửa</a>
                     </td>
                 </tr>
@@ -91,7 +102,7 @@ $danhSachVatTu = $controller->getDanhSachVatTu();
         <div class="modal-content">
             <span class="close" id="btnCloseModal">&times;</span>
             <h2>Thêm Vật Tư</h2>
-            <form id="materialForm">
+            <form id="materialForm" action="../controllers/MaterialController.php" method="POST">
                 <div class="form-group">
                     <label for="ma_vat_tu">Mã Vật tư:</label>
                     <input type="text" id="ma_vat_tu" name="ma_vat_tu" required>
@@ -138,6 +149,65 @@ $danhSachVatTu = $controller->getDanhSachVatTu();
             </form>
         </div>
     </div>
+    <!-- Modal Sửa -->
+    <div class="modal" id="modalEdit">
+        <div class="modal-content">
+            <span class="close" id="btnCloseModalEdit">&times;</span>
+            <h2>Sửa Vật Tư</h2>
+            <form id="editMaterialForm" action="../controllers/MaterialController.php" method="POST">
+                <input type="hidden" id="edit_ma_vat_tu" name="ma_vat_tu">
+
+                <div class="form-group">
+                    <label for="edit_ten_vat_tu">Tên Vật tư:</label>
+                    <input type="text" id="edit_ten_vat_tu" name="ten_vat_tu" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_mo_ta">Mô tả:</label>
+                    <textarea id="edit_mo_ta" name="mo_ta" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_don_vi">Đơn vị:</label>
+                    <input type="text" id="edit_don_vi" name="don_vi" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_gia">Giá:</label>
+                    <input type="number" id="edit_gia" name="gia" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
+                    <input type="text" id="edit_ma_nha_cung_cap" name="ma_nha_cung_cap" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_so_luong_toi_thieu">Số lượng tối thiểu:</label>
+                    <input type="number" id="edit_so_luong_toi_thieu" name="so_luong_toi_thieu" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_so_luong_ton">Số lượng tồn:</label>
+                    <input type="number" id="edit_so_luong_ton" name="so_luong_ton" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_loai_vat_tu">Loại Vật Tư:</label>
+                    <select id="edit_loai_vat_tu" name="loai_vat_tu" required>
+                        <?php foreach ($loaiVatTu as $loai) { ?>
+                        <option value="<?= $loai['ma_loai_vat_tu'] ?>">
+                            <?= $loai['ten_loai_vat_tu'] ?>
+                        </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit">Cập nhật</button>
+            </form>
+        </div>
+    </div>
+
     <script>
     // Modal xử lý
     const modal = document.getElementById("modal");
@@ -161,31 +231,5 @@ $danhSachVatTu = $controller->getDanhSachVatTu();
     // Xử lý form thêm vật tư
     const form = document.getElementById("materialForm");
     const tableBody = document.querySelector(".table tbody");
-
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const maVatTu = document.getElementById("ma_vat_tu").value;
-        const tenVatTu = document.getElementById("ten_vat_tu").value;
-        const loaiVatTu = document.getElementById("loai_vat_tu").value;
-        const soLuong = document.getElementById("so_luong").value;
-
-        const newRow = `
-    <tr>
-      <td>${maVatTu}</td>
-      <td>${tenVatTu}</td>
-      <td>${loaiVatTu}</td>
-      <td>${soLuong}</td>
-      <td>
-        <button class="btn-edit">Sửa</button>
-        <button class="btn-delete">Xóa</button>
-      </td>
-    </tr>
-  `;
-
-        tableBody.innerHTML += newRow;
-        modal.style.display = "none";
-        form.reset();
-    });
     </script>
 </body>

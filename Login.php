@@ -4,7 +4,12 @@ require_once './models/Database.php';
 require_once './controllers/LoginController.php';
 
 // Tạo đối tượng controller
-$controller = new LoginController(new Database());
+// Tạo đối tượng Database
+$db = new Database();
+
+// Truyền đối tượng Database (không phải mysqli) vào LoginController
+$controller = new LoginController($db);
+
 
 $error = $controller->login();  // Gọi hàm login và xử lý lỗi (nếu có)
 ?>

@@ -9,29 +9,32 @@ class UserModel {
 
     // Phương thức đăng nhập
     public function login($username, $password) {
-        // Câu truy vấn SQL
-        $query = "SELECT * FROM nguoi_dung WHERE ten_nguoi_dung = ? AND mat_khau = ?";
+
+        // Chuẩn bị câu lệnh SQL an toàn
+        $stmt = $this->dbConnection->prepare("SELECT * FROM nguoi_dung WHERE ten_nguoi_dung = ? AND mat_khau = ?");
         
-        // Chuẩn bị câu truy vấn SQL
-        if ($stmt = $this->dbConnection->prepare($query)) {
-            // Gắn giá trị vào câu truy vấn
-            $stmt->bind_param("ss", $username, $password); // "ss" nghĩa là cả hai là kiểu string
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $user = $result->fetch_assoc();
-            
-            // Kiểm tra kết quả
-            if ($user) {
-                return $user;  // Trả về thông tin người dùng nếu tìm thấy
-            } else {
-                return null;  // Trả về null nếu không có người dùng nào khớp
-            }
+        if ($stmt === false) {
+            die("Lỗi chuẩn bị câu lệnh: " . $this->dbConnection->error);
+        }
+    
+        // Gán giá trị cho câu lệnh chuẩn bị
+        $stmt->bind_param("ss", $username, $password);
+    
+        // Thực thi câu lệnh
+        if (!$stmt->execute()) {
+            die("Lỗi khi thực thi câu lệnh: " . $stmt->error);
+        }
+    
+        // Lấy kết quả từ câu lệnh chuẩn bị
+        $result = $stmt->get_result();
+    
+        if ($result && $result->num_rows > 0) {
+            return $result->fetch_assoc();
         } else {
-            // Trả về thông báo lỗi nếu không thể chuẩn bị câu truy vấn
-            die("Lỗi truy vấn: " . $this->dbConnection->error);
+            // Sửa lỗi, tránh thông báo không mong muốn
+            return false;
         }
     }
-    
 }
 
 ?>
