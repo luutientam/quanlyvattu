@@ -8,6 +8,10 @@ class MainController {
         $loaiVatTuModel = new LoaiVatTuModel();
         return $loaiVatTuModel->getLoaiVatTu();
     }
+    public function getMaNhaCungCap() {
+        $loaiVatTuModel = new LoaiVatTuModel();
+        return $loaiVatTuModel->getMaNhaCungCap();
+    }
 
     public function getDanhSachVatTu($keyword) {
         $vatTuModel = new VatTuModel();

@@ -7,6 +7,7 @@ require_once '../controllers/MainController.php';
 
 $controller = new MainController();
 $loaiVatTu = $controller->getLoaiVatTu();
+$maNhaCungCap = $controller->getMaNhaCungCap();
 if ($_SERVER['REQUEST_METHOD'] == "POST"){
     $keyword = $_POST['txtTimKiem'];
     $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
@@ -113,10 +114,20 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                     <label for="gia">Giá:</label>
                     <input type="number" id="gia" name="gia" placeholder="Nhập giá..." required>
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
                     <input type="text" id="ma_nha_cung_cap" name="ma_nha_cung_cap" placeholder="Nhập mã nhà cung cấp..."
                         required>
+                </div> -->
+                <div class="form-group">
+                    <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
+                    <select id="ma_nha_cung_cap" name="ma_nha_cung_cap" required>
+                        <?php foreach ($maNhaCungCap as $mncc) { ?>
+                        <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
+                            <?= $mncc['ma_nha_cung_cap'] .' - ' . $mncc['ten_nha_cung_cap']?>
+                        </option>
+                        <?php } ?>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="so_luong_toi_thieu">Số lượng Tối thiểu:</label>
@@ -151,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                 <input type="hidden" id="edit_ma_vat_tu" name="ma_vat_tu">
                 <div class="form-group">
                     <label for="ma_vat_tu">Mã Vật tư:</label>
-                    <input type="text" id="ma_vat_tu_sua" name="ma_vat_tu_sua" placeholder="Nhập mã vật tư..." required>
+                    <input type="text" id="ma_vat_tu_sua" name="ma_vat_tu_sua" placeholder="Nhập mã vật tư..." readonly>
                 </div>
                 <div class="form-group">
                     <label for="ten_vat_tu">Tên Vật tư:</label>
@@ -170,10 +181,20 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                     <label for="gia">Giá:</label>
                     <input type="number_format" id="gia_sua" name="gia_sua" placeholder="Nhập giá..." required>
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
                     <input type="text" id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua"
                         placeholder="Nhập mã nhà cung cấp..." required>
+                </div> -->
+                <div class="form-group">
+                    <label for="ma_nha_cung_cap_sua">Mã Nhà Cung Cấp:</label>
+                    <select id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua" required>
+                        <?php foreach ($maNhaCungCap as $mncc) { ?>
+                        <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
+                            <?= $mncc['ma_nha_cung_cap'] .' - ' . $mncc['ten_nha_cung_cap']?>
+                        </option>
+                        <?php } ?>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="so_luong_toi_thieu">Số lượng Tối thiểu:</label>

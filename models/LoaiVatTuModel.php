@@ -24,5 +24,29 @@ class LoaiVatTuModel {
             return [];
         }
     }
+    public function getMaNhaCungCap() {
+        $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
+
+        if (!$conn) {
+            echo "Kết nối thất bại: " . mysqli_connect_error();
+            return [];
+        }
+
+        $sql = "SELECT * FROM nha_cung_cap";
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            $maNhaCungCap = [];
+            while ($row = mysqli_fetch_assoc($result)) {
+                $maNhaCungCap[] = $row;
+            }
+            mysqli_close($conn);
+            return $maNhaCungCap;
+        } else {
+            echo "Lỗi trong truy vấn getmaNhaCungCap: " . mysqli_error($conn);
+            mysqli_close($conn);
+            return [];
+        }
+    }
 }
 ?>
