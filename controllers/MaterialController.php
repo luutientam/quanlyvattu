@@ -33,7 +33,7 @@ class MaterialController {
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
-                'ma_vat_tu' => $_POST['ma_vat_tu'],
+                // 'ma_vat_tu' => $_POST['ma_vat_tu'],
                 'ten_vat_tu' => $_POST['ten_vat_tu'],
                 'mo_ta' => $_POST['mo_ta'],
                 'don_vi' => $_POST['don_vi'],
