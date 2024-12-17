@@ -7,17 +7,6 @@ require_once '../controllers/MainController.php';
 require_once '../models/db.php';
 
 $controller = new MainController();
-<<<<<<< HEAD
-$loaiVatTu = $controller->getLoaiVatTu(); 
-$maNhaCungCap = $controller->getMaNhaCungCap();
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $keyword = $_POST['txtTimKiem'];
-    $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
-} else {
-    $keyword = '';
-    $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
-}
-=======
 $loaiVatTu = $controller->getLoaiVatTu();
 $maNhaCungCap = $controller->getMaNhaCungCap();
 // if ($_SERVER['REQUEST_METHOD'] == "POST"){
@@ -36,7 +25,6 @@ curl_close($ch);
 
 
 $data = json_decode($response, true);
->>>>>>> ef89183c80270b9efd22435f9de63927f4225fb0
 
 ?>
 
@@ -83,24 +71,6 @@ $data = json_decode($response, true);
                 </tr>
             </thead>
             <tbody>
-<<<<<<< HEAD
-                <?php foreach ($danhSachVatTu as $vatTu) { ?>
-                    <tr>
-                        <td><?= $vatTu['ma_vat_tu'] ?></td>
-                        <td><?= $vatTu['ten_vat_tu'] ?></td>
-                        <td><?= $vatTu['mo_ta'] ?></td>
-                        <td><?= $vatTu['don_vi'] ?></td>
-                        <td><?= $vatTu['gia'] ?></td>
-                        <td><?= $vatTu['ma_nha_cung_cap'] ?></td>
-                        <td><?= $vatTu['so_luong_toi_thieu'] ?></td>
-                        <td><?= $vatTu['so_luong_ton'] ?></td>
-                        <td><?= $vatTu['ngay_tao'] ?></td>
-                        <td><?= $vatTu['ten_loai_vat_tu'] ?></td>
-                        <td style="border-right: none;">
-                            <a class="xoa"
-                                href="../controllers/MaterialController.php?action=deleteVatTu&id=<?= $vatTu['ma_vat_tu'] ?>"
-                                onclick="return confirm('Bạn có chắc muốn xóa?')"><i class='bx bx-trash-alt'></i></a>
-=======
                 <?php foreach ($data['data'] as $vatTu) { ?>
                 <tr>
                     <td><?= $vatTu['ma_vat_tu'] ?></td>
@@ -117,7 +87,6 @@ $data = json_decode($response, true);
                         <a class="xoa"
                             href="../controllers/MaterialController.php?action=deleteVatTu&id=<?= $vatTu['ma_vat_tu'] ?>"
                             onclick="return confirm('Bạn có chắc muốn xóa?')"><i class='bx bx-trash-alt'></i></a>
->>>>>>> ef89183c80270b9efd22435f9de63927f4225fb0
 
                             <a id="btnOpenModalEdit" onclick="openEditModal('<?= $vatTu['ma_vat_tu'] ?>')" class="sua"><i
                                     class='bx bx-edit'></i></a>
@@ -134,16 +103,8 @@ $data = json_decode($response, true);
         <div class="modal-content">
             <span class="close" id="btnCloseModal">&times;</span>
             <h2>Thêm Vật Tư</h2>
-<<<<<<< HEAD
             <form id="materialForm" action="../controllers/MaterialController.php?action=addMaterial" method="POST">
 
-=======
-            <form id="materialForm" method="POST">
-                <div class="form-group">
-                    <label for="ma_vat_tu">Mã Vật tư:</label>
-                    <input type="text" id="ma_vat_tu" name="ma_vat_tu" placeholder="Nhập mã vật tư..." required>
-                </div>
->>>>>>> ef89183c80270b9efd22435f9de63927f4225fb0
                 <div class="form-group">
                     <label for="ten_vat_tu">Tên Vật tư:</label>
                     <input type="text" id="ten_vat_tu" name="ten_vat_tu" placeholder="Nhập tên vật tư..." required>
@@ -160,15 +121,6 @@ $data = json_decode($response, true);
                     <label for="gia">Giá:</label>
                     <input type="number" id="gia" name="gia" placeholder="Nhập giá..." required>
                 </div>
-<<<<<<< HEAD
-                <div class="form-group">
-                    <label for="ma_nha_cung_cap">Mã nhà cung cấp:</label>
-                    <select id="ma_nha_cung_cap" name="ma_nha_cung_cap" required>
-                        <?php foreach ($maNhaCungCap as $mncc) { ?>
-                            <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
-                                <?= $mncc['ma_nha_cung_cap'] . " - " . $mncc['ten_nha_cung_cap'] ?>
-                            </option>
-=======
                 <!-- <div class="form-group">
                     <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
                     <input type="text" id="ma_nha_cung_cap" name="ma_nha_cung_cap" placeholder="Nhập mã nhà cung cấp..."
@@ -181,7 +133,6 @@ $data = json_decode($response, true);
                         <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
                             <?= $mncc['ma_nha_cung_cap'] .' - ' . $mncc['ten_nha_cung_cap']?>
                         </option>
->>>>>>> ef89183c80270b9efd22435f9de63927f4225fb0
                         <?php } ?>
                     </select>
                 </div>
@@ -237,15 +188,6 @@ $data = json_decode($response, true);
                     <label for="gia">Giá:</label>
                     <input type="number_format" id="gia_sua" name="gia_sua" placeholder="Nhập giá..." required>
                 </div>
-<<<<<<< HEAD
-                <div class="form-group">
-                    <label for="ma_nha_cung_cap">Mã nhà cung cấp:</label>
-                    <select id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua" required>
-                        <?php foreach ($maNhaCungCap as $mncc) { ?>
-                            <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
-                                <?= $mncc['ma_nha_cung_cap'] . " - " . $mncc['ten_nha_cung_cap'] ?>
-                            </option>
-=======
                 <!-- <div class="form-group">
                     <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
                     <input type="text" id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua"
@@ -258,7 +200,6 @@ $data = json_decode($response, true);
                         <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
                             <?= $mncc['ma_nha_cung_cap'] .' - ' . $mncc['ten_nha_cung_cap']?>
                         </option>
->>>>>>> ef89183c80270b9efd22435f9de63927f4225fb0
                         <?php } ?>
                     </select>
                 </div>

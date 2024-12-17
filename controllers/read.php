@@ -20,6 +20,7 @@ if($num>0){
     $vatTu_array = [];
     $vatTu_array['data'] = [];
     while($row = $read->fetch(PDO::FETCH_ASSOC)){
+
         extract($row);
 
         $vatTu_item = array(

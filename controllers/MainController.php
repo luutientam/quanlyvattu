@@ -2,6 +2,7 @@
 // controllers/MainController.php
 include_once '../models/GetDuLieu.php';
 include_once '../models/VatTuModel.php';
+require_once __DIR__ . '/../models/LoaiVatTuModel.php';
 
 class MainController {
     public function getLoaiVatTu() {
