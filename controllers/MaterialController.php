@@ -1,5 +1,12 @@
 <?php
 require_once '../models/MaterialModel.php';
+//Cho phép bất kỳ nguồn nào (origin) cũng có thể gửi yêu cầu đến tài nguyên trên máy chủ.
+header('Access-Control-Allow-Origin: *');
+header('Content-Type: application/json'); // Xác định kiểu nội dung của phản hồi là JSON.
+header("Access-Control-Allow-Methods: DELETE");// Chỉ định rằng máy chủ cho phép các yêu cầu HTTP với phương thức DELETE.
+header("Allow: GET, POST, OPTIONS, PUT, DELETE");// Liệt kê tất cả các phương thức HTTP được máy chủ hỗ trợ.
+//Cho phép các tiêu đề HTTP tùy chỉnh mà client có thể gửi trong yêu cầu (request).
+header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Access-Control-Allow-Origin");
 
 class MaterialController {
     public function xuLyYeuCau() {
@@ -43,6 +50,7 @@ class MaterialController {
                 'so_luong_ton' => $_POST['so_luong_ton'],
                 'ma_loai_vat_tu' => $_POST['loai_vat_tu']
             ];
+            // echo json_encode($data);
             $materialModel = new MaterialModel();
             if ($materialModel->addMaterial($data)) {
                 header('Location: ../index.php');

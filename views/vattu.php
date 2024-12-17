@@ -4,17 +4,27 @@
 <?php
 // views/index.php
 require_once '../controllers/MainController.php';
+require_once '../models/db.php';
 
 $controller = new MainController();
 $loaiVatTu = $controller->getLoaiVatTu();
 $maNhaCungCap = $controller->getMaNhaCungCap();
-if ($_SERVER['REQUEST_METHOD'] == "POST"){
-    $keyword = $_POST['txtTimKiem'];
-    $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
-}else{
-    $keyword = '';
-    $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
-}
+// if ($_SERVER['REQUEST_METHOD'] == "POST"){
+//     $keyword = $_POST['txtTimKiem'];
+//     $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
+// }else{
+//     $keyword = '';
+//     $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
+// }
+$url = "http://localhost/quanlyvattu/controllers/read.php";
+// Gửi yêu cầu GET để lấy dữ liệu từ API
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+
+$data = json_decode($response, true);
 
 ?>
 
@@ -61,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($danhSachVatTu as $vatTu) { ?>
+                <?php foreach ($data['data'] as $vatTu) { ?>
                 <tr>
                     <td><?= $vatTu['ma_vat_tu'] ?></td>
                     <td><?= $vatTu['ten_vat_tu'] ?></td>
@@ -72,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                     <td><?= $vatTu['so_luong_toi_thieu'] ?></td>
                     <td><?= $vatTu['so_luong_ton'] ?></td>
                     <td><?= $vatTu['ngay_tao'] ?></td>
-                    <td><?= $vatTu['ten_loai_vat_tu'] ?></td>
+                    <td><?= $vatTu['ma_loai_vat_tu'] ?></td>
                     <td style="border-right: none;">
                         <a class="xoa"
                             href="../controllers/MaterialController.php?action=deleteVatTu&id=<?= $vatTu['ma_vat_tu'] ?>"
@@ -93,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
         <div class="modal-content">
             <span class="close" id="btnCloseModal">&times;</span>
             <h2>Thêm Vật Tư</h2>
-            <form id="materialForm" action="../controllers/MaterialController.php?action=addMaterial" method="POST">
+            <form id="materialForm" method="POST">
                 <div class="form-group">
                     <label for="ma_vat_tu">Mã Vật tư:</label>
                     <input type="text" id="ma_vat_tu" name="ma_vat_tu" placeholder="Nhập mã vật tư..." required>
