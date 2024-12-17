@@ -199,7 +199,9 @@ body {
 .table td {
   color: black;
 }
-
+.table tr:hover {
+  background-color: rgba(225, 225, 225, 0.2);
+}
 .btn-edit {
   background-color: #fcb102;
   color: #2c003e;
