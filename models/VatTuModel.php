@@ -48,14 +48,14 @@ class VatTuModel {
                     'status' => 201,
                     'message' => 'Tạo vật tư thành công',
                 ];
-                header("HTTP/1.0 201 Created");
+                //header("HTTP/1.0 201 Created");
                 return json_encode($data);
             } else {
                 $data = [
                     'status' => 500,
                     'message' => 'Lỗi',
                 ];
-                header("HTTP/1.0 500 Error");
+                //header("HTTP/1.0 500 Error");
                 return json_encode($data);
             }
 

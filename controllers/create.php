@@ -51,8 +51,7 @@ if($requestmethod == 'POST') {
     // Nếu thêm dữ liệu thành công, chuyển hướng về index.php
     $response = json_decode($insertMaterial, true);
     if ($response['status'] == 201) {
-        header('Location: ../index.php');
-        exit;
+        header("Location: ../index.php");
     } else {
         echo $insertMaterial; // Hiển thị lỗi nếu không thành công
     }
