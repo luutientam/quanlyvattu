@@ -11,7 +11,9 @@ include_once '../models/VatTuModel.php';
 
 $db = new db();
 $connect = $db->connect();  
+
 $vatTuModel = new VatTuModel($connect);
+
 $keyword = '';
 $read = $vatTuModel->getDanhSachVatTu($keyword);
 

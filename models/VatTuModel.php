@@ -1,7 +1,8 @@
 <?php
 require_once "db.php";
 
-class VatTuModel {
+class VatTuModel
+{
     private $db;
     public $ma_vat_tu;
     public $ten_vat_tu;
@@ -13,11 +14,16 @@ class VatTuModel {
     public $so_luong_ton;
     public $ngay_tao;
     public $ma_loai_vat_tu;
-    public function __construct($db) {
+
+    public function __construct($db)
+    {
         $this->db = $db;
     }
-    public function getDanhSachVatTu($keyword){
-        $query = "SELECT * FROM vat_tu JOIN loai_vat_tu ON loai_vat_tu.ma_loai_vat_tu = vat_tu.ma_loai_vat_tu where ten_vat_tu like N'%".$keyword."%'";
+
+
+    public function getDanhSachVatTu($keyword)
+    {
+        $query = "SELECT * FROM vat_tu JOIN loai_vat_tu ON loai_vat_tu.ma_loai_vat_tu = vat_tu.ma_loai_vat_tu where ten_vat_tu like N'%" . $keyword . "%'";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt;
@@ -48,14 +54,12 @@ class VatTuModel {
                     'status' => 201,
                     'message' => 'Tạo vật tư thành công',
                 ];
-                header("HTTP/1.0 201 Created");
                 return json_encode($data);
             } else {
                 $data = [
                     'status' => 500,
                     'message' => 'Lỗi',
                 ];
-                header("HTTP/1.0 500 Error");
                 return json_encode($data);
             }
 
@@ -78,4 +82,3 @@ class VatTuModel {
     //     }
     // }
 }
-?>
