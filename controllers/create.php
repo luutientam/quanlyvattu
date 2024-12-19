@@ -29,7 +29,7 @@ $vatTu->so_luong_toi_thieu = $data->so_luong_toi_thieu;
 $vatTu->so_luong_ton = $data->so_luong_ton;
 $vatTu->ma_loai_vat_tu = $data->ma_loai_vat_tu;
 
-if($vatTu->create()){
+if($vatTu->addMaterial()){
     echo json_encode(array("message","Vật tư đã được tạo"));
 }else{
     echo json_encode(array("message","Vật tư không được tạo"));

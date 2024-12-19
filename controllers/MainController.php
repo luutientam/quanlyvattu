@@ -5,6 +5,7 @@ include_once '../models/VatTuModel.php';
 require_once __DIR__ . '/../models/LoaiVatTuModel.php';
 
 class MainController {
+
     public function getLoaiVatTu() {
         $loaiVatTuModel = new GetDuLieu();
         return $loaiVatTuModel->getLoaiVatTu();
