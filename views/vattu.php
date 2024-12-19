@@ -43,9 +43,9 @@ $data = json_decode($response, true);
                 <select name="loai-vat-tu" id="loai-vat-tu">
                     <option value="all">Tất cả loại vật tư</option>
                     <?php foreach ($loaiVatTu as $loai) { ?>
-                    <option value="<?= $loai['ma_loai_vat_tu'] ?>">
-                        <?= $loai['ten_loai_vat_tu'] ?>
-                    </option>
+                        <option value="<?= $loai['ma_loai_vat_tu']  ?>">
+                            <?= $loai['ten_loai_vat_tu'] ?>
+                        </option>
                     <?php } ?>
                 </select>
             </div>
@@ -88,10 +88,10 @@ $data = json_decode($response, true);
                             href="../controllers/MaterialController.php?action=deleteVatTu&id=<?= $vatTu['ma_vat_tu'] ?>"
                             onclick="return confirm('Bạn có chắc muốn xóa?')"><i class='bx bx-trash-alt'></i></a>
 
-                        <a id="btnOpenModalEdit" onclick="openEditModal('<?= $vatTu['ma_vat_tu'] ?>')" class="sua"><i
-                                class='bx bx-edit'></i></a>
-                    </td>
-                </tr>
+                            <a id="btnOpenModalEdit" onclick="openEditModal('<?= $vatTu['ma_vat_tu'] ?>')" class="sua"><i
+                                    class='bx bx-edit'></i></a>
+                        </td>
+                    </tr>
                 <?php } ?>
 
             </tbody>
@@ -103,11 +103,13 @@ $data = json_decode($response, true);
         <div class="modal-content">
             <span class="close" id="btnCloseModal">&times;</span>
             <h2>Thêm Vật Tư</h2>
+
             <form id="materialForm" action="../controllers/create.php" method="POST">
                 <div class="form-group">
                     <label for="ma_vat_tu">Mã Vật tư:</label>
                     <input type="text" id="ma_vat_tu" name="ma_vat_tu" placeholder="Nhập mã vật tư..." required>
                 </div>
+
                 <div class="form-group">
                     <label for="ten_vat_tu">Tên Vật tư:</label>
                     <input type="text" id="ten_vat_tu" name="ten_vat_tu" placeholder="Nhập tên vật tư..." required>
@@ -153,9 +155,9 @@ $data = json_decode($response, true);
                     <label for="loai_vat_tu">Loại Vật Tư:</label>
                     <select id="loai_vat_tu" name="ma_loai_vat_tu" required>
                         <?php foreach ($loaiVatTu as $loai) { ?>
-                        <option value="<?= $loai['ma_loai_vat_tu'] ?>">
-                            <?= $loai['ten_loai_vat_tu'] ?>
-                        </option>
+                            <option value="<?= $loai['ma_loai_vat_tu'] ?>">
+                                <?= $loai['ten_loai_vat_tu'] ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>
@@ -221,9 +223,9 @@ $data = json_decode($response, true);
                     <label for="edit_loai_vat_tu">Loại Vật Tư:</label>
                     <select id="edit_loai_vat_tu" name="loai_vat_tu_sua" required>
                         <?php foreach ($loaiVatTu as $loai) { ?>
-                        <option value="<?= $loai['ma_loai_vat_tu'] ?>">
-                            <?= $loai['ten_loai_vat_tu'] ?>
-                        </option>
+                            <option value="<?= $loai['ma_loai_vat_tu'] ?>">
+                                <?= $loai['ten_loai_vat_tu'] ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>
@@ -234,66 +236,65 @@ $data = json_decode($response, true);
     </div>
 
     <script>
-    // Modal xử lý
-    const modal = document.getElementById("modal");
-    const btnOpenModal = document.getElementById("btnOpenModal");
-    const btnCloseModal = document.getElementById("btnCloseModal");
+        // Modal xử lý
+        const modal = document.getElementById("modal");
+        const btnOpenModal = document.getElementById("btnOpenModal");
+        const btnCloseModal = document.getElementById("btnCloseModal");
 
-    btnOpenModal.addEventListener("click", () => {
-        modal.style.display = "flex";
-    });
-
-    btnCloseModal.addEventListener("click", () => {
-        modal.style.display = "none";
-    });
-
-    window.addEventListener("click", (e) => {
-        if (e.target === modal) {
-            modal.style.display = "none";
-        }
-    });
-    const modalEdit = document.getElementById("modalEdit");
-    const btnOpenModalEdit = document.querySelectorAll("#btnOpenModalEdit");
-    const btnCloseModalEdit = document.getElementById("btnCloseModalEdit");
-
-    for (const btn of btnOpenModalEdit) {
-        btn.addEventListener("click", () => {
-            modalEdit.style.display = "flex";
+        btnOpenModal.addEventListener("click", () => {
+            modal.style.display = "flex";
         });
-    }
-    btnCloseModalEdit.addEventListener("click", () => {
-        modalEdit.style.display = "none";
-    });
 
-    window.addEventListener("click", (e) => {
-        if (e.target === modalEdit) {
-            modalEdit.style.display = "none";
-        }
-    });
+        btnCloseModal.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
 
-    // Xử lý form thêm vật tư
-    const form = document.getElementById("materialForm");
-    const tableBody = document.querySelector(".table tbody");
-
-    // Sửa vật tư
-    function openEditModal(id) {
-        // Hiển thị modal sửa
+        window.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                modal.style.display = "none";
+            }
+        });
         const modalEdit = document.getElementById("modalEdit");
-        modalEdit.style.display = "flex";
+        const btnOpenModalEdit = document.querySelectorAll("#btnOpenModalEdit");
+        const btnCloseModalEdit = document.getElementById("btnCloseModalEdit");
 
-        // Gán ID vào input hidden
-        document.getElementById("edit_ma_vat_tu").value = id;
+        for (const btn of btnOpenModalEdit) {
+            btn.addEventListener("click", () => {
+                modalEdit.style.display = "flex";
+            });
+        }
+        btnCloseModalEdit.addEventListener("click", () => {
+            modalEdit.style.display = "none";
+        });
 
-        // Lấy dữ liệu từ bảng và điền vào modal edit
-        const row = document.querySelector(`tr td:has(a.sua[onclick*="${id}"])`).closest('tr');
-        document.getElementById("ma_vat_tu_sua").value = row.cells[0].innerText;
-        document.getElementById("ten_vat_tu_sua").value = row.cells[1].innerText;
-        document.getElementById("mo_ta_sua").value = row.cells[2].innerText;
-        document.getElementById("don_vi_sua").value = row.cells[3].innerText;
-        document.getElementById("gia_sua").value = row.cells[4].innerText;
-        document.getElementById("ma_nha_cung_cap_sua").value = row.cells[5].innerText;
-        document.getElementById("so_luong_toi_thieu_sua").value = row.cells[6].innerText;
-        document.getElementById("so_luong_ton_sua").value = row.cells[7].innerText;
-    }
+        window.addEventListener("click", (e) => {
+            if (e.target === modalEdit) {
+                modalEdit.style.display = "none";
+            }
+        });
+
+        // Xử lý form thêm vật tư
+        const form = document.getElementById("materialForm");
+        const tableBody = document.querySelector(".table tbody");
+
+        // Sửa vật tư
+        function openEditModal(id) {
+            // Hiển thị modal sửa
+            const modalEdit = document.getElementById("modalEdit");
+            modalEdit.style.display = "flex";
+
+            // Gán ID vào input hidden
+            document.getElementById("edit_ma_vat_tu").value = id;
+
+            // Lấy dữ liệu từ bảng và điền vào modal edit
+            const row = document.querySelector(`tr td:has(a.sua[onclick*="${id}"])`).closest('tr');
+            document.getElementById("ma_vat_tu_sua").value = row.cells[0].innerText;
+            document.getElementById("ten_vat_tu_sua").value = row.cells[1].innerText;
+            document.getElementById("mo_ta_sua").value = row.cells[2].innerText;
+            document.getElementById("don_vi_sua").value = row.cells[3].innerText;
+            document.getElementById("gia_sua").value = row.cells[4].innerText;
+            document.getElementById("so_luong_toi_thieu_sua").value = row.cells[6].innerText;
+            document.getElementById("so_luong_ton_sua").value = row.cells[7].innerText;
+        }
     </script>
 </body>
