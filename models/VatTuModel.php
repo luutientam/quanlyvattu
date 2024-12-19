@@ -28,8 +28,7 @@ class VatTuModel
         $stmt->execute();
         return $stmt;
     }
-    public function addMaterial()
-    {
+    public function create($dataPOST){
         $query = "INSERT INTO vat_tu SET
             ma_vat_tu=:ma_vat_tu, 
             ten_vat_tu=:ten_vat_tu, 
@@ -40,30 +39,32 @@ class VatTuModel
             so_luong_toi_thieu=:so_luong_toi_thieu, 
             so_luong_ton=:so_luong_ton, 
             ma_loai_vat_tu=:ma_loai_vat_tu";
-        $stmt = $this->db->prepare($query);
-        $this->ma_vat_tu = htmlspecialchars(strip_tags($this->ma_vat_tu));
-        $this->ten_vat_tu = htmlspecialchars(strip_tags($this->ten_vat_tu));
-        $this->mo_ta = htmlspecialchars(strip_tags($this->mo_ta));
-        $this->don_vi = htmlspecialchars(strip_tags($this->don_vi));
-        $this->gia = htmlspecialchars(strip_tags($this->gia));
-        $this->ma_nha_cung_cap = htmlspecialchars(strip_tags($this->ma_nha_cung_cap));
-        $this->so_luong_toi_thieu = htmlspecialchars(strip_tags($this->so_luong_toi_thieu));
-        $this->so_luong_ton = htmlspecialchars(strip_tags($this->so_luong_ton));
-        $this->ma_loai_vat_tu = htmlspecialchars(strip_tags($this->ma_loai_vat_tu));
-        $stmt->bindParam(':ma_vat_tu', $this->ma_vat_tu);
-        $stmt->bindParam(':ten_vat_tu', $this->ten_vat_tu);
-        $stmt->bindParam(':mo_ta', $this->mo_ta);
-        $stmt->bindParam(':don_vi', $this->don_vi);
-        $stmt->bindParam(':gia', $this->gia);
-        $stmt->bindParam(':ma_nha_cung_cap', $this->ma_nha_cung_cap);
-        $stmt->bindParam(':so_luong_toi_thieu', $this->so_luong_toi_thieu);
-        $stmt->bindParam(':so_luong_ton', $this->so_luong_ton);
-        $stmt->bindParam(':ma_loai_vat_tu', $this->ma_loai_vat_tu);
-        if ($stmt->execute()) {
-            return true;
-        }
-        printf("Error %s. \n", $stmt->error);
-        return false;
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':ma_vat_tu',$dataPOST['ma_vat_tu']);
+            $stmt->bindParam(':ten_vat_tu',$dataPOST['ten_vat_tu']);
+            $stmt->bindParam(':mo_ta',$dataPOST['mo_ta']);
+            $stmt->bindParam(':don_vi',$dataPOST['don_vi']);
+            $stmt->bindParam(':gia',$dataPOST['gia']);
+            $stmt->bindParam(':ma_nha_cung_cap',$dataPOST['ma_nha_cung_cap']);
+            $stmt->bindParam(':so_luong_toi_thieu',$dataPOST['so_luong_toi_thieu']);
+            $stmt->bindParam(':so_luong_ton',$dataPOST['so_luong_ton']);
+            $stmt->bindParam(':ma_loai_vat_tu', $dataPOST['ma_loai_vat_tu']);
+            if($stmt->execute()){
+                $data = [
+                    'status' => 201,
+                    'message' => 'Tạo vật tư thành công',
+                ];
+                header("HTTP/1.0 201 Created");
+                return json_encode($data);
+            } else {
+                $data = [
+                    'status' => 500,
+                    'message' => 'Lỗi',
+                ];
+                header("HTTP/1.0 500 Error");
+                return json_encode($data);
+            }
+
     }
     // public function getDanhSachVatTu($keyword) {
     //     $sql = "SELECT * FROM vat_tu JOIN loai_vat_tu ON loai_vat_tu.ma_loai_vat_tu = vat_tu.ma_loai_vat_tu where ten_vat_tu like N'%".$keyword."%'";
