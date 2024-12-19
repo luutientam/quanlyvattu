@@ -103,7 +103,12 @@ $data = json_decode($response, true);
         <div class="modal-content">
             <span class="close" id="btnCloseModal">&times;</span>
             <h2>Thêm Vật Tư</h2>
-            <form id="materialForm" action="../controllers/MaterialController.php?action=addMaterial" method="POST">
+
+            <form id="materialForm" action="../controllers/create.php" method="POST">
+                <div class="form-group">
+                    <label for="ma_vat_tu">Mã Vật tư:</label>
+                    <input type="text" id="ma_vat_tu" name="ma_vat_tu" placeholder="Nhập mã vật tư..." required>
+                </div>
 
                 <div class="form-group">
                     <label for="ten_vat_tu">Tên Vật tư:</label>
@@ -148,7 +153,7 @@ $data = json_decode($response, true);
                 </div>
                 <div class="form-group">
                     <label for="loai_vat_tu">Loại Vật Tư:</label>
-                    <select id="loai_vat_tu" name="loai_vat_tu" required>
+                    <select id="loai_vat_tu" name="ma_loai_vat_tu" required>
                         <?php foreach ($loaiVatTu as $loai) { ?>
                             <option value="<?= $loai['ma_loai_vat_tu'] ?>">
                                 <?= $loai['ten_loai_vat_tu'] ?>
