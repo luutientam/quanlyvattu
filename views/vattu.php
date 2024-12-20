@@ -22,8 +22,6 @@ $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
 curl_close($ch);
-
-
 $data = json_decode($response, true);
 
 ?>
@@ -72,21 +70,21 @@ $data = json_decode($response, true);
             </thead>
             <tbody>
                 <?php foreach ($data['data'] as $vatTu) { ?>
-                <tr>
-                    <td><?= $vatTu['ma_vat_tu'] ?></td>
-                    <td><?= $vatTu['ten_vat_tu'] ?></td>
-                    <td><?= $vatTu['mo_ta'] ?></td>
-                    <td><?= $vatTu['don_vi'] ?></td>
-                    <td><?= $vatTu['gia'] ?></td>
-                    <td><?= $vatTu['ma_nha_cung_cap'] ?></td>
-                    <td><?= $vatTu['so_luong_toi_thieu'] ?></td>
-                    <td><?= $vatTu['so_luong_ton'] ?></td>
-                    <td><?= $vatTu['ngay_tao'] ?></td>
-                    <td><?= $vatTu['ma_loai_vat_tu'] ?></td>
-                    <td style="border-right: none;">
-                        <a class="xoa"
-                            href="../controllers/MaterialController.php?action=deleteVatTu&id=<?= $vatTu['ma_vat_tu'] ?>"
-                            onclick="return confirm('Bạn có chắc muốn xóa?')"><i class='bx bx-trash-alt'></i></a>
+                    <tr>
+                        <td><?= $vatTu['ma_vat_tu'] ?></td>
+                        <td><?= $vatTu['ten_vat_tu'] ?></td>
+                        <td><?= $vatTu['mo_ta'] ?></td>
+                        <td><?= $vatTu['don_vi'] ?></td>
+                        <td><?= $vatTu['gia'] ?></td>
+                        <td><?= $vatTu['ma_nha_cung_cap'] ?></td>
+                        <td><?= $vatTu['so_luong_toi_thieu'] ?></td>
+                        <td><?= $vatTu['so_luong_ton'] ?></td>
+                        <td><?= $vatTu['ngay_tao'] ?></td>
+                        <td><?= $vatTu['ma_loai_vat_tu'] ?></td>
+                        <td style="border-right: none;">
+                            <a class="xoa"
+                                href="../controllers/MaterialController.php?action=deleteVatTu&id=<?= $vatTu['ma_vat_tu'] ?>"
+                                onclick="return confirm('Bạn có chắc muốn xóa?')"><i class='bx bx-trash-alt'></i></a>
 
                             <a id="btnOpenModalEdit" onclick="openEditModal('<?= $vatTu['ma_vat_tu'] ?>')" class="sua"><i
                                     class='bx bx-edit'></i></a>
@@ -135,9 +133,9 @@ $data = json_decode($response, true);
                     <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
                     <select id="ma_nha_cung_cap" name="ma_nha_cung_cap" required>
                         <?php foreach ($maNhaCungCap as $mncc) { ?>
-                        <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
-                            <?= $mncc['ma_nha_cung_cap'] .' - ' . $mncc['ten_nha_cung_cap']?>
-                        </option>
+                            <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
+                                <?= $mncc['ma_nha_cung_cap'] . ' - ' . $mncc['ten_nha_cung_cap'] ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>
@@ -202,9 +200,9 @@ $data = json_decode($response, true);
                     <label for="ma_nha_cung_cap_sua">Mã Nhà Cung Cấp:</label>
                     <select id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua" required>
                         <?php foreach ($maNhaCungCap as $mncc) { ?>
-                        <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
-                            <?= $mncc['ma_nha_cung_cap'] .' - ' . $mncc['ten_nha_cung_cap']?>
-                        </option>
+                            <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
+                                <?= $mncc['ma_nha_cung_cap'] . ' - ' . $mncc['ten_nha_cung_cap'] ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>

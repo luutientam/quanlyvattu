@@ -38,7 +38,6 @@ $vatTu = new VatTuModel($connect);
 // }
 $requestmethod = $_SERVER['REQUEST_METHOD'];
 if ($requestmethod == 'POST') {
-    $insertMaterial = '';
     $inputdata = json_decode(file_get_contents("php://input"), true);
     if (empty($inputdata)) {
         // var_dump($_POST);
