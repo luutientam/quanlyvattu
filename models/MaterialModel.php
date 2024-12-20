@@ -11,7 +11,7 @@ class MaterialModel {
 
     public function addMaterial($data) {
         $sql = "INSERT INTO vat_tu (
-            ma_vat_tu, 
+            -- ma_vat_tu, 
             ten_vat_tu, 
             mo_ta, 
             don_vi, 
@@ -20,7 +20,7 @@ class MaterialModel {
             so_luong_toi_thieu, 
             so_luong_ton, 
             ma_loai_vat_tu
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->db->prepare($sql);
 
@@ -29,8 +29,8 @@ class MaterialModel {
         }
 
         $stmt->bind_param(
-            "sssssiisi", 
-            $data['ma_vat_tu'], 
+            "sssisiis", 
+            // $data['ma_vat_tu'], 
             $data['ten_vat_tu'], 
             $data['mo_ta'], 
             $data['don_vi'], 

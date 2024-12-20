@@ -12,9 +12,7 @@ class Database {
     }
 
     private function connect() {
-
         // Sử dụng mysqli để kết nối
-
         $this->connection = new mysqli($this->host, $this->username, $this->password, $this->dbname);
 
         if ($this->connection->connect_error) {
@@ -24,7 +22,6 @@ class Database {
     public function getConnection() {
         return $this->connection;
     }
-    
 }
 
 ?>

@@ -2,7 +2,7 @@
 //Cho phép bất kỳ nguồn nào (origin) cũng có thể gửi yêu cầu đến tài nguyên trên máy chủ.
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json'); // Xác định kiểu nội dung của phản hồi là JSON.
-header("Access-Control-Allow-Methods: POST");// Chỉ định rằng máy chủ cho phép các yêu cầu HTTP với phương thức DELETE.
+header("Access-Control-Allow-Methods: POST"); // Chỉ định rằng máy chủ cho phép các yêu cầu HTTP với phương thức DELETE.
 
 //Cho phép các tiêu đề HTTP tùy chỉnh mà client có thể gửi trong yêu cầu (request).
 header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Access-Control-Allow-Origin");
@@ -15,17 +15,19 @@ $connect = $db->connect();
 
 $vatTu = new VatTuModel($connect);
 $requestmethod = $_SERVER['REQUEST_METHOD'];
-if($requestmethod == 'POST') {
+if ($requestmethod == 'POST') {
+    $insertMaterial = '';
     $inputdata = json_decode(file_get_contents("php://input"), true);
-
-    if(empty($inputdata)) {
-        //var_dump($_POST);
-        $insertMaterial = $vatTu->create($_POST);
-    } else {
-        $insertMaterial =  $vatTu->create($inputdata);
-
+    if (empty($inputdata)) {
+        // var_dump($_POST);
+        $inputdata = $_POST;
     }
+    $insertMaterial =  $vatTu->create($inputdata);
     echo $insertMaterial;
+
+    
+    //echo $insertCustomer;
+
     // Nếu thêm dữ liệu thành công, chuyển hướng về index.php
     // $response = json_decode($insertMaterial, true);
     // if ($response['status'] == 201) {
@@ -41,6 +43,3 @@ if($requestmethod == 'POST') {
     header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
-
-
-?>
