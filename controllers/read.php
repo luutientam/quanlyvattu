@@ -2,7 +2,7 @@
 //Cho phép bất kỳ nguồn nào (origin) cũng có thể gửi yêu cầu đến tài nguyên trên máy chủ.
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json'); // Xác định kiểu nội dung của phản hồi là JSON.
-header("Access-Control-Allow-Methods: DELETE");// Chỉ định rằng máy chủ cho phép các yêu cầu HTTP với phương thức DELETE.
+header("Access-Control-Allow-Methods: GET");// Chỉ định rằng máy chủ cho phép các yêu cầu HTTP với phương thức DELETE.
 header("Allow: GET, POST, OPTIONS, PUT, DELETE");// Liệt kê tất cả các phương thức HTTP được máy chủ hỗ trợ.
 //Cho phép các tiêu đề HTTP tùy chỉnh mà client có thể gửi trong yêu cầu (request).
 header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Access-Control-Allow-Origin");
@@ -15,16 +15,15 @@ $connect = $db->connect();
 $vatTuModel = new VatTuModel($connect);
 
 $keyword = '';
-$read = $vatTuModel->getDanhSachVatTu($keyword);
 
-$num = $read->rowCount();// đếm kết quả trả về 
+$read = $vatTuModel->getDanhSachVatTu($keyword);
+$num = $read->rowCount();// đếm kết quả trả về
 if($num>0){
     $vatTu_array = [];
     $vatTu_array['data'] = [];
     while($row = $read->fetch(PDO::FETCH_ASSOC)){
 
         extract($row);
-
         $vatTu_item = array(
             'ma_vat_tu' => $ma_vat_tu,
             'ten_vat_tu' => $ten_vat_tu,
