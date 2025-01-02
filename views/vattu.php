@@ -185,7 +185,6 @@ $data = json_decode($response, true);
                 $("#responseMessage").html('<p style="color: red;">Vui lòng điền đầy đủ các trường bắt buộc.</p>');
                 return;
             }
-
             // Gửi yêu cầu POST đến API
             $.ajax({
                 url: 'http://localhost/quanlyvattu/controllers/create.php', // Địa chỉ của API
@@ -230,8 +229,8 @@ $data = json_decode($response, true);
         <div class="modal-content">
             <span class="close" id="btnCloseModalEdit">&times;</span>
             <h2>Sửa Vật Tư</h2>
-            <form id="editMaterialForm" action="http://localhost/quanlyvattu/controllers/update.php" method="POST">
-                <input type="hidden" name="_method" value="PUT">
+            <form id="editMaterialForm">
+                <!-- <input type="hidden" name="_method" value="PUT"> -->
                 <input type="hidden" id="edit_ma_vat_tu" name="ma_vat_tu">
                 <div class="form-group">
                     <label for="ma_vat_tu">Mã Vật tư:</label>
@@ -293,48 +292,60 @@ $data = json_decode($response, true);
 
 
 
+
     <script>
+         // sửa vật tư                       
         // Lắng nghe sự kiện submit của form
-        document.getElementById("editMaterialForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Ngừng gửi form theo cách truyền thống
+        $("#editMaterialForm").on("submit", function(event) {
+            event.preventDefault(); // Ngừng submit mặc định của form
 
-            // Tạo đối tượng FormData từ form
-            var formData = new FormData(this);
+            // Lấy dữ liệu từ form
+            var materialData = {
+                ma_vat_tu: $("#ma_vat_tu_sua").val(),
+                ten_vat_tu: $("#ten_vat_tu_sua").val(),
+                mo_ta: $("#mo_ta_sua").val(),
+                don_vi: $("#don_vi_sua").val(),
+                gia: $("#gia_sua").val(),
+                ma_nha_cung_cap: $("#ma_nha_cung_cap_sua").val(),
+                so_luong_toi_thieu: $("#so_luong_toi_thieu_sua").val(),
+                so_luong_ton: $("#so_luong_ton_sua").val(),
+                ma_loai_vat_tu: $("#edit_loai_vat_tu").val()
+            };
 
-            // Chuyển form data thành JSON
-            var formJSON = {};
-            formData.forEach((value, key) => {
-                formJSON[key] = value;
-            });
+            // Gửi yêu cầu PUT đến API
+            $.ajax({
+                url: 'http://localhost/quanlyvattu/controllers/update.php', // Địa chỉ của API
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(materialData), // Chuyển đổi dữ liệu thành JSON
+                success: function(response) {
+                    // Kiểm tra nếu phản hồi thành công
+                    if (response && response.status === 200) {
+                        // Hiển thị thông báo thành công
+                        $("#responseMessage").html(`<p style="color: green;">${response.message}</p>`);
 
-            // Gửi yêu cầu AJAX (Fetch API)
-            fetch("http://localhost/quanlyvattu/controllers/update.php", {
-                    method: "POST",
-                    body: JSON.stringify(formJSON),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json()) // Phân tích dữ liệu JSON
-                .then(data => {
-                    // Kiểm tra trạng thái từ server
-                    if (data.status === 200) {
-                        alert(data.message); // Thông báo thành công
-                        document.getElementById('modalEdit').style.display = 'none'; // Đóng modal
-                        window.location.href = "http://localhost/quanlyvattu/index.php"; // Chuyển hướng về trang chính
+                        // Đóng modal và điều hướng về trang vật tư sau 2 giây
+                        setTimeout(function() {
+                            $("#modalEdit").hide(); // Đóng modal
+                            window.location.href = 'http://localhost/quanlyvattu/views/vattu.php'; // Điều hướng đến trang vật tư
+                        }, 2000); // Điều hướng sau 2 giây để người dùng có thể xem thông báo
                     } else {
-                        alert(data.message); // Thông báo lỗi
+                        // Hiển thị thông báo lỗi nếu không có status 200
+                        $("#responseMessage").html(`<p style="color: red;">Lỗi: ${response.message || 'Không xác định lỗi'}</p>`);
                     }
-                })
-                .catch(error => {
-                    console.error('Lỗi khi gửi yêu cầu:', error);
-                    alert('Đã xảy ra lỗi trong quá trình gửi yêu cầu.');
-                });
+                },
+                error: function(xhr, status, error) {
+                    // Xử lý lỗi từ phía server
+                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Đã có lỗi xảy ra.";
+                    $("#responseMessage").html(`<p style="color: red;">Lỗi: ${errorMessage}</p>`);
+                }
+            });
         });
-    </script>
 
 
-    <script>
+
+
+
         // Modal xử lý
         const modal = document.getElementById("modal");
         const btnOpenModal = document.getElementById("btnOpenModal");
