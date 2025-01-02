@@ -11,7 +11,9 @@ include_once '../models/VatTuModel.php';
 
 $db = new db();
 $connect = $db->connect();  
+
 $vatTuModel = new VatTuModel($connect);
+
 $keyword = '';
 
 $read = $vatTuModel->getDanhSachVatTu($keyword);
@@ -21,6 +23,7 @@ if($num>0){
     $vatTu_array = [];
     $vatTu_array['data'] = [];
     while($row = $read->fetch(PDO::FETCH_ASSOC)){
+
         extract($row);
         $vatTu_item = array(
             'ma_vat_tu' => $ma_vat_tu,
