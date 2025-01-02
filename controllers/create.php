@@ -27,7 +27,7 @@ if ($requestMethod == 'POST') {
     $response = json_decode($insertMaterial, true);
 
     // Trả về phản hồi JSON
-    header("Location: ../index.php");
+    //header("Location: ../index.php");
     echo json_encode($response);
 } else {
     // Xử lý yêu cầu không phải POST
@@ -35,7 +35,5 @@ if ($requestMethod == 'POST') {
         'status' => 405,
         'message' => $requestMethod . ' Method Not Allowed',
     ];
-    header("HTTP/1.0 405 Method Not Allowed");
     echo json_encode($data);
 }
-
