@@ -22,18 +22,19 @@ if ($requestmethod == 'POST') {
         $inputdata = $_POST;
     }
     $insertMaterial =  $vatTu->create($inputdata);
-    echo $insertMaterial;
+
+    // echo $insertMaterial;
 
     
     //echo $insertCustomer;
 
-    // Nếu thêm dữ liệu thành công, chuyển hướng về index.php
-    // $response = json_decode($insertMaterial, true);
-    // if ($response['status'] == 201) {
-    //     header("Location: ../index.php");
-    // } else {
-    //     echo $insertMaterial; // Hiển thị lỗi nếu không thành công
-    // }
+   // Nếu thêm dữ liệu thành công, chuyển hướng về index.php
+    $response = json_decode($insertMaterial, true);
+    if ($response['status'] == 201) {
+        header("Location: ../index.php");
+    } else {
+        echo $insertMaterial; // Hiển thị lỗi nếu không thành công
+    }
 } else {
     $data = [
         'status' => 405,

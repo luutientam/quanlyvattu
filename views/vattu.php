@@ -23,14 +23,11 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
 curl_close($ch);
 $data = json_decode($response, true);
-
 ?>
 
 <body>
 
     <!-- Banner -->
-
-
     <!-- Nội dung chính -->
     <main class="content">
         <!-- Thanh tìm kiếm -->
@@ -102,7 +99,7 @@ $data = json_decode($response, true);
             <span class="close" id="btnCloseModal">&times;</span>
             <h2>Thêm Vật Tư</h2>
 
-            <form id="materialForm" action="../controllers/create.php" method="POST">
+            <form id="materialForm" action="http://localhost/quanlyvattu/controllers/create.php" method="POST">
                 <div class="form-group">
                     <label for="ma_vat_tu">Mã Vật tư:</label>
                     <input type="text" id="ma_vat_tu" name="ma_vat_tu" placeholder="Nhập mã vật tư..." required>
@@ -168,7 +165,8 @@ $data = json_decode($response, true);
         <div class="modal-content">
             <span class="close" id="btnCloseModalEdit">&times;</span>
             <h2>Sửa Vật Tư</h2>
-            <form id="editMaterialForm" action="../controllers/MaterialController.php?action=suaVatTu" method="POST">
+            <form id="editMaterialForm" action="http://localhost/quanlyvattu/controllers/update.php" method="POST">
+                <input type="hidden" name="_method" value="PUT">
                 <input type="hidden" id="edit_ma_vat_tu" name="ma_vat_tu">
                 <div class="form-group">
                     <label for="ma_vat_tu">Mã Vật tư:</label>
@@ -176,8 +174,7 @@ $data = json_decode($response, true);
                 </div>
                 <div class="form-group">
                     <label for="ten_vat_tu">Tên Vật tư:</label>
-                    <input type="text" id="ten_vat_tu_sua" name="ten_vat_tu_sua" placeholder="Nhập tên vật tư..."
-                        required>
+                    <input type="text" id="ten_vat_tu_sua" name="ten_vat_tu_sua" placeholder="Nhập tên vật tư..." required>
                 </div>
                 <div class="form-group">
                     <label for="mo_ta">Mô tả:</label>
@@ -189,13 +186,8 @@ $data = json_decode($response, true);
                 </div>
                 <div class="form-group">
                     <label for="gia">Giá:</label>
-                    <input type="number_format" id="gia_sua" name="gia_sua" placeholder="Nhập giá..." required>
+                    <input type="number" id="gia_sua" name="gia_sua" placeholder="Nhập giá..." required>
                 </div>
-                <!-- <div class="form-group">
-                    <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
-                    <input type="text" id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua"
-                        placeholder="Nhập mã nhà cung cấp..." required>
-                </div> -->
                 <div class="form-group">
                     <label for="ma_nha_cung_cap_sua">Mã Nhà Cung Cấp:</label>
                     <select id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua" required>
@@ -232,6 +224,50 @@ $data = json_decode($response, true);
             </form>
         </div>
     </div>
+
+
+
+
+    <script>
+        // Lắng nghe sự kiện submit của form
+        document.getElementById("editMaterialForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Ngừng gửi form theo cách truyền thống
+
+            // Tạo đối tượng FormData từ form
+            var formData = new FormData(this);
+
+            // Chuyển form data thành JSON
+            var formJSON = {};
+            formData.forEach((value, key) => {
+                formJSON[key] = value;
+            });
+
+            // Gửi yêu cầu AJAX (Fetch API)
+            fetch("http://localhost/quanlyvattu/controllers/update.php", {
+                    method: "POST",
+                    body: JSON.stringify(formJSON),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json()) // Phân tích dữ liệu JSON
+                .then(data => {
+                    // Kiểm tra trạng thái từ server
+                    if (data.status === 200) {
+                        alert(data.message); // Thông báo thành công
+                        document.getElementById('modalEdit').style.display = 'none'; // Đóng modal
+                        window.location.href = "http://localhost/quanlyvattu/index.php"; // Chuyển hướng về trang chính
+                    } else {
+                        alert(data.message); // Thông báo lỗi
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi gửi yêu cầu:', error);
+                    alert('Đã xảy ra lỗi trong quá trình gửi yêu cầu.');
+                });
+        });
+    </script>
+
 
     <script>
         // Modal xử lý
