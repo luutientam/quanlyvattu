@@ -16,6 +16,7 @@ $keyword = '';
 
 $read = $vatTuModel->getDanhSachVatTu($keyword);
 $num = $read->rowCount();// đếm kết quả trả về
+
 if($num>0){
     $vatTu_array = [];
     $vatTu_array['data'] = [];
