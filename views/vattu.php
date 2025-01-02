@@ -160,6 +160,71 @@ $data = json_decode($response, true);
             </form>
         </div>
     </div>
+
+
+    <script>
+        // Gửi yêu cầu POST khi người dùng nhấn nút "Thêm Vật Tư"
+        $("#materialForm").on("submit", function(event) {
+            event.preventDefault(); // Ngừng submit mặc định của form
+
+            // Lấy dữ liệu từ form
+            var materialData = {
+                ma_vat_tu: $("#ma_vat_tu").val(),
+                ten_vat_tu: $("#ten_vat_tu").val(),
+                mo_ta: $("#mo_ta").val(),
+                don_vi: $("#don_vi").val(),
+                gia: $("#gia").val(),
+                ma_nha_cung_cap: $("#ma_nha_cung_cap").val(),
+                so_luong_toi_thieu: $("#so_luong_toi_thieu").val(),
+                so_luong_ton: $("#so_luong_ton").val(),
+                ma_loai_vat_tu: $("#loai_vat_tu").val()
+            };
+
+            // Kiểm tra nếu có trường nào trống
+            if (!materialData.ma_vat_tu || !materialData.ten_vat_tu || !materialData.gia) {
+                $("#responseMessage").html('<p style="color: red;">Vui lòng điền đầy đủ các trường bắt buộc.</p>');
+                return;
+            }
+
+            // Gửi yêu cầu POST đến API
+            $.ajax({
+                url: 'http://localhost/quanlyvattu/controllers/create.php', // Địa chỉ của API
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(materialData),
+                success: function(response) {
+                    // Kiểm tra nếu phản hồi thành công
+                    if (response && response.status === 201) {
+                        // Hiển thị thông báo thành công
+                        $("#responseMessage").html(`<p style="color: green;">${response.message}</p>`);
+
+                        // Điều hướng về trang vật tư sau 2 giây
+                        setTimeout(function() {
+                            window.location.href = 'http://localhost/quanlyvattu/views/vattu.php'; // Thay đổi URL theo trang chính của bạn
+                        }, 2000); // Điều hướng sau 2 giây để người dùng có thể xem thông báo
+                    } else {
+                        // Hiển thị thông báo lỗi nếu không có status 201
+                        $("#responseMessage").html(`<p style="color: red;">Lỗi: ${response.message || 'Không xác định lỗi'}</p>`);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Xử lý lỗi từ phía server
+                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Đã có lỗi xảy ra.";
+                    $("#responseMessage").html(`<p style="color: red;">Lỗi: ${errorMessage}</p>`);
+                }
+            });
+
+            // Đóng modal khi nhấn vào nút "Đóng"
+            $("#btnCloseModal").click(function() {
+                $("#modal").hide();
+            });
+        });
+    </script>
+
+
+
+
+
     <!-- Modal Sửa -->
     <div class="modal" id="modalEdit">
         <div class="modal-content">
