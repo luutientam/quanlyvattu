@@ -22,17 +22,12 @@ $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
 curl_close($ch);
-
-
 $data = json_decode($response, true);
-
 ?>
 
 <body>
 
     <!-- Banner -->
-
-
     <!-- Nội dung chính -->
     <main class="content">
         <!-- Thanh tìm kiếm -->
@@ -72,21 +67,21 @@ $data = json_decode($response, true);
             </thead>
             <tbody>
                 <?php foreach ($data['data'] as $vatTu) { ?>
-                <tr>
-                    <td><?= $vatTu['ma_vat_tu'] ?></td>
-                    <td><?= $vatTu['ten_vat_tu'] ?></td>
-                    <td><?= $vatTu['mo_ta'] ?></td>
-                    <td><?= $vatTu['don_vi'] ?></td>
-                    <td><?= $vatTu['gia'] ?></td>
-                    <td><?= $vatTu['ma_nha_cung_cap'] ?></td>
-                    <td><?= $vatTu['so_luong_toi_thieu'] ?></td>
-                    <td><?= $vatTu['so_luong_ton'] ?></td>
-                    <td><?= $vatTu['ngay_tao'] ?></td>
-                    <td><?= $vatTu['ma_loai_vat_tu'] ?></td>
-                    <td style="border-right: none;">
-                        <a class="xoa"
-                            href="../controllers/MaterialController.php?action=deleteVatTu&id=<?= $vatTu['ma_vat_tu'] ?>"
-                            onclick="return confirm('Bạn có chắc muốn xóa?')"><i class='bx bx-trash-alt'></i></a>
+                    <tr>
+                        <td><?= $vatTu['ma_vat_tu'] ?></td>
+                        <td><?= $vatTu['ten_vat_tu'] ?></td>
+                        <td><?= $vatTu['mo_ta'] ?></td>
+                        <td><?= $vatTu['don_vi'] ?></td>
+                        <td><?= $vatTu['gia'] ?></td>
+                        <td><?= $vatTu['ma_nha_cung_cap'] ?></td>
+                        <td><?= $vatTu['so_luong_toi_thieu'] ?></td>
+                        <td><?= $vatTu['so_luong_ton'] ?></td>
+                        <td><?= $vatTu['ngay_tao'] ?></td>
+                        <td><?= $vatTu['ma_loai_vat_tu'] ?></td>
+                        <td style="border-right: none;">
+                            <a class="xoa"
+                                href="../controllers/MaterialController.php?action=deleteVatTu&id=<?= $vatTu['ma_vat_tu'] ?>"
+                                onclick="return confirm('Bạn có chắc muốn xóa?')"><i class='bx bx-trash-alt'></i></a>
 
                             <a id="btnOpenModalEdit" onclick="openEditModal('<?= $vatTu['ma_vat_tu'] ?>')" class="sua"><i
                                     class='bx bx-edit'></i></a>
@@ -104,7 +99,7 @@ $data = json_decode($response, true);
             <span class="close" id="btnCloseModal">&times;</span>
             <h2>Thêm Vật Tư</h2>
 
-            <form id="materialForm" action="../controllers/create.php" method="POST">
+            <form id="materialForm" action="http://localhost/quanlyvattu/controllers/create.php" method="POST">
                 <div class="form-group">
                     <label for="ma_vat_tu">Mã Vật tư:</label>
                     <input type="text" id="ma_vat_tu" name="ma_vat_tu" placeholder="Nhập mã vật tư..." required>
@@ -135,9 +130,9 @@ $data = json_decode($response, true);
                     <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
                     <select id="ma_nha_cung_cap" name="ma_nha_cung_cap" required>
                         <?php foreach ($maNhaCungCap as $mncc) { ?>
-                        <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
-                            <?= $mncc['ma_nha_cung_cap'] .' - ' . $mncc['ten_nha_cung_cap']?>
-                        </option>
+                            <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
+                                <?= $mncc['ma_nha_cung_cap'] . ' - ' . $mncc['ten_nha_cung_cap'] ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>
@@ -170,7 +165,8 @@ $data = json_decode($response, true);
         <div class="modal-content">
             <span class="close" id="btnCloseModalEdit">&times;</span>
             <h2>Sửa Vật Tư</h2>
-            <form id="editMaterialForm" action="../controllers/MaterialController.php?action=suaVatTu" method="POST">
+            <form id="editMaterialForm" action="http://localhost/quanlyvattu/controllers/update.php" method="POST">
+                <input type="hidden" name="_method" value="PUT">
                 <input type="hidden" id="edit_ma_vat_tu" name="ma_vat_tu">
                 <div class="form-group">
                     <label for="ma_vat_tu">Mã Vật tư:</label>
@@ -178,8 +174,7 @@ $data = json_decode($response, true);
                 </div>
                 <div class="form-group">
                     <label for="ten_vat_tu">Tên Vật tư:</label>
-                    <input type="text" id="ten_vat_tu_sua" name="ten_vat_tu_sua" placeholder="Nhập tên vật tư..."
-                        required>
+                    <input type="text" id="ten_vat_tu_sua" name="ten_vat_tu_sua" placeholder="Nhập tên vật tư..." required>
                 </div>
                 <div class="form-group">
                     <label for="mo_ta">Mô tả:</label>
@@ -191,20 +186,15 @@ $data = json_decode($response, true);
                 </div>
                 <div class="form-group">
                     <label for="gia">Giá:</label>
-                    <input type="number_format" id="gia_sua" name="gia_sua" placeholder="Nhập giá..." required>
+                    <input type="number" id="gia_sua" name="gia_sua" placeholder="Nhập giá..." required>
                 </div>
-                <!-- <div class="form-group">
-                    <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
-                    <input type="text" id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua"
-                        placeholder="Nhập mã nhà cung cấp..." required>
-                </div> -->
                 <div class="form-group">
                     <label for="ma_nha_cung_cap_sua">Mã Nhà Cung Cấp:</label>
                     <select id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua" required>
                         <?php foreach ($maNhaCungCap as $mncc) { ?>
-                        <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
-                            <?= $mncc['ma_nha_cung_cap'] .' - ' . $mncc['ten_nha_cung_cap']?>
-                        </option>
+                            <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
+                                <?= $mncc['ma_nha_cung_cap'] . ' - ' . $mncc['ten_nha_cung_cap'] ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>
@@ -234,6 +224,50 @@ $data = json_decode($response, true);
             </form>
         </div>
     </div>
+
+
+
+
+    <script>
+        // Lắng nghe sự kiện submit của form
+        document.getElementById("editMaterialForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Ngừng gửi form theo cách truyền thống
+
+            // Tạo đối tượng FormData từ form
+            var formData = new FormData(this);
+
+            // Chuyển form data thành JSON
+            var formJSON = {};
+            formData.forEach((value, key) => {
+                formJSON[key] = value;
+            });
+
+            // Gửi yêu cầu AJAX (Fetch API)
+            fetch("http://localhost/quanlyvattu/controllers/update.php", {
+                    method: "POST",
+                    body: JSON.stringify(formJSON),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json()) // Phân tích dữ liệu JSON
+                .then(data => {
+                    // Kiểm tra trạng thái từ server
+                    if (data.status === 200) {
+                        alert(data.message); // Thông báo thành công
+                        document.getElementById('modalEdit').style.display = 'none'; // Đóng modal
+                        window.location.href = "http://localhost/quanlyvattu/index.php"; // Chuyển hướng về trang chính
+                    } else {
+                        alert(data.message); // Thông báo lỗi
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi gửi yêu cầu:', error);
+                    alert('Đã xảy ra lỗi trong quá trình gửi yêu cầu.');
+                });
+        });
+    </script>
+
 
     <script>
         // Modal xử lý

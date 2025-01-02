@@ -16,25 +16,25 @@ $connect = $db->connect();
 $vatTu = new VatTuModel($connect);
 $requestmethod = $_SERVER['REQUEST_METHOD'];
 if ($requestmethod == 'POST') {
-    $insertMaterial = '';
     $inputdata = json_decode(file_get_contents("php://input"), true);
     if (empty($inputdata)) {
         // var_dump($_POST);
         $inputdata = $_POST;
     }
     $insertMaterial =  $vatTu->create($inputdata);
-    echo $insertMaterial;
+
+    // echo $insertMaterial;
 
     
     //echo $insertCustomer;
 
-    // Nếu thêm dữ liệu thành công, chuyển hướng về index.php
-    // $response = json_decode($insertMaterial, true);
-    // if ($response['status'] == 201) {
-    //     header("Location: ../index.php");
-    // } else {
-    //     echo $insertMaterial; // Hiển thị lỗi nếu không thành công
-    // }
+   // Nếu thêm dữ liệu thành công, chuyển hướng về index.php
+    $response = json_decode($insertMaterial, true);
+    if ($response['status'] == 201) {
+        header("Location: ../index.php");
+    } else {
+        echo $insertMaterial; // Hiển thị lỗi nếu không thành công
+    }
 } else {
     $data = [
         'status' => 405,

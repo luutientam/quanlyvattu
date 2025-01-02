@@ -111,14 +111,14 @@ class VatTuModel
     
             // Gắn giá trị vào các tham số
             $stmt->bindParam(':ma_vat_tu', $ma_vat_tu);
-            $stmt->bindParam(':ten_vat_tu', $data['ten_vat_tu']);
-            $stmt->bindParam(':mo_ta', $data['mo_ta']);
-            $stmt->bindParam(':don_vi', $data['don_vi']);
-            $stmt->bindParam(':gia', $data['gia']);
-            $stmt->bindParam(':ma_nha_cung_cap', $data['ma_nha_cung_cap']);
-            $stmt->bindParam(':so_luong_toi_thieu', $data['so_luong_toi_thieu']);
-            $stmt->bindParam(':so_luong_ton', $data['so_luong_ton']);
-            $stmt->bindParam(':ma_loai_vat_tu', $data['ma_loai_vat_tu']);
+            $stmt->bindParam(':ten_vat_tu', $data['ten_vat_tu_sua']);
+            $stmt->bindParam(':mo_ta', $data['mo_ta_sua']);
+            $stmt->bindParam(':don_vi', $data['don_vi_sua']);
+            $stmt->bindParam(':gia', $data['gia_sua']);
+            $stmt->bindParam(':ma_nha_cung_cap', $data['ma_nha_cung_cap_sua']);
+            $stmt->bindParam(':so_luong_toi_thieu', $data['so_luong_toi_thieu_sua']);
+            $stmt->bindParam(':so_luong_ton', $data['so_luong_ton_sua']);
+            $stmt->bindParam(':ma_loai_vat_tu', $data['loai_vat_tu_sua']);
     
             // Thực thi câu lệnh
             if ($stmt->execute()) {

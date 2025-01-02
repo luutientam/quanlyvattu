@@ -18,10 +18,12 @@ $vatTu = new VatTuModel($connect);
 
 // Kiểm tra phương thức yêu cầu
 $requestMethod = $_SERVER['REQUEST_METHOD'];
-if ($requestMethod == 'PUT') {
+if ($requestMethod == 'POST') {
     // Lấy dữ liệu từ yêu cầu
     $inputData = json_decode(file_get_contents("php://input"), true);
-
+    if (empty($inputData)) {
+        $inputData = $_POST;
+    }
     // Kiểm tra xem mã vật tư có được cung cấp hay không
     if (isset($inputData['ma_vat_tu'])) {
         $ma_vat_tu = $inputData['ma_vat_tu'];
@@ -41,6 +43,7 @@ if ($requestMethod == 'PUT') {
                 'message' => 'Lỗi xảy ra khi cập nhật vật tư.'
             ]);
         }
+
     } else {
         echo json_encode([
             'status' => 400,
