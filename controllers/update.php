@@ -18,36 +18,40 @@ $vatTu = new VatTuModel($connect);
 
 // Kiểm tra phương thức yêu cầu
 $requestMethod = $_SERVER['REQUEST_METHOD'];
-if ($requestMethod == 'POST') {
+if ($requestMethod == 'PUT') {
     // Lấy dữ liệu từ yêu cầu
     $inputData = json_decode(file_get_contents("php://input"), true);
-    if (empty($inputData)) {
-        $inputData = $_POST;
-    }
-    // Kiểm tra xem mã vật tư có được cung cấp hay không
-    if (isset($inputData['ma_vat_tu'])) {
-        $ma_vat_tu = $inputData['ma_vat_tu'];
 
-        // Gọi phương thức update để cập nhật dữ liệu
-        $result = $vatTu->update($ma_vat_tu, $inputData);
+    // Kiểm tra nếu dữ liệu có
+    if (!empty($inputData)) {
+        if (isset($inputData['ma_vat_tu'])) {
+            $ma_vat_tu = $inputData['ma_vat_tu'];
 
-        // Trả về phản hồi
-        if ($result) {
-            echo json_encode([
-                'status' => 200,
-                'message' => 'Vật tư đã được cập nhật thành công.'
-            ]);
+            // Gọi phương thức update để cập nhật dữ liệu
+            $result = $vatTu->update($ma_vat_tu, $inputData);
+
+            // Trả về phản hồi
+            if ($result) {
+                echo json_encode([
+                    'status' => 200,
+                    'message' => 'Vật tư đã được cập nhật thành công.'
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 500,
+                    'message' => 'Lỗi xảy ra khi cập nhật vật tư.'
+                ]);
+            }
         } else {
             echo json_encode([
-                'status' => 500,
-                'message' => 'Lỗi xảy ra khi cập nhật vật tư.'
+                'status' => 400,
+                'message' => 'Thiếu thông tin mã vật tư để cập nhật.'
             ]);
         }
-
     } else {
         echo json_encode([
             'status' => 400,
-            'message' => 'Thiếu thông tin mã vật tư để cập nhật.'
+            'message' => 'Dữ liệu không hợp lệ.'
         ]);
     }
 } else {

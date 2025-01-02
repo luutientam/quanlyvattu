@@ -13,6 +13,15 @@ require_once "../models/VatTuModel.php";
 $db = new db();
 $connect = $db->connect();
 
+// Kiểm tra kết nối cơ sở dữ liệu
+if (!$connect) {
+    echo json_encode([
+        'status' => 500,
+        'message' => 'Không thể kết nối đến cơ sở dữ liệu.'
+    ]);
+    exit;
+}
+
 // Khởi tạo model
 $vatTu = new VatTuModel($connect);
 
@@ -23,7 +32,7 @@ if ($requestMethod == 'DELETE') {
     $inputData = json_decode(file_get_contents("php://input"), true);
 
     // Kiểm tra mã vật tư
-    if (isset($inputData['ma_vat_tu'])) {
+    if (isset($inputData['ma_vat_tu']) && is_numeric($inputData['ma_vat_tu'])) {
         $ma_vat_tu = $inputData['ma_vat_tu'];
 
         // Gọi phương thức xóa vật tư
@@ -38,13 +47,13 @@ if ($requestMethod == 'DELETE') {
         } else {
             echo json_encode([
                 'status' => 500,
-                'message' => 'Lỗi xảy ra khi xóa vật tư.'
+                'message' => 'Lỗi xảy ra khi xóa vật tư. Vui lòng thử lại.'
             ]);
         }
     } else {
         echo json_encode([
             'status' => 400,
-            'message' => 'Thiếu thông tin mã vật tư để xóa.'
+            'message' => 'Thiếu thông tin mã vật tư hoặc mã vật tư không hợp lệ.'
         ]);
     }
 } else {
