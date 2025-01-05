@@ -14,6 +14,7 @@ class MainController {
         $loaiVatTuModel = new LoaiVatTuModel();
         return $loaiVatTuModel->getMaNhaCungCap();
     }
+
     
     // public function getDanhSachVatTu($keyword) {
     //     $db = new db();
