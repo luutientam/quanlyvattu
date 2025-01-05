@@ -10,6 +10,7 @@ require_once '../models/db.php';
 $controller = new MainController();
 $maDonHang = $controller->getLoaiVatTu();
 $maNhaCungCap = $controller->getMaNhaCungCap();
+$loaiVatTu = $controller->getLoaiVatTu();
 // if ($_SERVER['REQUEST_METHOD'] == "POST"){
 //     $keyword = $_POST['txtTimKiem'];
 //     $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
@@ -42,7 +43,7 @@ $data = json_decode($response, true);
                     <option value="all">Tất cả đơn hàng</option>
                     <?php foreach ($data as $donHang) { ?>
                         <option value="<?= $donHang['ma_don_hang']  ?>">
-                            <?= $donHang['ma_don_hang']?>
+                            <?= $donHang['ma_don_hang'] ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -51,95 +52,95 @@ $data = json_decode($response, true);
 
         <!-- Bảng danh sách vật tư -->
         <!-- Bảng danh sách đơn hàng -->
-<h2>Danh Sách Đơn Hàng</h2>
-<button class="btn-add" id="btnOpenModal">Tạo Đơn Hàng</button>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Mã Đơn Hàng</th>
-            <th>Tên Khách Hàng</th>
-            <th>Trạng Thái</th>
-            <th>Ngày Đặt</th>
-            <th>Mã Người Tạo</th>
-            <th style="border-right: none;">Thao Tác</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($data['data'] as $donHang) { ?>
-            <tr>
-                <td><?= $donHang['ma_don_hang'] ?></td>
-                <td><?= $donHang['ten_khach_hang'] ?></td>
-                <td><?= $donHang['trang_thai'] ?></td>
-                <td><?= $donHang['ngay_dat_hang'] ?></td>
-                <td><?= $donHang['ma_nhan_vien'] ?></td>
-                <td style="border-right: none;">
-                    <a id="btnOpenModalEdit" onclick="openEditModal('<?= $donHang['ma_don_hang'] ?>')" class="sua">
-                        <i class='bx bx-edit'></i>
-                    </a>
-                </td>
-            </tr>
-        <?php } ?>
-    </tbody>
-</table>
+        <h2>Danh Sách Đơn Hàng</h2>
+        <button class="btn-add" id="btnOpenModal">Tạo Đơn Hàng</button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Mã Đơn Hàng</th>
+                    <th>Tên Khách Hàng</th>
+                    <th>Trạng Thái</th>
+                    <th>Ngày Đặt</th>
+                    <th>Mã Người Tạo</th>
+                    <th style="border-right: none;">Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($data['data'] as $donHang) { ?>
+                    <tr>
+                        <td><?= $donHang['ma_don_hang'] ?></td>
+                        <td><?= $donHang['ten_khach_hang'] ?></td>
+                        <td><?= $donHang['trang_thai'] ?></td>
+                        <td><?= $donHang['ngay_dat_hang'] ?></td>
+                        <td><?= $donHang['ma_nhan_vien'] ?></td>
+                        <td style="border-right: none;">
+                            <a id="btnOpenModalEdit" onclick="openEditModal('<?= $donHang['ma_don_hang'] ?>')" class="sua">
+                                <i class='bx bx-edit'></i>
+                            </a>
+                        </td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
 
     </main>
 
     <!-- Modal -->
-   <!-- Modal -->
-<div class="modal" id="modal">
-    <div class="modal-content">
-        <span class="close" id="btnCloseModal">&times;</span>
-        <h2>Tạo Đơn Hàng</h2>
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close" id="btnCloseModal">&times;</span>
+            <h2>Tạo Đơn Hàng</h2>
 
-        <form id="materialForm" method="POST">
-            <div class="form-group">
-                <label for="ma_don_hang">Mã Đơn Hàng:</label>
-                <input type="number" id="ma_don_hang" name="ma_don_hang" placeholder="Nhập mã đơn hàng..." required>
-            </div>
+            <form id="materialForm" method="POST">
+                <div class="form-group">
+                    <label for="ma_don_hang">Mã Đơn Hàng:</label>
+                    <input type="number" id="ma_don_hang" name="ma_don_hang" placeholder="Nhập mã đơn hàng..." required>
+                </div>
 
-            <!-- Các trường thông tin bổ sung (nếu cần) -->
-            <div class="form-group">
-                <label for="ma_nguoi_tao">Mã Người Tạo:</label>
-                <input type="number" id="ma_nguoi_tao" name="ma_nguoi_tao" placeholder="Nhập mã người tạo..." required>
-            </div>
+                <!-- Các trường thông tin bổ sung (nếu cần) -->
+                <div class="form-group">
+                    <label for="ma_nguoi_tao">Mã Người Tạo:</label>
+                    <input type="number" id="ma_nguoi_tao" name="ma_nguoi_tao" placeholder="Nhập mã người tạo..." required>
+                </div>
 
-            <h3>Danh Sách Vật Tư</h3>
-        <div class="form-group">
-            <label for="loai_vat_tu">Loại Vật Tư:</label>
-            <select id="loai_vat_tu">
-                <?php foreach ($loaiVatTu as $loai) { ?>
-                    <option value="<?= $loai['ma_loai_vat_tu'] ?>" data-gia="<?= $loai['gia'] ?>">
-                        <?= $loai['ten_loai_vat_tu'] ?>
-                    </option>
-                <?php } ?>
-            </select>
+                <h3>Danh Sách Vật Tư</h3>
+                <div class="form-group">
+                    <label for="loai_vat_tu">Loại Vật Tư:</label>
+                    <select id="loai_vat_tu" name="ma_loai_vat_tu" required>
+                        <?php foreach ($loaiVatTu as $loai) { ?>
+                            <option value="<?= $loai['ma_loai_vat_tu'] ?>">
+                                <?= $loai['ten_loai_vat_tu'] ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="so_luong">Số Lượng:</label>
+                    <input type="number" id="so_luong" min="1" placeholder="Nhập số lượng...">
+                </div>
+                <button type="button" id="btnAddVatTu">Thêm Vật Tư</button>
+
+                <!-- Bảng hiển thị danh sách vật tư -->
+                <table id="vatTuTable" border="1">
+                    <thead>
+                        <tr>
+                            <th>Tên Vật Tư</th>
+                            <th>Số Lượng</th>
+                            <th>Giá</th>
+                            <th>Thành Tiền</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Các vật tư được thêm sẽ hiển thị tại đây -->
+                    </tbody>
+                </table>
+                <!-- Nút thêm đơn hàng -->
+                <button type="submit" class="btn-submit">Thêm</button>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="so_luong">Số Lượng:</label>
-            <input type="number" id="so_luong" min="1" placeholder="Nhập số lượng...">
-        </div>
-        <button type="button" id="btnAddVatTu">Thêm Vật Tư</button>
-
-        <!-- Bảng hiển thị danh sách vật tư -->
-        <table id="vatTuTable" border="1">
-            <thead>
-                <tr>
-                    <th>Tên Vật Tư</th>
-                    <th>Số Lượng</th>
-                    <th>Giá</th>
-                    <th>Thành Tiền</th>
-                    <th>Hành Động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Các vật tư được thêm sẽ hiển thị tại đây -->
-            </tbody>
-        </table>
-            <!-- Nút thêm đơn hàng -->
-            <button type="submit" class="btn-submit">Thêm</button>
-        </form>
     </div>
-</div>
 
     <!-- Modal Sửa -->
     <div class="modal" id="modalEdit">
@@ -171,7 +172,7 @@ $data = json_decode($response, true);
                     <label for="tong_gia_tri">Tổng giá trị:</label>
                     <input type="number" id="tong_gia_tri" name="tong_gia_tri_sua" placeholder="Nhập tổng giá trị..." required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="trang_thai">Trạng Thái:</label>
                     <input type="text" id="trang_thai_sua" name="trang_thai_sua"
@@ -191,85 +192,88 @@ $data = json_decode($response, true);
 
 
     <script>
-    // Gửi yêu cầu POST khi người dùng nhấn nút "Tạo đơn hàng"
-    $("#materialForm").on("submit", function(event) {
-        event.preventDefault(); // Ngừng submit mặc định của form
+        // Gửi yêu cầu POST khi người dùng nhấn nút "Tạo đơn hàng"
+        $("#materialForm").on("submit", function(event) {
+            event.preventDefault(); // Ngừng submit mặc định của form
 
-        // Lấy dữ liệu từ form
-        var materialData = {
-            ma_don_hang: $("#ma_don_hang").val(),
-            ma_nha_cung_cap: $("#ma_nha_cung_cap").val(),
-            ngay_dat_hang: $("#ngay_dat_hang").val(),
-            ngay_giao_hang: $("#ngay_giao_hang").val(),
-            tong_gia_tri: $("#tong_gia_tri").val(),
-            trang_thai: $("#trang_thai").val(),
-            ma_nguoi_tao: $("#ma_nguoi_tao").val(),
-            // Thêm phần chi tiết vật tư vào đơn hàng
-            chi_tiet_don_hang: getChiTietDonHangData()
-        };
+            // Lấy dữ liệu từ form
+            var materialData = {
+                ma_don_hang: $("#ma_don_hang").val(),
+                ma_nha_cung_cap: $("#ma_nha_cung_cap").val(),
+                ngay_dat_hang: $("#ngay_dat_hang").val(),
+                ngay_giao_hang: $("#ngay_giao_hang").val(),
+                tong_gia_tri: $("#tong_gia_tri").val(),
+                trang_thai: $("#trang_thai").val(),
+                ma_nguoi_tao: $("#ma_nguoi_tao").val(),
+                // Thêm phần chi tiết vật tư vào đơn hàng
+                chi_tiet_don_hang: getChiTietDonHangData()
+            };
 
-        // Kiểm tra nếu có trường nào trống
-        if (!materialData.ma_don_hang || !materialData.ngay_giao_hang || !materialData.tong_gia_tri || materialData.chi_tiet_don_hang.length === 0) {
-            $("#responseMessage").html('<p style="color: red;">Vui lòng điền đầy đủ các trường bắt buộc và thêm ít nhất một vật tư.</p>');
-            return;
-        }
+            // Kiểm tra nếu có trường nào trống
+            if (!materialData.ma_don_hang || !materialData.ngay_giao_hang || !materialData.tong_gia_tri || materialData.chi_tiet_don_hang.length === 0) {
+                $("#responseMessage").html('<p style="color: red;">Vui lòng điền đầy đủ các trường bắt buộc và thêm ít nhất một vật tư.</p>');
+                return;
+            }
 
-        // Gửi yêu cầu POST đến API
-        $.ajax({
-            url: 'http://localhost/quanlyvattu/controllers/DonHang_api.php', // Địa chỉ của API
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(materialData),
-            success: function(response) {
-                // Kiểm tra nếu phản hồi thành công
-                if (response && response.status === 201) {
-                    alert("Tạo đơn hàng thành công!");
+            // Gửi yêu cầu POST đến API
+            $.ajax({
+                url: 'http://localhost/quanlyvattu/controllers/DonHang_api.php', // Địa chỉ của API
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(materialData),
+                success: function(response) {
+                    // Kiểm tra nếu phản hồi thành công
+                    if (response && response.status === 201) {
+                        alert("Tạo đơn hàng thành công!");
 
-                    // Đóng modal
-                    $("#modal").hide();
+                        // Đóng modal
+                        $("#modal").hide();
 
-                    // Reset form
-                    $("#materialForm")[0].reset();
+                        // Reset form
+                        $("#materialForm")[0].reset();
 
-                    // Reload trang sau 2 giây để cập nhật dữ liệu
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 2000);
-                } else if (response && response.status === 409) {
-                    alert("Mã đơn hàng đã tồn tại. Vui lòng nhập mã khác.");
-                } else {
-                    // Hiển thị thông báo lỗi nếu không có status 201
-                    $("#responseMessage").html(
-                        `<p style="color: red;">Lỗi: ${response.message || 'Không xác định lỗi'}</p>`
-                    );
+                        // Reload trang sau 2 giây để cập nhật dữ liệu
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 2000);
+                    } else if (response && response.status === 409) {
+                        alert("Mã đơn hàng đã tồn tại. Vui lòng nhập mã khác.");
+                    } else {
+                        // Hiển thị thông báo lỗi nếu không có status 201
+                        $("#responseMessage").html(
+                            `<p style="color: red;">Lỗi: ${response.message || 'Không xác định lỗi'}</p>`
+                        );
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Xử lý lỗi từ phía server
+                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Đã có lỗi xảy ra.";
+                    $("#responseMessage").html(`<p style="color: red;">Lỗi: ${errorMessage}</p>`);
                 }
-            },
-            error: function(xhr, status, error) {
-                // Xử lý lỗi từ phía server
-                var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Đã có lỗi xảy ra.";
-                $("#responseMessage").html(`<p style="color: red;">Lỗi: ${errorMessage}</p>`);
-            }
+            });
+
+            // Đóng modal khi nhấn vào nút "Đóng"
+            $("#btnCloseModal").click(function() {
+                $("#modal").hide();
+            });
         });
 
-        // Đóng modal khi nhấn vào nút "Đóng"
-        $("#btnCloseModal").click(function() {
-            $("#modal").hide();
-        });
-    });
-
-    // Hàm để lấy dữ liệu chi tiết vật tư
-    function getChiTietDonHangData() {
-        var chiTietData = [];
-        $("#vatTuTable tbody tr").each(function() {
-            var maVatTu = $(this).data('maVatTu');
-            var soLuong = $(this).data('soLuong');
-            if (maVatTu && soLuong) {
-                chiTietData.push({ ma_vat_tu: maVatTu, so_luong: soLuong });
-            }
-        });
-        return chiTietData;
-    }
-</script>
+        // Hàm để lấy dữ liệu chi tiết vật tư
+        function getChiTietDonHangData() {
+            var chiTietData = [];
+            $("#vatTuTable tbody tr").each(function() {
+                var maVatTu = $(this).data('maVatTu');
+                var soLuong = $(this).data('soLuong');
+                if (maVatTu && soLuong) {
+                    chiTietData.push({
+                        ma_vat_tu: maVatTu,
+                        so_luong: soLuong
+                    });
+                }
+            });
+            return chiTietData;
+        }
+    </script>
 
     <!-- <script>
         // Gửi yêu cầu POST khi người dùng nhấn nút "Tạo đơn hàng"

@@ -10,9 +10,8 @@ class DonHangModel
         $this->db = $db;
     }
 
-    public function getDonHang()
+    public function getDonHang($keyword = '')
     {
-        // Sửa câu truy vấn để lấy thông tin từ bảng `don_hang_mua` và bảng liên quan
         $query = "
         SELECT 
             don_hang.ma_don_hang, 
@@ -25,18 +24,26 @@ class DonHangModel
         INNER JOIN 
             khach_hang 
         ON 
-            don_hang.ma_khach_hang = khach_hang.ma_khach_hang";  
+            don_hang.ma_khach_hang = khach_hang.ma_khach_hang";
+        
+        if (!empty($keyword)) {
+            $query .= " WHERE don_hang.ma_don_hang LIKE :keyword OR khach_hang.ten_khach_hang LIKE :keyword";
+        }
+
         $stmt = $this->db->prepare($query);
+        if (!empty($keyword)) {
+            $keyword = "%$keyword%";
+            $stmt->bindParam(':keyword', $keyword);
+        }
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     public function create($dataPOST)
     {
         try {
-            // Bắt đầu giao dịch
             $this->db->beginTransaction();
 
-            // Kiểm tra trùng lặp `ma_don_hang`
             $checkQuery = "SELECT COUNT(*) FROM don_hang WHERE ma_don_hang = :ma_don_hang";
             $checkStmt = $this->db->prepare($checkQuery);
             $checkStmt->bindParam(':ma_don_hang', $dataPOST['ma_don_hang']);
@@ -44,7 +51,6 @@ class DonHangModel
             $count = $checkStmt->fetchColumn();
 
             if ($count > 0) {
-                // Nếu trùng lặp, rollback và trả về lỗi
                 $this->db->rollBack();
                 return json_encode([
                     'status' => 409,
@@ -52,7 +58,6 @@ class DonHangModel
                 ]);
             }
 
-            // Chèn vào bảng `don_hang_mua`
             $queryDonHang = "INSERT INTO don_hang SET
                 ma_don_hang = :ma_don_hang,
                 ma_nha_cung_cap = :ma_nha_cung_cap,
@@ -72,7 +77,6 @@ class DonHangModel
             $stmtDonHang->bindParam(':ma_nguoi_tao', $dataPOST['ma_nguoi_tao']);
             $stmtDonHang->execute();
 
-            // Chèn vào bảng `chi_tiet_don_hang_mua`
             $queryChiTiet = "INSERT INTO chi_tiet_don_hang (ma_don_hang, ma_vat_tu, so_luong, don_gia, thanh_tien)
                              VALUES (:ma_don_hang, :ma_vat_tu, :so_luong, :don_gia, :thanh_tien)";
             $stmtChiTiet = $this->db->prepare($queryChiTiet);
@@ -87,7 +91,6 @@ class DonHangModel
                 $stmtChiTiet->execute();
             }
 
-            // Commit giao dịch
             $this->db->commit();
 
             return json_encode([
@@ -95,7 +98,6 @@ class DonHangModel
                 'message' => 'Tạo đơn hàng thành công'
             ]);
         } catch (Exception $e) {
-            // Rollback nếu có lỗi
             $this->db->rollBack();
             return json_encode([
                 'status' => 500,
@@ -107,7 +109,6 @@ class DonHangModel
     public function update($ma_don_hang, $data)
     {
         try {
-            // Câu lệnh SQL để cập nhật đơn hàng
             $query = "
                 UPDATE don_hang
                 SET 
@@ -119,10 +120,7 @@ class DonHangModel
                     ma_nguoi_tao = :ma_nguoi_tao
                 WHERE ma_don_hang = :ma_don_hang";
 
-            // Chuẩn bị câu lệnh
             $stmt = $this->db->prepare($query);
-
-            // Gắn giá trị vào các tham số
             $stmt->bindParam(':ma_don_hang', $ma_don_hang);
             $stmt->bindParam(':ma_nha_cung_cap', $data['ma_nha_cung_cap']);
             $stmt->bindParam(':ngay_dat_hang', $data['ngay_dat_hang']);
@@ -131,10 +129,22 @@ class DonHangModel
             $stmt->bindParam(':trang_thai', $data['trang_thai']);
             $stmt->bindParam(':ma_nguoi_tao', $data['ma_nguoi_tao']);
 
-            // Thực thi câu lệnh
+            return $stmt->execute();
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public function delete($ma_don_hang)
+    {
+        try {
+            $query = "DELETE FROM don_hang WHERE ma_don_hang = :ma_don_hang";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':ma_don_hang', $ma_don_hang);
             return $stmt->execute();
         } catch (Exception $e) {
             return false;
         }
     }
 }
+?>
