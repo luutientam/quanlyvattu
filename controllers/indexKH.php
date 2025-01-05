@@ -3,31 +3,22 @@
     <link rel="stylesheet" href="../views/Css/footer.css?v=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
-<?php include "../views/hearder.php"?>
+<?php include "../views/hearderKH.php"?>
 
 <?php 
 if (isset($_GET['act'])) {
     
     switch ($_GET['act']) {
-        case 'loaivattu':
-            include "../views/loaivattu.php";
-            break;
-        case 'thongke':
-            include "../views/thongke.php";
-            break;
-        case 'baocao':
-            include "../views/baocao.php";
-            break;
         case 'giohang':
             include "../views/cart.php";
             break;
         default:
-            include "../views/vattu.php";
+            include "../views/vattuKH.php";
             break;
     }
 } else {
-    include "../views/vattu.php";
+    include "../views/vattuKH.php";
 }
 
 ?>
-<?php include "../views/footer.php"?>
+<?php include "../views/footerKH.php"?>

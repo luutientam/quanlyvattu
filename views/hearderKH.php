@@ -16,19 +16,9 @@ session_start();
         <div class="logo"></div>
         <nav>
             <ul>
-                <li><a href="index.php" class="<?= !isset($_GET['act']) ? 'active' : '' ?>">Vật Tư</a></li>
-                <li><a href="index.php?act=loaivattu"
-                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'loaivattu') ? 'active' : '' ?>">Loại Vật
-                        Tư</a></li>
-                <li><a href="index.php?act=thongke"
-                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'thongke') ? 'active' : '' ?>">Thống Kê</a>
-                </li>
-                <li><a href="index.php?act=baocao"
-                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'baocao') ? 'active' : '' ?>">Báo Cáo</a>
-                </li>
-                <!-- Giỏ hàng với biểu tượng FontAwesome -->
+                <li><a href="indexKH.php" class="<?= !isset($_GET['act']) ? 'active' : '' ?>">Vật Tư</a></li>
                 <li>
-                    <a href="index.php?act=giohang" class="<?= (isset($_GET['act']) && $_GET['act'] === 'giohang') ? 'active' : '' ?>">
+                    <a href="indexKH.php?act=giohang" class="<?= (isset($_GET['act']) && $_GET['act'] === 'giohang') ? 'active' : '' ?>">
                         <i class="fa fa-shopping-cart" style="font-size:24px;"></i>
                     </a>
                 </li>
