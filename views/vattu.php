@@ -61,8 +61,7 @@ $data = json_decode($response, true);
                     <th>Đơn vị</th>
                     <th>Giá</th>
                     <th>Mã nhà cc</th>
-                    <th>Số lượng tối thiểu</th>
-                    <th>Số lượng tồn</th>
+                    <th>Số lượng</th>
                     <th>Ngày tạo</th>
                     <th>Tên loại</th>
                     <th style="border-right: none;">Thao tác</th>
@@ -77,8 +76,7 @@ $data = json_decode($response, true);
                         <td><?= $vatTu['don_vi'] ?></td>
                         <td><?= $vatTu['gia'] ?></td>
                         <td><?= $vatTu['ma_nha_cung_cap'] ?></td>
-                        <td><?= $vatTu['so_luong_toi_thieu'] ?></td>
-                        <td><?= $vatTu['so_luong_ton'] ?></td>
+                        <td><?= $vatTu['so_luong'] ?></td>
                         <td><?= $vatTu['ngay_tao'] ?></td>
                         <td><?= $vatTu['ma_loai_vat_tu'] ?></td>
                         <td style="border-right: none;">
@@ -144,15 +142,15 @@ $data = json_decode($response, true);
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="so_luong_toi_thieu">Số lượng Tối thiểu:</label>
-                    <input type="number" id="so_luong_toi_thieu" name="so_luong_toi_thieu"
-                        placeholder="Nhập số lượng tối thiểu..." required>
+                    <label for="so_luong">Số lượng:</label>
+                    <input type="number" id="so_luong" name="so_luong"
+                        placeholder="Nhập số lượng..." required>
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="so_luong_ton">Số lượng Tồn:</label>
                     <input type="number" id="so_luong_ton" name="so_luong_ton" placeholder="Nhập số lượng tồn..."
                         required>
-                </div>
+                </div> -->
                 <div class="form-group">
                     <label for="loai_vat_tu">Loại Vật Tư:</label>
                     <select id="loai_vat_tu" name="ma_loai_vat_tu" required>
@@ -199,6 +197,11 @@ $data = json_decode($response, true);
                     <input type="number" id="gia_sua" name="gia_sua" placeholder="Nhập giá..." required>
                 </div>
                 <div class="form-group">
+                    <label for="so_luong_sua">Số lượng:</label>
+                    <input type="number" id="so_luong_sua" name="so_luong_sua" placeholder="Nhập số lượng..." required>
+                </div>
+
+                <div class="form-group">
                     <label for="ma_nha_cung_cap_sua">Mã Nhà Cung Cấp:</label>
                     <select id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua" required>
                         <?php foreach ($maNhaCungCap as $mncc) { ?>
@@ -208,16 +211,12 @@ $data = json_decode($response, true);
                         <?php } ?>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="so_luong_toi_thieu">Số lượng Tối thiểu:</label>
-                    <input type="number" id="so_luong_toi_thieu_sua" name="so_luong_toi_thieu_sua"
-                        placeholder="Nhập số lượng tối thiểu..." required>
-                </div>
-                <div class="form-group">
+
+                <!-- <div class="form-group">
                     <label for="so_luong_ton_sua">Số lượng Tồn:</label>
                     <input type="number" id="so_luong_ton_sua" name="so_luong_ton_sua"
                         placeholder="Nhập số lượng tồn..." required>
-                </div>
+                </div> -->
 
                 <div class="form-group">
                     <label for="edit_loai_vat_tu">Loại Vật Tư:</label>
@@ -236,7 +235,6 @@ $data = json_decode($response, true);
     </div>
 
 
-
     <script>
         // Gửi yêu cầu POST khi người dùng nhấn nút "Thêm Vật Tư"
         $("#materialForm").on("submit", function(event) {
@@ -250,8 +248,7 @@ $data = json_decode($response, true);
                 don_vi: $("#don_vi").val(),
                 gia: $("#gia").val(),
                 ma_nha_cung_cap: $("#ma_nha_cung_cap").val(),
-                so_luong_toi_thieu: $("#so_luong_toi_thieu").val(),
-                so_luong_ton: $("#so_luong_ton").val(),
+                so_luong: $("#so_luong").val(),
                 ma_loai_vat_tu: $("#loai_vat_tu").val()
             };
 
@@ -271,13 +268,10 @@ $data = json_decode($response, true);
                     // Kiểm tra nếu phản hồi thành công
                     if (response && response.status === 201) {
                         alert("Thêm vật tư thành công!");
-
                         // Đóng modal
                         $("#modal").hide();
-
                         // Reset form
                         $("#materialForm")[0].reset();
-
                         // Reload trang sau 2 giây để cập nhật dữ liệu
                         setTimeout(function() {
                             window.location.reload();
@@ -324,10 +318,10 @@ $data = json_decode($response, true);
 
             // Gửi yêu cầu PUT đến API để cập nhật vật tư
             fetch("http://localhost/quanlyvattu/controllers/update.php", {
-                    method: "PUT", // Sử dụng phương thức PUT để cập nhật
-                    body: JSON.stringify(formJSON),
+                    method: "PUT", // Sử dụng phương thức POST thay vì PUT
+                    body: JSON.stringify(formJSON), // Gửi dữ liệu dưới dạng JSON
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json' // Đặt Content-Type là application/json
                     }
                 })
                 .then(response => response.json()) // Phân tích dữ liệu JSON từ phản hồi
@@ -462,8 +456,7 @@ $data = json_decode($response, true);
             document.getElementById("mo_ta_sua").value = row.cells[2].innerText;
             document.getElementById("don_vi_sua").value = row.cells[3].innerText;
             document.getElementById("gia_sua").value = row.cells[4].innerText;
-            document.getElementById("so_luong_toi_thieu_sua").value = row.cells[6].innerText;
-            document.getElementById("so_luong_ton_sua").value = row.cells[7].innerText;
+            document.getElementById("so_luong_sua").value = row.cells[6].innerText;
         }
     </script>
 </body>

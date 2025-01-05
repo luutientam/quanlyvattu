@@ -32,8 +32,7 @@ if($num>0){
             'don_vi' => $don_vi,
             'gia' => $gia,
             'ma_nha_cung_cap' => $ma_nha_cung_cap,
-            'so_luong_toi_thieu' => $so_luong_toi_thieu,
-            'so_luong_ton' => $so_luong_ton,
+            'so_luong' => $so_luong,
             'ngay_tao' => $ngay_tao,
             'ma_loai_vat_tu' => $ma_loai_vat_tu
         );

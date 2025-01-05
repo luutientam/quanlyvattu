@@ -10,8 +10,7 @@ class VatTuModel
     public $don_vi;
     public $gia;
     public $ma_nha_cung_cap;
-    public $so_luong_toi_thieu;
-    public $so_luong_ton;
+    public $so_luong;
     public $ngay_tao;
     public $ma_loai_vat_tu;
 
@@ -29,57 +28,55 @@ class VatTuModel
         return $stmt;
     }
     public function create($dataPOST)
-{
-    // Kiểm tra trùng lặp `ma_vat_tu`
-    $checkQuery = "SELECT COUNT(*) FROM vat_tu WHERE ma_vat_tu = :ma_vat_tu";
-    $checkStmt = $this->db->prepare($checkQuery);
-    $checkStmt->bindParam(':ma_vat_tu', $dataPOST['ma_vat_tu']);
-    $checkStmt->execute();
-    $count = $checkStmt->fetchColumn();
+    {
+        // Kiểm tra trùng lặp `ma_vat_tu`
+        $checkQuery = "SELECT COUNT(*) FROM vat_tu WHERE ma_vat_tu = :ma_vat_tu";
+        $checkStmt = $this->db->prepare($checkQuery);
+        $checkStmt->bindParam(':ma_vat_tu', $dataPOST['ma_vat_tu']);
+        $checkStmt->execute();
+        $count = $checkStmt->fetchColumn();
 
-    if ($count > 0) {
-        // Trả về lỗi nếu mã vật tư đã tồn tại
-        return json_encode([
-            'status' => 409,
-            'message' => 'Mã vật tư đã tồn tại. Vui lòng nhập mã khác.'
-        ]);
-    }
+        if ($count > 0) {
+            // Trả về lỗi nếu mã vật tư đã tồn tại
+            return json_encode([
+                'status' => 409,
+                'message' => 'Mã vật tư đã tồn tại. Vui lòng nhập mã khác.'
+            ]);
+        }
 
-    // Thực hiện chèn nếu không trùng lặp
-    $query = "INSERT INTO vat_tu SET
+        // Thực hiện chèn nếu không trùng lặp
+        $query = "INSERT INTO vat_tu SET
         ma_vat_tu = :ma_vat_tu, 
         ten_vat_tu = :ten_vat_tu, 
         mo_ta = :mo_ta, 
         don_vi = :don_vi, 
         gia = :gia, 
         ma_nha_cung_cap = :ma_nha_cung_cap, 
-        so_luong_toi_thieu = :so_luong_toi_thieu, 
-        so_luong_ton = :so_luong_ton, 
+        so_luong = :so_luong, 
         ma_loai_vat_tu = :ma_loai_vat_tu";
 
-    $stmt = $this->db->prepare($query);
-    $stmt->bindParam(':ma_vat_tu', $dataPOST['ma_vat_tu']);
-    $stmt->bindParam(':ten_vat_tu', $dataPOST['ten_vat_tu']);
-    $stmt->bindParam(':mo_ta', $dataPOST['mo_ta']);
-    $stmt->bindParam(':don_vi', $dataPOST['don_vi']);
-    $stmt->bindParam(':gia', $dataPOST['gia']);
-    $stmt->bindParam(':ma_nha_cung_cap', $dataPOST['ma_nha_cung_cap']);
-    $stmt->bindParam(':so_luong_toi_thieu', $dataPOST['so_luong_toi_thieu']);
-    $stmt->bindParam(':so_luong_ton', $dataPOST['so_luong_ton']);
-    $stmt->bindParam(':ma_loai_vat_tu', $dataPOST['ma_loai_vat_tu']);
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':ma_vat_tu', $dataPOST['ma_vat_tu']);
+        $stmt->bindParam(':ten_vat_tu', $dataPOST['ten_vat_tu']);
+        $stmt->bindParam(':mo_ta', $dataPOST['mo_ta']);
+        $stmt->bindParam(':don_vi', $dataPOST['don_vi']);
+        $stmt->bindParam(':gia', $dataPOST['gia']);
+        $stmt->bindParam(':ma_nha_cung_cap', $dataPOST['ma_nha_cung_cap']);
+        $stmt->bindParam(':so_luong', $dataPOST['so_luong']);
+        $stmt->bindParam(':ma_loai_vat_tu', $dataPOST['ma_loai_vat_tu']);
 
-    if ($stmt->execute()) {
-        return json_encode([
-            'status' => 201,
-            'message' => 'Tạo vật tư thành công'
-        ]);
-    } else {
-        return json_encode([
-            'status' => 500,
-            'message' => 'Lỗi khi tạo vật tư.'
-        ]);
+        if ($stmt->execute()) {
+            return json_encode([
+                'status' => 201,
+                'message' => 'Tạo vật tư thành công'
+            ]);
+        } else {
+            return json_encode([
+                'status' => 500,
+                'message' => 'Lỗi khi tạo vật tư.'
+            ]);
+        }
     }
-}
 
 
 
@@ -121,8 +118,7 @@ class VatTuModel
                     don_vi = :don_vi,
                     gia = :gia,
                     ma_nha_cung_cap = :ma_nha_cung_cap,
-                    so_luong_toi_thieu = :so_luong_toi_thieu,
-                    so_luong_ton = :so_luong_ton,
+                    so_luong = :so_luong,
                     ma_loai_vat_tu = :ma_loai_vat_tu
                 WHERE ma_vat_tu = :ma_vat_tu
             ";
@@ -137,8 +133,7 @@ class VatTuModel
             $stmt->bindParam(':don_vi', $data['don_vi_sua']);
             $stmt->bindParam(':gia', $data['gia_sua']);
             $stmt->bindParam(':ma_nha_cung_cap', $data['ma_nha_cung_cap_sua']);
-            $stmt->bindParam(':so_luong_toi_thieu', $data['so_luong_toi_thieu_sua']);
-            $stmt->bindParam(':so_luong_ton', $data['so_luong_ton_sua']);
+            $stmt->bindParam(':so_luong', $data['so_luong_sua']);
             $stmt->bindParam(':ma_loai_vat_tu', $data['loai_vat_tu_sua']);
 
             // Thực thi câu lệnh
