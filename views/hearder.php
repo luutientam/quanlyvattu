@@ -8,6 +8,7 @@ session_start();
 
 <head>
     <link rel="stylesheet" href="./Css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
@@ -22,11 +23,17 @@ session_start();
                 <li><a href="index.php?act=thongke"
                         class="<?= (isset($_GET['act']) && $_GET['act'] === 'thongke') ? 'active' : '' ?>">Thống Kê</a>
                 </li>
+                <li><a href="index.php?act=quanlydonhang"
+                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'quanlydonhang') ? 'active' : '' ?>">Đơn Hàng</a>
+                </li>
                 <li><a href="index.php?act=baocao"
                         class="<?= (isset($_GET['act']) && $_GET['act'] === 'baocao') ? 'active' : '' ?>">Báo Cáo</a>
                 </li>
-                <li><a href="index.php?act=nhacungcap"
-                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'nhacungcap') ? 'active' : '' ?>">Nhà Cung Cấp</a>
+                <!-- Giỏ hàng với biểu tượng FontAwesome -->
+                <li>
+                    <a href="index.php?act=giohang" class="<?= (isset($_GET['act']) && $_GET['act'] === 'giohang') ? 'active' : '' ?>">
+                        <i class="fa fa-shopping-cart" style="font-size:24px;"></i>
+                    </a>
                 </li>
             </ul>
         </nav>
