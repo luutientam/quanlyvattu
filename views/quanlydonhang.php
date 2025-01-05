@@ -184,7 +184,7 @@ $data = json_decode($response, true);
                 </div>
 
 
-                <button type="submit" class="btn-submit">Cập nhật</button>
+                <button type="submit" class="btn-submit">Cập nhật</button> 
             </form>
         </div>
     </div>
