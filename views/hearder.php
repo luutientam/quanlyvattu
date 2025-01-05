@@ -25,6 +25,9 @@ session_start();
                 <li><a href="index.php?act=baocao"
                         class="<?= (isset($_GET['act']) && $_GET['act'] === 'baocao') ? 'active' : '' ?>">Báo Cáo</a>
                 </li>
+                <li><a href="index.php?act=nhacungcap"
+                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'nhacungcap') ? 'active' : '' ?>">Nhà Cung Cấp</a>
+                </li>
             </ul>
         </nav>
         <div class="user-info">
