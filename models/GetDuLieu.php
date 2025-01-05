@@ -49,5 +49,83 @@ class GetDuLieu {
             return [];
         }
     }
+
+    public function getDonHang() {
+        $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
+
+        if (!$conn) {
+            echo "Kết nối thất bại: " . mysqli_connect_error();
+            return [];
+        }
+
+        $sql = "SELECT * FROM don_hang";
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            $maDonHang = [];
+            while ($row = mysqli_fetch_assoc($result)) {
+                $maDonHang[] = $row;
+            }
+            mysqli_close($conn);
+            return $maDonHang;
+        } else {
+            echo "Lỗi trong truy vấn getDonHang: " . mysqli_error($conn);
+            mysqli_close($conn);
+            return [];
+        }
+    }
+
+    public function getChiTietDonHang() {
+        $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
+
+        if (!$conn) {
+            echo "Kết nối thất bại: " . mysqli_connect_error();
+            return [];
+        }
+
+        $sql = "SELECT * FROM chi_tiet_don_hang";
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            $maDonHang = [];
+            while ($row = mysqli_fetch_assoc($result)) {
+                $maDonHang[] = $row;
+            }
+            mysqli_close($conn);
+            return $maDonHang;
+        } else {
+            echo "Lỗi trong truy vấn getChiTietDonHang: " . mysqli_error($conn);
+            mysqli_close($conn);
+            return [];
+        }
+    }
+
+
+    //cần sửa
+    public function getKho() {
+        $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
+
+        if (!$conn) {
+            echo "Kết nối thất bại: " . mysqli_connect_error();
+            return [];
+        }
+
+        $sql = "SELECT * FROM kho";
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            $maVatTu = [];
+            while ($row = mysqli_fetch_assoc($result)) {
+                $maVatTu[] = $row;
+            }
+            mysqli_close($conn);
+            return $maVatTu;
+        } else {
+            echo "Lỗi trong truy vấn getVatTu: " . mysqli_error($conn);
+            mysqli_close($conn);
+            return [];
+        }
+    }
+
 }
 ?>

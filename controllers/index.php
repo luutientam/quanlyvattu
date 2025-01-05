@@ -18,8 +18,8 @@ if (isset($_GET['act'])) {
         case 'baocao':
             include "../views/baocao.php";
             break;
-        case 'giohang':
-            include "../views/cart.php";
+        case 'quanlydonhang':
+            include "../views/quanlydonhang.php";
             break;
         default:
             include "../views/vattu.php";
