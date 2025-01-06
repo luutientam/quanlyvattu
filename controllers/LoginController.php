@@ -30,14 +30,14 @@ class LoginController {
 
             if ($user) {
                 // Lưu thông tin người dùng vào session
-                $_SESSION['user_id'] = $user['ma_nguoi_dung'];  // Mã người dùng
-                $_SESSION['username'] = $user['ten_nguoi_dung']; // Tên người dùng
-                $_SESSION['role'] = $user['ma_vai_tro']; // Vai trò
+                $_SESSION['user_id'] = $user['ma_nhan_vien'];  // Mã người dùng
+                $_SESSION['username'] = $user['ten_nhan_vien']; // Tên người dùng
+                $_SESSION['role'] = $user['ten_vai_tro']; // Vai trò
 
                 // Chuyển hướng dựa trên vai trò
-                if ($user['ma_vai_tro'] === 1) {
-                    header("Location: ../controllers/index.php");
-                } elseif ($user['ma_vai_tro'] === 2) {
+                if ($user['ten_vai_tro'] === "Nhân viên") {
+                    header("Location: ../controllers/indexKH.php");
+                } elseif ($user['ten_vai_tro'] === 2) {
                     header("Location: ../controllers/index.php");
                 }
                 exit();

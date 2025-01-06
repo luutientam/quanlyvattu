@@ -32,7 +32,7 @@ $error = $controller->login();  // Gọi hàm login và xử lý lỗi (nếu c�
             <p style="color: red;"><?= htmlspecialchars($error) ?></p>
             <?php endif; ?>
 
-            <form action="" method="POST">
+            <form action="../controllers/indexKH.php" method="POST">
                 <div class="form-group">
                     <label for="username">Tên người dùng</label>
                     <input type="text" id="username" name="username" placeholder="Nhập tên người dùng" required>
