@@ -127,5 +127,28 @@ class GetDuLieu {
         }
     }
 
+    public function getGiaVatTu($maVatTu) {
+        $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
+    
+        if (!$conn) {
+            echo "Kết nối thất bại: " . mysqli_connect_error();
+            return null;
+        }
+    
+        $sql = "SELECT gia FROM vat_tu WHERE ma_vat_tu = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $maVatTu); // Truyền tham số `ma_vat_tu`
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        if ($result && $row = $result->fetch_assoc()) {
+            mysqli_close($conn);
+            return $row['gia']; // Trả về giá
+        } else {
+            echo "Không tìm thấy giá cho mã vật tư: " . $maVatTu;
+            mysqli_close($conn);
+            return null;
+        }
+    }
 }
 ?>
