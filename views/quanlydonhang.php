@@ -41,7 +41,7 @@ $data = json_decode($response, true);
                 <button class="btn-search">Tìm kiếm</button>
                 <select name="don-hang" id="don-hang">
                     <option value="all">Tất cả đơn hàng</option>
-                    <?php foreach ($data as $donHang) { ?>
+                    <?php foreach ($data['data'] as $donHang) { ?>
                         <option value="<?= $donHang['ma_don_hang']  ?>">
                             <?= $donHang['ma_don_hang'] ?>
                         </option>
@@ -49,6 +49,7 @@ $data = json_decode($response, true);
                 </select>
             </div>
         </form>
+       
 
         <!-- Bảng danh sách vật tư -->
         <!-- Bảng danh sách đơn hàng -->
@@ -115,6 +116,12 @@ $data = json_decode($response, true);
                         <?php } ?>
                     </select>
                 </div>
+
+                <div class="form-group">
+    <label for="gia">Giá:</label>
+    <input type="number" id="gia" name="gia" placeholder="Giá sẽ được tự động cập nhật..." readonly>
+</div>
+
                 <div class="form-group">
                     <label for="so_luong">Số Lượng:</label>
                     <input type="number" id="so_luong" min="1" placeholder="Nhập số lượng...">
@@ -122,7 +129,7 @@ $data = json_decode($response, true);
                 <button type="button" id="btnAddVatTu">Thêm Vật Tư</button>
 
                 <!-- Bảng hiển thị danh sách vật tư -->
-                <table id="vatTuTable" border="1">
+                <table style="color:black;border: 1px solid blue" id="vatTuTable" border :1px>
                     <thead>
                         <tr>
                             <th>Tên Vật Tư</th>
@@ -190,6 +197,33 @@ $data = json_decode($response, true);
         </div>
     </div>
 
+
+    <script>
+    document.getElementById('loai_vat_tu').addEventListener('change', function () {
+        const maLoaiVatTu = this.value;
+        const giaInput = document.getElementById('gia');
+
+        if (maLoaiVatTu) {
+            // Gọi API để lấy giá
+            fetch(`get_gia_vattu.php?ma_loai_vat_tu=${maLoaiVatTu}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        giaInput.value = data.gia; // Cập nhật giá
+                    } else {
+                        alert(data.message);
+                        giaInput.value = ''; // Xóa giá nếu không tìm thấy
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi:', error);
+                    giaInput.value = ''; // Xóa giá khi có lỗi
+                });
+        } else {
+            giaInput.value = ''; // Xóa giá nếu không chọn loại vật tư
+        }
+    });
+</script>
 
     <script>
         // Gửi yêu cầu POST khi người dùng nhấn nút "Tạo đơn hàng"

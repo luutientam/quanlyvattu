@@ -65,7 +65,7 @@ class DonHangModel
                 ngay_giao_hang = :ngay_giao_hang,
                 tong_gia_tri = :tong_gia_tri,
                 trang_thai = :trang_thai,
-                ma_nguoi_tao = :ma_nguoi_tao";
+                ma_nhan_vien = :ma_nhan_vien";
 
             $stmtDonHang = $this->db->prepare($queryDonHang);
             $stmtDonHang->bindParam(':ma_don_hang', $dataPOST['ma_don_hang']);
@@ -74,7 +74,7 @@ class DonHangModel
             $stmtDonHang->bindParam(':ngay_giao_hang', $dataPOST['ngay_giao_hang']);
             $stmtDonHang->bindParam(':tong_gia_tri', $dataPOST['tong_gia_tri']);
             $stmtDonHang->bindParam(':trang_thai', $dataPOST['trang_thai']);
-            $stmtDonHang->bindParam(':ma_nguoi_tao', $dataPOST['ma_nguoi_tao']);
+            $stmtDonHang->bindParam(':ma_nhan_vien', $dataPOST['ma_nhan_vien']);
             $stmtDonHang->execute();
 
             $queryChiTiet = "INSERT INTO chi_tiet_don_hang (ma_don_hang, ma_vat_tu, so_luong, don_gia, thanh_tien)

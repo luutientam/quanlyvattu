@@ -21,6 +21,9 @@ if (isset($_GET['act'])) {
         case 'quanlydonhang':
             include "../views/quanlydonhang.php";
             break;
+        case 'nhacungcap':
+            include "../views/nhacungcap.php";
+            break;
         default:
             include "../views/vattu.php";
             break;

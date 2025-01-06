@@ -11,7 +11,7 @@ class UserModel {
     public function login($username, $password) {
 
         // Chuẩn bị câu lệnh SQL an toàn
-        $stmt = $this->dbConnection->prepare("SELECT * FROM nguoi_dung WHERE ten_nguoi_dung = ? AND mat_khau = ?");
+        $stmt = $this->dbConnection->prepare("SELECT nv.ma_nhan_vien, nv.ten_nhan_vien, vt.ten_vai_tro FROM tai_khoan tk join nhan_vien nv on tk.ma_tai_khoan = nv.ma_tai_khoan join vai_tro vt on tk.loai_tai_khoan = vt.ma_vai_tro WHERE ten_dang_nhap = ? AND mat_khau = ?");
         
         if ($stmt === false) {
             die("Lỗi chuẩn bị câu lệnh: " . $this->dbConnection->error);
