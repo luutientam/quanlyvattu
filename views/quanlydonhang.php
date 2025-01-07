@@ -194,9 +194,7 @@ $data = json_decode($response, true);
     <script>
         // Gửi yêu cầu POST khi người dùng nhấn nút "Tạo đơn hàng"
         $("#materialForm").on("submit", function(event) {
-            event.preventDefault(); // Ngừng submit mặc định của form
-
-            // Lấy dữ liệu từ form
+            event.preventDefault(); // Ngừng submit mặc định của for
             var materialData = {
                 ma_don_hang: $("#ma_don_hang").val(),
                 ma_nha_cung_cap: $("#ma_nha_cung_cap").val(),
