@@ -101,31 +101,30 @@ class GetDuLieu {
     }
 
 
-    //cần sửa
-    public function getKho() {
-        $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
+    
 
+    public function getGiaVatTu($maVatTu) {
+        $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
+    
         if (!$conn) {
             echo "Kết nối thất bại: " . mysqli_connect_error();
-            return [];
+            return null;
         }
-
-        $sql = "SELECT * FROM kho";
-        $result = mysqli_query($conn, $sql);
-
-        if ($result) {
-            $maVatTu = [];
-            while ($row = mysqli_fetch_assoc($result)) {
-                $maVatTu[] = $row;
-            }
+    
+        $sql = "SELECT gia FROM vat_tu WHERE ma_vat_tu = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $maVatTu); // Truyền tham số `ma_vat_tu`
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        if ($result && $row = $result->fetch_assoc()) {
             mysqli_close($conn);
-            return $maVatTu;
+            return $row['gia']; // Trả về giá
         } else {
-            echo "Lỗi trong truy vấn getVatTu: " . mysqli_error($conn);
+            echo "Không tìm thấy giá cho mã vật tư: " . $maVatTu;
             mysqli_close($conn);
-            return [];
+            return null;
         }
     }
-
 }
 ?>
