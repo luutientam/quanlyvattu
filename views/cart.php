@@ -71,7 +71,7 @@ $data = json_decode($response, true);
     <div class="modal" id="modalEdit">
         <div class="modal-content">
             <span class="close" id="btnCloseModalEdit">&times;</span>
-            <h2>Sửa Vật Tư</h2>
+            <h2>Sửa Giỏ Hàng</h2>
             <form id="editCartForm">
                 <input type="hidden" id="edit_ma_gio_hang" name="ma_gio_hang">
                 <div class="form-group">
