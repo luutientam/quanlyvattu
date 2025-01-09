@@ -56,7 +56,10 @@ switch ($requestMethod) {
         break;
 
     default:
-        $read = $cartModel->read();
+        if (isset($_GET['ma_khach_hang'])) {
+            $ma_khach_hang = $_GET['ma_khach_hang'];
+        }
+        $read = $cartModel->read($ma_khach_hang);
         $num = $read->rowCount();
 
         if ($num > 0) {
