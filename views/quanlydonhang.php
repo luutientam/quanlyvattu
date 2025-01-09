@@ -200,11 +200,12 @@ $data = json_decode($response, true);
 
     <script>
     document.getElementById('loai_vat_tu').addEventListener('change', function () {
-        const maVatTu = this.value;
+        const maLoaiVatTu = this.value;
         const giaInput = document.getElementById('gia');
 
-        if (maVatTu) {
-            fetch(`http://localhost/quanlyvattu/controllers/DonHHang_api.php?action=getGiaVatTu&ma_vat_tu=${maVatTu}`)
+        if (maLoaiVatTu) {
+            // Gọi API để lấy giá
+            fetch(`get_gia_vattu.php?ma_loai_vat_tu=${maLoaiVatTu}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
@@ -219,7 +220,7 @@ $data = json_decode($response, true);
                     giaInput.value = ''; // Xóa giá khi có lỗi
                 });
         } else {
-            giaInput.value = ''; // Xóa giá nếu không chọn sản phẩm
+            giaInput.value = ''; // Xóa giá nếu không chọn loại vật tư
         }
     });
 </script>
@@ -227,9 +228,7 @@ $data = json_decode($response, true);
     <script>
         // Gửi yêu cầu POST khi người dùng nhấn nút "Tạo đơn hàng"
         $("#materialForm").on("submit", function(event) {
-            event.preventDefault(); // Ngừng submit mặc định của form
-
-            // Lấy dữ liệu từ form
+            event.preventDefault(); // Ngừng submit mặc định của for
             var materialData = {
                 ma_don_hang: $("#ma_don_hang").val(),
                 ma_nha_cung_cap: $("#ma_nha_cung_cap").val(),
