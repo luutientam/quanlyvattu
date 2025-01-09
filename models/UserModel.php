@@ -2,7 +2,7 @@
 class UserModel {
     private $dbConnection;
 
-    // Constructor nhận đối tượng mysqli
+    // Constructor nhận đối tượng PDO
     public function __construct($dbConnection) {
         $this->dbConnection = $dbConnection;
     }
@@ -11,30 +11,39 @@ class UserModel {
     public function login($username, $password) {
 
         // Chuẩn bị câu lệnh SQL an toàn
-        $stmt = $this->dbConnection->prepare("SELECT nv.ma_nhan_vien, nv.ten_nhan_vien, vt.ten_vai_tro FROM tai_khoan tk join nhan_vien nv on tk.ma_tai_khoan = nv.ma_tai_khoan join vai_tro vt on tk.loai_tai_khoan = vt.ma_vai_tro WHERE ten_dang_nhap = ? AND mat_khau = ?");
-        
-        if ($stmt === false) {
-            die("Lỗi chuẩn bị câu lệnh: " . $this->dbConnection->error);
-        }
-    
-        // Gán giá trị cho câu lệnh chuẩn bị
-        $stmt->bind_param("ss", $username, $password);
-    
+        $stmt = $this->dbConnection->prepare("SELECT * FROM tai_khoan tk 
+                                                LEFT JOIN nhan_vien nv ON tk.ma_tai_khoan = nv.ma_tai_khoan 
+                                                LEFT JOIN khach_hang kh ON tk.ma_tai_khoan = kh.ma_tai_khoan 
+                                                JOIN vai_tro vt ON tk.loai_tai_khoan = vt.ma_vai_tro 
+                                                WHERE tk.ten_dang_nhap = :username AND tk.mat_khau = :password");
+
+        // Sử dụng bindParam() để gán giá trị cho tham số
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':password', $password);
+
         // Thực thi câu lệnh
-        if (!$stmt->execute()) {
-            die("Lỗi khi thực thi câu lệnh: " . $stmt->error);
-        }
-    
-        // Lấy kết quả từ câu lệnh chuẩn bị
-        $result = $stmt->get_result();
-    
-        if ($result && $result->num_rows > 0) {
-            return $result->fetch_assoc();
+        if ($stmt->execute()) {
+            // Lấy kết quả nếu có
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($result) {
+                // Trả về kết quả đăng nhập thành công dưới dạng JSON
+                return json_encode([
+                    'status' => 200,
+                    'message' => 'Đăng nhập thành công !',
+                    'data' => $result]);
+            } else {
+                // Nếu không có kết quả, đăng nhập thất bại
+                return json_encode([
+                    'status' => 401, 
+                    'message' => 'Sai tài khoản hoặc mật khẩu']);
+            }
         } else {
-            // Sửa lỗi, tránh thông báo không mong muốn
-            return false;
+            // Trả về lỗi khi thực thi câu lệnh
+            return json_encode([
+                'status' => 500, 
+                'message' => 'Lỗi khi thực thi câu lệnh']);
         }
     }
 }
-
 ?>
