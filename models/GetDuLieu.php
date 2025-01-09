@@ -126,5 +126,30 @@ class GetDuLieu {
             return null;
         }
     }
+
+    public function getVatTu() {
+        $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
+
+        if (!$conn) {
+            echo "Kết nối thất bại: " . mysqli_connect_error();
+            return [];
+        }
+
+        $sql = "SELECT * FROM vat_tu";
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            $loaiVatTu = [];
+            while ($row = mysqli_fetch_assoc($result)) {
+                $VatTu[] = $row;
+            }
+            mysqli_close($conn);
+            return $VatTu;
+        } else {
+            echo "Lỗi trong truy vấn getVatTu: " . mysqli_error($conn);
+            mysqli_close($conn);
+            return [];
+        }
+    }
 }
 ?>

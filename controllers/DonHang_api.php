@@ -8,7 +8,6 @@ require_once "../models/db.php";
 require_once "../models/DonHangModel.php";
 require_once "../models/GetDuLieu.php";
 
-
 $db = new db();
 $connect = $db->connect();
 
@@ -19,8 +18,6 @@ if (!$connect) {
 
 $donHangModel = new DonHangModel($connect);
 $getDuLieu = new GetDuLieu();
-
-
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
 switch ($requestMethod) {
@@ -63,7 +60,6 @@ switch ($requestMethod) {
             echo json_encode(['message' => 'Dữ liệu không hợp lệ']);
             exit();
         }
-
         $response = $donHangModel->create($inputData);
         echo $response;
         break;
@@ -77,15 +73,19 @@ switch ($requestMethod) {
 
         $ma_don_hang = $inputData['ma_don_hang'];
         $response = $donHangModel->update($ma_don_hang, $inputData);
-        if ($response) {
-            echo json_encode(['status' => 200, 'message' => 'Cập nhật đơn hàng thành công']);
-        } else {
-            echo json_encode(['status' => 500, 'message' => 'Lỗi khi cập nhật đơn hàng']);
-        }
+        echo $response;
         break;
 
-    default:
-        http_response_code(405);
-        echo json_encode(['message' => 'Phương thức không được phép']);
+    case 'DELETE':
+        $inputData = json_decode(file_get_contents("php://input"), true);
+        if (empty($inputData) || !isset($inputData['ma_don_hang'])) {
+            echo json_encode(['message' => 'Dữ liệu không hợp lệ']);
+            exit();
+        }
+
+        $ma_don_hang = $inputData['ma_don_hang'];
+        $response = $donHangModel->delete($ma_don_hang);
+        echo $response;
         break;
 }
+?>
