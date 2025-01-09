@@ -24,17 +24,20 @@ session_start();
                         class="<?= (isset($_GET['act']) && $_GET['act'] === 'thongke') ? 'active' : '' ?>">Thống Kê</a>
                 </li>
                 <li><a href="index.php?act=quanlydonhang"
-                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'quanlydonhang') ? 'active' : '' ?>">Đơn Hàng</a>
+                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'quanlydonhang') ? 'active' : '' ?>">Đơn
+                        Hàng</a>
                 </li>
                 <li><a href="index.php?act=baocao"
                         class="<?= (isset($_GET['act']) && $_GET['act'] === 'baocao') ? 'active' : '' ?>">Báo Cáo</a>
                 </li>
                 <li><a href="index.php?act=nhacungcap"
-                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'nhacungcap') ? 'active' : '' ?>">Nhà Cung Cấp</a>
+                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'nhacungcap') ? 'active' : '' ?>">Nhà Cung
+                        Cấp</a>
                 </li>
                 <!-- Giỏ hàng với biểu tượng FontAwesome -->
                 <li>
-                    <a href="index.php?act=giohang" class="<?= (isset($_GET['act']) && $_GET['act'] === 'giohang') ? 'active' : '' ?>">
+                    <a href="index.php?act=giohang"
+                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'giohang') ? 'active' : '' ?>">
                         <i class="fa fa-shopping-cart" style="font-size:24px;"></i>
                     </a>
                 </li>
@@ -43,7 +46,15 @@ session_start();
         <div class="user-info">
             <!-- Hiển thị tên người dùng từ session -->
             <span>Xin chào,
-                <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Khách'; ?></span>
+                <?php 
+                 if (isset($_SESSION['maNV'])) {
+                    echo "<span id='maNV'>" . htmlspecialchars($_SESSION['maNV']) . "</span>" . " - ". htmlspecialchars($_SESSION['tenNV']);
+                } else {
+                    echo '<p id="maNV">[MaNhanVien]</p>';
+                    header("Location: ../views/Login.php");
+                    exit();
+                }
+                ?></span>
             <a href="../views/Login.php">Đăng xuất</a>
         </div>
     </header>

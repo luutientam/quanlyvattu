@@ -200,12 +200,11 @@ $data = json_decode($response, true);
 
     <script>
     document.getElementById('loai_vat_tu').addEventListener('change', function () {
-        const maLoaiVatTu = this.value;
+        const maVatTu = this.value;
         const giaInput = document.getElementById('gia');
 
-        if (maLoaiVatTu) {
-            // Gọi API để lấy giá
-            fetch(`get_gia_vattu.php?ma_loai_vat_tu=${maLoaiVatTu}`)
+        if (maVatTu) {
+            fetch(`http://localhost/quanlyvattu/controllers/DonHHang_api.php?action=getGiaVatTu&ma_vat_tu=${maVatTu}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
@@ -220,7 +219,7 @@ $data = json_decode($response, true);
                     giaInput.value = ''; // Xóa giá khi có lỗi
                 });
         } else {
-            giaInput.value = ''; // Xóa giá nếu không chọn loại vật tư
+            giaInput.value = ''; // Xóa giá nếu không chọn sản phẩm
         }
     });
 </script>

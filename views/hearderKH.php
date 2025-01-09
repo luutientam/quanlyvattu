@@ -1,8 +1,3 @@
-<?php
-// Bắt đầu session để lấy dữ liệu người dùng
-session_start();
-?>
-
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -18,7 +13,8 @@ session_start();
             <ul>
                 <li><a href="indexKH.php" class="<?= !isset($_GET['act']) ? 'active' : '' ?>">Vật Tư</a></li>
                 <li>
-                    <a href="indexKH.php?act=giohang" class="<?= (isset($_GET['act']) && $_GET['act'] === 'giohang') ? 'active' : '' ?>">
+                    <a href="indexKH.php?act=giohang"
+                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'giohang') ? 'active' : '' ?>">
                         <i class="fa fa-shopping-cart" style="font-size:24px;"></i>
                     </a>
                 </li>
@@ -27,7 +23,18 @@ session_start();
         <div class="user-info">
             <!-- Hiển thị tên người dùng từ session -->
             <span>Xin chào,
-                <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Khách'; ?></span>
+                <?php 
+                session_start();
+                
+                if (isset($_SESSION['maKH'])) {
+                    echo "<span id='maKH'>" . htmlspecialchars($_SESSION['maKH']) . "</span>";
+                } else {
+                    echo '<p id="maKH">[MaKhachHang]</p>';
+                    header("Location: ../views/Login.php");
+                    exit();
+                }
+                echo " - ";
+                echo isset($_SESSION['tenKH']) ? htmlspecialchars($_SESSION['tenKH']) : '[TenKhachHang]';  ?></span>
             <a href="../views/Login.php">Đăng xuất</a>
         </div>
     </header>

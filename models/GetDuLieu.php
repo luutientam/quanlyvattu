@@ -101,31 +101,7 @@ class GetDuLieu {
     }
 
 
-    //cần sửa
-    public function getKho() {
-        $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
-
-        if (!$conn) {
-            echo "Kết nối thất bại: " . mysqli_connect_error();
-            return [];
-        }
-
-        $sql = "SELECT * FROM kho";
-        $result = mysqli_query($conn, $sql);
-
-        if ($result) {
-            $maVatTu = [];
-            while ($row = mysqli_fetch_assoc($result)) {
-                $maVatTu[] = $row;
-            }
-            mysqli_close($conn);
-            return $maVatTu;
-        } else {
-            echo "Lỗi trong truy vấn getVatTu: " . mysqli_error($conn);
-            mysqli_close($conn);
-            return [];
-        }
-    }
+    
 
     public function getGiaVatTu($maVatTu) {
         $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
