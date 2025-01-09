@@ -18,7 +18,7 @@ $maNhaCungCap = $controller->getMaNhaCungCap();
 //     $keyword = '';
 //     $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
 // }
-$url = "http://localhost/quanlyvattu/controllers/read.php";
+$url = "http://localhost/quanlyvattu/controllers/VatTu_api.php";
 // Gửi yêu cầu GET để lấy dữ liệu từ API
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -72,11 +72,10 @@ $data = json_decode($response, true);
                         <td><?= $vatTu['gia'] ?></td>
                         <td><?= $vatTu['don_vi'] ?></td>
                         <td style="border-right: none;">
-                            <a href="#" class="addcart" onclick="openAddModal('<?= $vatTu['ma_vat_tu'] ?>')">
+                            <a href="#" class="addcart" onclick="openAddModal('<?= $vatTu['ma_vat_tu'] ?>', '<?= $vatTu['ten_vat_tu'] ?>', '<?= $vatTu['mo_ta'] ?>', '<?= $vatTu['don_vi'] ?>', '<?= $vatTu['gia'] ?>')">
                                 <i class="fa fa-shopping-cart" style="font-size:24px;"></i>
                             </a>
-                            
-                        </td>
+                    </td>
 
                     </tr>
                 <?php } ?>
@@ -84,7 +83,85 @@ $data = json_decode($response, true);
             </tbody>
         </table>
     </main>
-    <script>
+
+  <!-- Modal -->
+    <div id="addCartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddModal()">&times;</span>
+            <h2>Thêm vào giỏ hàng</h2>
+            <form id="addCartForm">
+                <input type="hidden" id="maVatTu" name="ma_vat_tu">
+                <div class="form-group">
+                    <label for="tenVatTu">Tên vật tư</label>
+                    <input type="text" id="tenVatTu" name="ten_vat_tu" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="moTa">Mô tả</label>
+                    <textarea id="moTa" name="mo_ta" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="donVi">Đơn vị</label>
+                    <input type="text" id="donVi" name="don_vi" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="gia">Giá</label>
+                    <input type="text" id="gia" name="gia" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Số lượng</label>
+                    <input type="number" id="quantity" name="quantity" min="1" required>
+                </div>
+                <button type="submit" class="btn-submit">Thêm vào giỏ hàng</button>
+            </form>
+        </div>
+    </div>
+
+
+<script>
+function openAddModal(maVatTu, tenVatTu, moTa, donVi, gia) {
+    // Đặt giá trị mã vật tư vào trường ẩn
+    document.getElementById('maVatTu').value = maVatTu;
+    // Đặt các giá trị thông tin chi tiết vào các trường
+    document.getElementById('tenVatTu').value = tenVatTu;
+    document.getElementById('moTa').value = moTa;
+    document.getElementById('donVi').value = donVi;
+    document.getElementById('gia').value = gia;
+    // Hiển thị modal
+    document.getElementById('addCartModal').style.display = 'block';
+}
+
+function closeAddModal() {
+    // Ẩn modal
+    document.getElementById('addCartModal').style.display = 'none';
+}
+
+// Thêm sự kiện submit cho form
+document.getElementById('addCartForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const maVatTu = document.getElementById('maVatTu').value;
+    const quantity = document.getElementById('quantity').value;
+    const data = { ma_vat_tu: maVatTu, so_luong: quantity };
+
+    fetch('/controllers/cart_api.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        alert('Vật tư đã được thêm vào giỏ hàng!');
+        closeAddModal();
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('Có lỗi xảy ra khi thêm vật tư vào giỏ hàng.');
+    });
+});
+</script>
+    <!-- <script>
         // Gửi yêu cầu POST khi người dùng nhấn nút "Thêm Vật Tư"
         $("#materialForm").on("submit", function(event) {
             event.preventDefault(); // Ngừng submit mặc định của form
@@ -151,10 +228,47 @@ $data = json_decode($response, true);
                 $("#modal").hide();
             });
         });
+    </script> -->
+    <script>
+    function openAddModal(maVatTu) {
+        // Đặt giá trị mã vật tư vào trường ẩn
+        document.getElementById('maVatTu').value = maVatTu;
+        // Hiển thị modal
+        document.getElementById('addCartModal').style.display = 'block';
+    }
+
+    function closeAddModal() {
+        // Ẩn modal
+        document.getElementById('addCartModal').style.display = 'none';
+    }
+
+    // Thêm sự kiện submit cho form
+    document.getElementById('addCartForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const maVatTu = document.getElementById('maVatTu').value;
+        const quantity = document.getElementById('quantity').value;
+        const data = { ma_vat_tu: maVatTu, so_luong: quantity };
+
+        fetch('/controllers/cart_api.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            alert('Vật tư đã được thêm vào giỏ hàng!');
+            closeAddModal();
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi thêm vật tư vào giỏ hàng.');
+        });
+    });
     </script>
-
-
-
+    
     <script>
         // Lắng nghe sự kiện submit của form sửa vật tư
         document.getElementById("editMaterialForm").addEventListener("submit", function(event) {
