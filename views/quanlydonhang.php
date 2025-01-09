@@ -53,7 +53,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                 </select>
             </div>
         </form>
-       
+
 
         <!-- Bảng danh sách vật tư -->
         <!-- Bảng danh sách đơn hàng -->
@@ -91,8 +91,8 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     </main>
 
     <!-- Modal -->
-  <!-- Modal -->
-  <div class="modal" id="modal">
+    <!-- Modal -->
+    <div class="modal" id="modal">
         <div class="modal-content">
             <span class="close" id="btnCloseModal">&times;</span>
             <h2>Tạo Đơn Hàng</h2>
@@ -122,9 +122,9 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                 </div>
 
                 <div class="form-group">
-    <label for="gia">Giá:</label>
-    <input type="number" id="gia" name="gia" placeholder="Giá sẽ được tự động cập nhật..." readonly>
-</div>
+                    <label for="gia">Giá:</label>
+                    <input type="number" id="gia" name="gia" placeholder="Giá sẽ được tự động cập nhật..." readonly>
+                </div>
 
                 <div class="form-group">
                     <label for="so_luong">Số Lượng:</label>
@@ -165,7 +165,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                     <label for="ma_don_hang">Mã Vật tư:</label>
                     <input type="number" id="ma_don_hang_sua" name="ma_don_hang_sua" placeholder="Nhập mã đơn hàng sửa..." readonly>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="ngay_giao_hang">Đơn vị:</label>
                     <input type="date" id="ngay_giao_hang_sua" name="ngay_giao_hang_sua" placeholder="Nhập ngày giao hàng..." required>
@@ -187,44 +187,44 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                 </div>
 
 
-                <button type="submit" class="btn-submit">Cập nhật</button> 
+                <button type="submit" class="btn-submit">Cập nhật</button>
             </form>
         </div>
     </div>
 
 
     <script>
-    document.getElementById('vat_tu').addEventListener('change', function () {
-        const maVatTu = this.value;
-        const giaInput = document.getElementById('gia');
+        document.getElementById('loai_vat_tu').addEventListener('change', function() {
+                    const maLoaiVatTu = this.value;
+                    document.getElementById('vat_tu').addEventListener('change', function() {
+                        const maVatTu = this.value;
+                        const giaInput = document.getElementById('gia');
 
-        if (maVatTu) {
-            fetch(`http://localhost/quanlyvattu/controllers/DonHang_api.php?action=getGiaVatTu&ma_vat_tu=${maVatTu}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        giaInput.value = data.gia; // Cập nhật giá
-                    } else {
-                        alert(data.message);
-                        giaInput.value = ''; // Xóa giá nếu không tìm thấy
-                    }
-                })
-                .catch(error => {
-                    console.error('Lỗi:', error);
-                    giaInput.value = ''; // Xóa giá khi có lỗi
-                });
-        } else {
-            giaInput.value = ''; // Xóa giá nếu không chọn sản phẩm
-        }
-    });
-</script>
+                        if (maVatTu) {
+                            fetch(`http://localhost/quanlyvattu/controllers/DonHang_api.php?action=getGiaVatTu&ma_vat_tu=${maVatTu}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        giaInput.value = data.gia; // Cập nhật giá
+                                    } else {
+                                        alert(data.message);
+                                        giaInput.value = ''; // Xóa giá nếu không tìm thấy
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Lỗi:', error);
+                                    giaInput.value = ''; // Xóa giá khi có lỗi
+                                });
+                        } else {
+                            giaInput.value = ''; // Xóa giá nếu không chọn loại vật tư
+                        }
+                    });
+    </script>
 
     <script>
         // Gửi yêu cầu POST khi người dùng nhấn nút "Tạo đơn hàng"
         $("#materialForm").on("submit", function(event) {
-            event.preventDefault(); // Ngừng submit mặc định của form
-
-            // Lấy dữ liệu từ form
+            event.preventDefault(); // Ngừng submit mặc định của for
             var materialData = {
                 ma_don_hang: $("#ma_don_hang").val(),
                 ngay_dat_hang: $("#ngay_dat_hang").val(),
@@ -302,7 +302,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
         }
     </script>
 
-   
+
     <script>
         // Modal xử lý
         const modal = document.getElementById("modal");
@@ -364,114 +364,114 @@ if (json_last_error() !== JSON_ERROR_NONE) {
             document.getElementById("ma_nhan_vien_sua").value = row.cells[7].innerText;
         }
     </script>
-  <script>
-    document.getElementById('vat_tu').addEventListener('change', function () {
-        const maVatTu = this.value;
-        const giaInput = document.getElementById('gia');
+    <script>
+        document.getElementById('vat_tu').addEventListener('change', function() {
+            const maVatTu = this.value;
+            const giaInput = document.getElementById('gia');
 
-        if (maVatTu) {
-            fetch(`http://localhost/quanlyvattu/controllers/DonHang_api.php?action=getGiaVatTu&ma_vat_tu=${maVatTu}`)
+            if (maVatTu) {
+                fetch(`http://localhost/quanlyvattu/controllers/DonHang_api.php?action=getGiaVatTu&ma_vat_tu=${maVatTu}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            giaInput.value = data.gia; // Cập nhật giá
+                        } else {
+                            alert(data.message);
+                            giaInput.value = ''; // Xóa giá nếu không tìm thấy
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                        giaInput.value = ''; // Xóa giá khi có lỗi
+                    });
+            } else {
+                giaInput.value = ''; // Xóa giá nếu không chọn sản phẩm
+            }
+        });
+
+        document.getElementById('btnAddVatTu').addEventListener('click', function() {
+            const vatTuSelect = document.getElementById('vat_tu');
+            const maVatTu = vatTuSelect.value;
+            const tenVatTu = vatTuSelect.options[vatTuSelect.selectedIndex].text;
+            const gia = document.getElementById('gia').value;
+            const soLuong = document.getElementById('so_luong').value;
+
+            if (maVatTu && gia && soLuong) {
+                const table = document.getElementById('vatTuTable').getElementsByTagName('tbody')[0];
+                const newRow = table.insertRow();
+
+                const cell1 = newRow.insertCell(0);
+                const cell2 = newRow.insertCell(1);
+                const cell3 = newRow.insertCell(2);
+                const cell4 = newRow.insertCell(3);
+                const cell5 = newRow.insertCell(4);
+
+                cell1.textContent = tenVatTu;
+                cell2.textContent = soLuong;
+                cell3.textContent = gia;
+                cell4.textContent = (gia * soLuong).toFixed(2);
+                cell5.innerHTML = '<button type="button" class="btnDeleteVatTu">Xóa</button>';
+
+                // Clear input fields
+                vatTuSelect.value = '';
+                document.getElementById('gia').value = '';
+                document.getElementById('so_luong').value = '';
+
+                // Add event listener for delete button
+                cell5.querySelector('.btnDeleteVatTu').addEventListener('click', function() {
+                    table.deleteRow(newRow.rowIndex - 1);
+                });
+            } else {
+                alert('Vui lòng chọn loại vật tư, nhập giá và số lượng.');
+            }
+        });
+
+        document.getElementById('btnSubmitOrder').addEventListener('click', function() {
+            const maDonHang = document.getElementById('ma_don_hang').value;
+            const maNguoiTao = document.getElementById('ma_nguoi_tao').value;
+            const vatTuTable = document.getElementById('vatTuTable').getElementsByTagName('tbody')[0];
+            const chiTiet = [];
+
+            for (let i = 0; i < vatTuTable.rows.length; i++) {
+                const row = vatTuTable.rows[i];
+                const maVatTu = row.cells[0].textContent;
+                const soLuong = row.cells[1].textContent;
+                const donGia = row.cells[2].textContent;
+                const thanhTien = row.cells[3].textContent;
+
+                chiTiet.push({
+                    ma_vat_tu: maVatTu,
+                    so_luong: soLuong,
+                    don_gia: donGia,
+                    thanh_tien: thanhTien
+                });
+            }
+
+            const data = {
+                ma_don_hang: maDonHang,
+                ma_nguoi_tao: maNguoiTao,
+                chi_tiet: chiTiet
+            };
+
+            fetch('http://localhost/quanlyvattu/controllers/DonHang_api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.status === 'success') {
-                        giaInput.value = data.gia; // Cập nhật giá
+                    if (data.status === 201) {
+                        alert('Tạo đơn hàng thành công');
                     } else {
-                        alert(data.message);
-                        giaInput.value = ''; // Xóa giá nếu không tìm thấy
+                        alert('Lỗi khi tạo đơn hàng: ' + data.message);
                     }
                 })
                 .catch(error => {
                     console.error('Lỗi:', error);
-                    giaInput.value = ''; // Xóa giá khi có lỗi
+                    alert('Lỗi khi tạo đơn hàng');
                 });
-        } else {
-            giaInput.value = ''; // Xóa giá nếu không chọn sản phẩm
-        }
-    });
-
-    document.getElementById('btnAddVatTu').addEventListener('click', function () {
-    const vatTuSelect = document.getElementById('vat_tu');
-    const maVatTu = vatTuSelect.value;
-    const tenVatTu = vatTuSelect.options[vatTuSelect.selectedIndex].text;
-    const gia = document.getElementById('gia').value;
-    const soLuong = document.getElementById('so_luong').value;
-
-    if (maVatTu && gia && soLuong) {
-        const table = document.getElementById('vatTuTable').getElementsByTagName('tbody')[0];
-        const newRow = table.insertRow();
-
-        const cell1 = newRow.insertCell(0);
-        const cell2 = newRow.insertCell(1);
-        const cell3 = newRow.insertCell(2);
-        const cell4 = newRow.insertCell(3);
-        const cell5 = newRow.insertCell(4);
-
-        cell1.textContent = tenVatTu;
-        cell2.textContent = soLuong;
-        cell3.textContent = gia;
-        cell4.textContent = (gia * soLuong).toFixed(2);
-        cell5.innerHTML = '<button type="button" class="btnDeleteVatTu">Xóa</button>';
-
-        // Clear input fields
-        vatTuSelect.value = '';
-        document.getElementById('gia').value = '';
-        document.getElementById('so_luong').value = '';
-
-        // Add event listener for delete button
-        cell5.querySelector('.btnDeleteVatTu').addEventListener('click', function () {
-            table.deleteRow(newRow.rowIndex - 1);
         });
-    } else {
-        alert('Vui lòng chọn loại vật tư, nhập giá và số lượng.');
-    }
-});
-
-document.getElementById('btnSubmitOrder').addEventListener('click', function () {
-    const maDonHang = document.getElementById('ma_don_hang').value;
-    const maNguoiTao = document.getElementById('ma_nguoi_tao').value;
-    const vatTuTable = document.getElementById('vatTuTable').getElementsByTagName('tbody')[0];
-    const chiTiet = [];
-
-    for (let i = 0; i < vatTuTable.rows.length; i++) {
-        const row = vatTuTable.rows[i];
-        const maVatTu = row.cells[0].textContent;
-        const soLuong = row.cells[1].textContent;
-        const donGia = row.cells[2].textContent;
-        const thanhTien = row.cells[3].textContent;
-
-        chiTiet.push({
-            ma_vat_tu: maVatTu,
-            so_luong: soLuong,
-            don_gia: donGia,
-            thanh_tien: thanhTien
-        });
-    }
-
-    const data = {
-        ma_don_hang: maDonHang,
-        ma_nguoi_tao: maNguoiTao,
-        chi_tiet: chiTiet
-    };
-
-    fetch('http://localhost/quanlyvattu/controllers/DonHang_api.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 201) {
-            alert('Tạo đơn hàng thành công');
-        } else {
-            alert('Lỗi khi tạo đơn hàng: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Lỗi:', error);
-        alert('Lỗi khi tạo đơn hàng');
-    });
-});
-</script>
+    </script>
 </body>
