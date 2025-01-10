@@ -89,20 +89,38 @@ class DonHangModel
         }
     }
 
-    public function update($ma_don_hang, $data)
+    public function update($data)
     {
         try {
+            // Chuẩn bị câu lệnh SQL
             $query = "
-                UPDATE don_hang
-                SET 
-                    trang_thai = :trang_thai
-                WHERE ma_don_hang = :ma_don_hang";
+            UPDATE don_hang
+            SET 
+                trang_thai = :trang_thai
+            WHERE ma_don_hang = :ma_don_hang";
 
+            // Chuẩn bị câu lệnh PDO
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':ma_don_hang', $ma_don_hang);
+
+            // Gắn các giá trị cho các tham số
+            $stmt->bindParam(':ma_don_hang', $data['ma_don_hang']);
             $stmt->bindParam(':trang_thai', $data['trang_thai']);
-            return $stmt->execute();
+
+            // Thực thi câu lệnh SQL
+            $result = $stmt->execute();
+
+            // Kiểm tra kết quả
+            if ($result) {
+                return true;  // Cập nhật thành công
+            } else {
+                // Lấy thông tin lỗi nếu có
+                $errorInfo = $stmt->errorInfo();
+                error_log("Error updating order: " . $errorInfo[2]); // Ghi lại lỗi vào log
+                return false;  // Cập nhật thất bại
+            }
         } catch (Exception $e) {
+            // Ghi lại lỗi trong trường hợp ngoại lệ
+            error_log("Exception: " . $e->getMessage());
             return false;
         }
     }
