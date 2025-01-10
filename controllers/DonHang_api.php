@@ -66,15 +66,30 @@ switch ($requestMethod) {
         break;
 
     case 'PUT':
+        // Lấy dữ liệu từ body yêu cầu
         $inputData = json_decode(file_get_contents("php://input"), true);
+
+        // Kiểm tra dữ liệu có hợp lệ không
         if (empty($inputData) || !isset($inputData['ma_don_hang'])) {
-            echo json_encode(['message' => 'Dữ liệu không hợp lệ']);
+            // Trả về lỗi nếu dữ liệu không hợp lệ
+            echo json_encode(['status' => 400, 'message' => 'Dữ liệu không hợp lệ']);
             exit();
         }
 
+        // Lấy mã đơn hàng từ dữ liệu
         $ma_don_hang = $inputData['ma_don_hang'];
-        $response = $donHangModel->update($ma_don_hang, $inputData);
-        echo $response;
+
+        // Gọi phương thức update để cập nhật đơn hàng
+        $response = $donHangModel->update($inputData);
+
+        // Kiểm tra phản hồi từ phương thức update
+        if ($response) {
+            // Trả về thông báo thành công
+            echo json_encode(['status' => 200, 'message' => 'Cập nhật đơn hàng thành công']);
+        } else {
+            // Trả về thông báo thất bại nếu không cập nhật được
+            echo json_encode(['status' => 500, 'message' => 'Lỗi khi cập nhật đơn hàng']);
+        }
         break;
 
     case 'DELETE':

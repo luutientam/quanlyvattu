@@ -89,33 +89,42 @@ class DonHangModel
         }
     }
 
-    public function update($ma_don_hang, $data)
+    public function update($data)
     {
         try {
+            // Chuẩn bị câu lệnh SQL
             $query = "
-                UPDATE don_hang
-                SET 
-                    ma_nha_cung_cap = :ma_nha_cung_cap,
-                    ngay_dat_hang = :ngay_dat_hang,
-                    ngay_giao_hang = :ngay_giao_hang,
-                    tong_gia_tri = :tong_gia_tri,
-                    trang_thai = :trang_thai,
-                    ma_nguoi_tao = :ma_nguoi_tao
-                WHERE ma_don_hang = :ma_don_hang";
+            UPDATE don_hang
+            SET 
+                trang_thai = :trang_thai
+            WHERE ma_don_hang = :ma_don_hang";
 
+            // Chuẩn bị câu lệnh PDO
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':ma_don_hang', $ma_don_hang);
-            $stmt->bindParam(':ngay_dat_hang', $data['ngay_dat_hang']);
-            $stmt->bindParam(':ngay_giao_hang', $data['ngay_giao_hang']);
-            $stmt->bindParam(':tong_gia_tri', $data['tong_gia_tri']);
-            $stmt->bindParam(':trang_thai', $data['trang_thai']);
-            $stmt->bindParam(':ma_nhan_vien', $data['ma_nhan_vien']);
 
-            return $stmt->execute();
+            // Gắn các giá trị cho các tham số
+            $stmt->bindParam(':ma_don_hang', $data['ma_don_hang']);
+            $stmt->bindParam(':trang_thai', $data['trang_thai']);
+
+            // Thực thi câu lệnh SQL
+            $result = $stmt->execute();
+
+            // Kiểm tra kết quả
+            if ($result) {
+                return true;  // Cập nhật thành công
+            } else {
+                // Lấy thông tin lỗi nếu có
+                $errorInfo = $stmt->errorInfo();
+                error_log("Error updating order: " . $errorInfo[2]); // Ghi lại lỗi vào log
+                return false;  // Cập nhật thất bại
+            }
         } catch (Exception $e) {
+            // Ghi lại lỗi trong trường hợp ngoại lệ
+            error_log("Exception: " . $e->getMessage());
             return false;
         }
     }
+
 
     public function delete($ma_don_hang)
     {

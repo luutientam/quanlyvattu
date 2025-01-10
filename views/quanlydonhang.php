@@ -55,8 +55,6 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                 </select>
             </div>
         </form>
-
-
         <!-- Bảng danh sách vật tư -->
         <!-- Bảng danh sách đơn hàng -->
         <h2>Danh Sách Đơn Hàng</h2>
@@ -94,9 +92,9 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 
     <!-- Modal -->
     <!-- Modal -->
-    <?php
+    <!-- <?php
     session_start(); // Khởi tạo session
-    ?>
+    ?> -->
     <div class="modal" id="modal">
         <div class="modal-content">
             <span class="close" id="btnCloseModal">&times;</span>
@@ -265,8 +263,46 @@ if (json_last_error() !== JSON_ERROR_NONE) {
             </form>
         </div>
     </div>
+    <!-- Script sửa  -->
+    <script>
+        document.getElementById('editMaterialForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Ngăn chặn hành vi mặc định của form
 
+            // Lấy dữ liệu từ form
+            const materialData = {
+                ma_don_hang: document.getElementById('edit_ma_don_hang').value,
+                trang_thai: document.getElementById('trang_thai_sua').value
+            };
 
+            console.log(materialData); // Kiểm tra dữ liệu trước khi gửi
+
+            // Gửi dữ liệu đến server
+            fetch('http://localhost/quanlyvattu/controllers/DonHang_api.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(materialData) // Chuyển dữ liệu sang định dạng JSON
+                })
+                .then(response => response.json()) // Chuyển đổi phản hồi từ server thành JSON
+                .then(data => {
+                    if (data.status === 200) { // Giả sử 200 là mã trạng thái thành công
+                        alert("Cập nhật đơn hàng thành công!");
+                        document.getElementById('modalEdit').style.display = 'none'; // Đóng modal
+                        document.getElementById('editMaterialForm').reset(); // Reset form
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        alert('Lỗi khi cập nhật đơn hàng: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi:', error);
+                    alert('Lỗi khi cập nhật đơn hàng');
+                });
+        });
+    </script>
     <script>
         document.getElementById('vat_tu').addEventListener('change', function() {
             const maLoaiVatTu = this.value;
