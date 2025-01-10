@@ -56,6 +56,7 @@ switch ($requestMethod) {
 
     case 'POST':
         $inputData = json_decode(file_get_contents("php://input"), true);
+
         if (empty($inputData)) {
             echo json_encode(['message' => 'Dữ liệu không hợp lệ']);
             exit();
@@ -88,4 +89,3 @@ switch ($requestMethod) {
         echo $response;
         break;
 }
-?>

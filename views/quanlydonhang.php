@@ -1,4 +1,6 @@
 <head>
+    <meta charset="UTF-8">
+
     <link rel="stylesheet" href="../Css/style.css?v=1.0">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -92,6 +94,9 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 
     <!-- Modal -->
     <!-- Modal -->
+    <?php
+    session_start(); // Khởi tạo session
+    ?>
     <div class="modal" id="modal">
         <div class="modal-content">
             <span class="close" id="btnCloseModal">&times;</span>
@@ -105,14 +110,25 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 
                 <!-- Các trường thông tin bổ sung (nếu cần) -->
                 <div class="form-group">
-                    <label for="ma_nhan_vien">Mã nhân viên:</label>
-                    <input type="number" id="ma_nhan_vien" name="ma_nhan_vien" placeholder="Nhập mã nhân viên..." required>
+                    <label for="ma_khach_hang">Mã khách hàng:</label>
+                    <input type="number" id="ma_khach_hang" name="ma_khach_hang" placeholder="Nhập mã khách hàng..." required>
                 </div>
-
+                <div class="form-group">
+                    <label for="ma_nhan_vien">Mã nhân viên:</label>
+                    <input value="<?php echo isset($_SESSION['maNV']) ? $_SESSION['maNV'] : ''; ?>" type="number" id="ma_nhan_vien" name="ma_nhan_vien" placeholder="Nhập mã nhân viên..." readonly>
+                </div>
+                <div class="form-group">
+                    <label for="ngay_giao_hang">Ngày Giao Hàng:</label>
+                    <input type="date" id="ngay_giao_hang" name="ngay_giao_hang" placeholder="Nhập ngày giao hàng..." required>
+                </div>
+                <div class="form-group">
+                    <label for="trang_thai">Trạng Thái:</label>
+                    <input type="text" id="trang_thai" name="trang_thai" placeholder="Nhập trạng thái..." required>
+                </div>
                 <h3>Danh Sách Vật Tư</h3>
                 <div class="form-group">
                     <label for="vat_tu">Vật Tư:</label>
-                    <select id="vat_tu" name="ma_vat_tu" required>
+                    <select id="vat_tu" name="ma_vat_tu">
                         <?php foreach ($VatTu as $vattu) { ?>
                             <option value="<?= $vattu['ma_vat_tu'] ?>">
                                 <?= $vattu['ten_vat_tu'] ?>
@@ -152,7 +168,84 @@ if (json_last_error() !== JSON_ERROR_NONE) {
             </form>
         </div>
     </div>
+    <script>
+        $("#materialForm").on("submit", function(event) {
+            event.preventDefault(); // Ngừng submit mặc định của form
 
+            // Lấy các giá trị từ form và tạo cấu trúc dữ liệu
+            var materialData = {
+                ma_don_hang: $("#ma_don_hang").val(),
+                ma_khach_hang: $("#ma_khach_hang").val(),
+                ma_nhan_vien: $("#ma_nhan_vien").val(),
+                ngay_giao_hang: $("#ngay_giao_hang").val(),
+                trang_thai: $("#trang_thai").val(),
+                tong_gia_tri: 0, // Chưa tính tổng giá trị, sẽ tính sau
+                chi_tiet_don_hang: getChiTietDonHangData()
+            };
+
+            // Tính tổng giá trị của đơn hàng dựa trên chi tiết vật tư
+            materialData.tong_gia_tri = materialData.chi_tiet_don_hang.reduce((total, item) => total + (item.so_luong * item.gia), 0);
+
+            // Kiểm tra nếu có trường nào trống
+            if (!materialData.ma_don_hang || !materialData.ma_khach_hang || !materialData.ma_nhan_vien || materialData.chi_tiet_don_hang.length === 0) {
+                alert('Vui lòng điền đầy đủ thông tin và thêm ít nhất một vật tư.');
+                return;
+            }
+
+            // Gửi yêu cầu POST đến API
+            fetch('http://localhost/quanlyvattu/controllers/DonHang_api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(materialData) // Chuyển dữ liệu sang định dạng JSON
+                })
+                .then(response => response.json()) // Chuyển đổi phản hồi từ server thành JSON
+                .then(data => {
+                    if (data.status === 201) {
+                        alert("Tạo đơn hàng thành công!");
+
+                        // Đóng modal và reset form
+                        $("#modal").hide();
+                        $("#materialForm")[0].reset();
+
+                        // Reload trang sau 2 giây để cập nhật dữ liệu
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        alert('Lỗi khi tạo đơn hàng: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi:', error);
+                    alert('Lỗi khi tạo đơn hàng');
+                });
+        });
+
+
+        // Hàm để lấy dữ liệu chi tiết vật tư
+        function getChiTietDonHangData() {
+            const chiTietData = [];
+            const rows = document.querySelectorAll("#vatTuTable tbody tr");
+
+            rows.forEach(row => {
+                const maVatTu = row.dataset.maVatTu;
+                const soLuong = row.dataset.soLuong;
+                const gia = row.dataset.gia;
+
+                if (maVatTu && soLuong && gia) {
+                    chiTietData.push({
+                        ma_vat_tu: maVatTu,
+                        so_luong: parseInt(soLuong),
+                        gia: parseFloat(gia)
+                    });
+                }
+            });
+
+            return chiTietData;
+        }
+    </script>
     <!-- Modal Sửa -->
     <div class="modal" id="modalEdit">
         <div class="modal-content">
@@ -161,31 +254,12 @@ if (json_last_error() !== JSON_ERROR_NONE) {
             <form id="editMaterialForm">
                 <!-- <input type="hidden" name="_method" value="PUT"> -->
                 <input type="hidden" id="edit_ma_don_hang" name="ma_don_hang">
-                <div class="form-group">
-                    <label for="ma_don_hang">Mã Vật tư:</label>
-                    <input type="number" id="ma_don_hang_sua" name="ma_don_hang_sua" placeholder="Nhập mã đơn hàng sửa..." readonly>
-                </div>
-
-                <div class="form-group">
-                    <label for="ngay_giao_hang">Đơn vị:</label>
-                    <input type="date" id="ngay_giao_hang_sua" name="ngay_giao_hang_sua" placeholder="Nhập ngày giao hàng..." required>
-                </div>
-                <div class="form-group">
-                    <label for="tong_gia_tri">Tổng giá trị:</label>
-                    <input type="number" id="tong_gia_tri" name="tong_gia_tri_sua" placeholder="Nhập tổng giá trị..." required>
-                </div>
 
                 <div class="form-group">
                     <label for="trang_thai">Trạng Thái:</label>
                     <input type="text" id="trang_thai_sua" name="trang_thai_sua"
                         placeholder="Nhập trạng thái sửa..." required>
                 </div>
-                <div class="form-group">
-                    <label for="ma_nguoi_tao">Mã Người Tạo:</label>
-                    <input type="number" id="ma_nguoi_tao_sua" name="ma_nguoi_tao_sua"
-                        placeholder="Nhập mã người tạo sửa..." required>
-                </div>
-
 
                 <button type="submit" class="btn-submit">Cập nhật</button>
             </form>
@@ -194,113 +268,35 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 
 
     <script>
-        document.getElementById('loai_vat_tu').addEventListener('change', function() {
-                    const maLoaiVatTu = this.value;
-                    document.getElementById('vat_tu').addEventListener('change', function() {
-                        const maVatTu = this.value;
-                        const giaInput = document.getElementById('gia');
+        document.getElementById('vat_tu').addEventListener('change', function() {
+            const maLoaiVatTu = this.value;
+            document.getElementById('vat_tu').addEventListener('change', function() {
+                const maVatTu = this.value;
+                const giaInput = document.getElementById('gia');
 
-                        if (maVatTu) {
-                            fetch(`http://localhost/quanlyvattu/controllers/DonHang_api.php?action=getGiaVatTu&ma_vat_tu=${maVatTu}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.status === 'success') {
-                                        giaInput.value = data.gia; // Cập nhật giá
-                                    } else {
-                                        alert(data.message);
-                                        giaInput.value = ''; // Xóa giá nếu không tìm thấy
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Lỗi:', error);
-                                    giaInput.value = ''; // Xóa giá khi có lỗi
-                                });
-                        } else {
-                            giaInput.value = ''; // Xóa giá nếu không chọn loại vật tư
-                        }
-                    });
-    </script>
-
-    <script>
-        // Gửi yêu cầu POST khi người dùng nhấn nút "Tạo đơn hàng"
-        $("#materialForm").on("submit", function(event) {
-            event.preventDefault(); // Ngừng submit mặc định của for
-            var materialData = {
-                ma_don_hang: $("#ma_don_hang").val(),
-                ngay_dat_hang: $("#ngay_dat_hang").val(),
-                ngay_giao_hang: $("#ngay_giao_hang").val(),
-                tong_gia_tri: $("#tong_gia_tri").val(),
-                trang_thai: $("#trang_thai").val(),
-                ma_nguoi_tao: $("#ma_nguoi_tao").val(),
-                // Thêm phần chi tiết vật tư vào đơn hàng
-                chi_tiet_don_hang: getChiTietDonHangData()
-            };
-
-            // Kiểm tra nếu có trường nào trống
-            if (!materialData.ma_don_hang || !materialData.ngay_giao_hang || !materialData.tong_gia_tri || materialData.chi_tiet_don_hang.length === 0) {
-                $("#responseMessage").html('<p style="color: red;">Vui lòng điền đầy đủ các trường bắt buộc và thêm ít nhất một vật tư.</p>');
-                return;
-            }
-
-            // Gửi yêu cầu POST đến API
-            $.ajax({
-                url: 'http://localhost/quanlyvattu/controllers/DonHang_api.php', // Địa chỉ của API
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(materialData),
-                success: function(response) {
-                    // Kiểm tra nếu phản hồi thành công
-                    if (response && response.status === 201) {
-                        alert("Tạo đơn hàng thành công!");
-
-                        // Đóng modal
-                        $("#modal").hide();
-
-                        // Reset form
-                        $("#materialForm")[0].reset();
-
-                        // Reload trang sau 2 giây để cập nhật dữ liệu
-                        setTimeout(function() {
-                            window.location.reload();
-                        }, 2000);
-                    } else if (response && response.status === 409) {
-                        alert("Mã đơn hàng đã tồn tại. Vui lòng nhập mã khác.");
-                    } else {
-                        // Hiển thị thông báo lỗi nếu không có status 201
-                        $("#responseMessage").html(
-                            `<p style="color: red;">Lỗi: ${response.message || 'Không xác định lỗi'}</p>`
-                        );
-                    }
-                },
-                error: function(xhr, status, error) {
-                    // Xử lý lỗi từ phía server
-                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : "Đã có lỗi xảy ra.";
-                    $("#responseMessage").html(`<p style="color: red;">Lỗi: ${errorMessage}</p>`);
+                if (maVatTu) {
+                    fetch(`http://localhost/quanlyvattu/controllers/DonHang_api.php?action=getGiaVatTu&ma_vat_tu=${maVatTu}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                giaInput.value = data.gia; // Cập nhật giá
+                            } else {
+                                alert(data.message);
+                                giaInput.value = ''; // Xóa giá nếu không tìm thấy
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Lỗi:', error);
+                            giaInput.value = ''; // Xóa giá khi có lỗi
+                        });
+                } else {
+                    giaInput.value = ''; // Xóa giá nếu không chọn loại vật tư
                 }
-            });
-
-            // Đóng modal khi nhấn vào nút "Đóng"
-            $("#btnCloseModal").click(function() {
-                $("#modal").hide();
             });
         });
-
-        // Hàm để lấy dữ liệu chi tiết vật tư
-        function getChiTietDonHangData() {
-            var chiTietData = [];
-            $("#vatTuTable tbody tr").each(function() {
-                var maVatTu = $(this).data('maVatTu');
-                var soLuong = $(this).data('soLuong');
-                if (maVatTu && soLuong) {
-                    chiTietData.push({
-                        ma_vat_tu: maVatTu,
-                        so_luong: soLuong
-                    });
-                }
-            });
-            return chiTietData;
-        }
     </script>
+
+
 
 
     <script>
@@ -400,6 +396,11 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                 const table = document.getElementById('vatTuTable').getElementsByTagName('tbody')[0];
                 const newRow = table.insertRow();
 
+                // Gán dữ liệu vào thuộc tính `data` của hàng
+                newRow.dataset.maVatTu = maVatTu;
+                newRow.dataset.soLuong = soLuong;
+                newRow.dataset.gia = gia;
+
                 const cell1 = newRow.insertCell(0);
                 const cell2 = newRow.insertCell(1);
                 const cell3 = newRow.insertCell(2);
@@ -425,6 +426,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                 alert('Vui lòng chọn loại vật tư, nhập giá và số lượng.');
             }
         });
+
 
         document.getElementById('btnSubmitOrder').addEventListener('click', function() {
             const maDonHang = document.getElementById('ma_don_hang').value;
