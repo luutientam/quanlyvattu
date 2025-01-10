@@ -20,6 +20,14 @@ $VatTu = $getDuLieu->getVatTu();
 //     $keyword = '';
 //     $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
 // }
+$url = "http://localhost/quanlyvattu/controllers/KhachHang_api.php";
+// Gửi yêu cầu GET để lấy dữ liệu từ API
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+$dataKhachHang = json_decode($response, true);
+
 $url = "http://localhost/quanlyvattu/controllers/DonHang_api.php";
 // Gửi yêu cầu GET để lấy dữ liệu từ API
 $ch = curl_init($url);
@@ -93,8 +101,8 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     <!-- Modal -->
     <!-- Modal -->
     <!-- <?php
-    session_start(); // Khởi tạo session
-    ?> -->
+            session_start(); // Khởi tạo session
+            ?> -->
     <div class="modal" id="modal">
         <div class="modal-content">
             <span class="close" id="btnCloseModal">&times;</span>
@@ -107,9 +115,19 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                 </div>
 
                 <!-- Các trường thông tin bổ sung (nếu cần) -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="ma_khach_hang">Mã khách hàng:</label>
                     <input type="number" id="ma_khach_hang" name="ma_khach_hang" placeholder="Nhập mã khách hàng..." required>
+                </div> -->
+                <div class="form-group">
+                    <label for="khach_hang">Mã khách hàng:</label>
+                    <select id="ma_khach_hang" name="ma_khach_hang">
+                        <?php foreach ($dataKhachHang['data'] as $khachhang) { ?>
+                            <option value="<?= $khachhang['ma_khach_hang'] ?>">
+                                <?= $khachhang['ma_khach_hang'] . " - " .  $khachhang['ten_khach_hang'] ?>
+                            </option>
+                        <?php } ?>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="ma_nhan_vien">Mã nhân viên:</label>
@@ -185,7 +203,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
             materialData.tong_gia_tri = materialData.chi_tiet_don_hang.reduce((total, item) => total + (item.so_luong * item.gia), 0);
 
             // Kiểm tra nếu có trường nào trống
-            if (!materialData.ma_don_hang || !materialData.ma_khach_hang || !materialData.ma_nhan_vien || materialData.chi_tiet_don_hang.length === 0) {
+            if (!materialData.ma_don_hang || !materialData.ma_nhan_vien || materialData.chi_tiet_don_hang.length === 0) {
                 alert('Vui lòng điền đầy đủ thông tin và thêm ít nhất một vật tư.');
                 return;
             }
@@ -254,11 +272,19 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                 <input type="hidden" id="edit_ma_don_hang" name="ma_don_hang">
 
                 <div class="form-group">
-                    <label for="trang_thai">Trạng Thái:</label>
-                    <input type="text" id="trang_thai_sua" name="trang_thai_sua"
+                    <label for="trang_thai_sua">Trạng Thái:</label>
+                    <!-- <input type="text" id="trang_thai_sua" name="trang_thai_sua"
                         placeholder="Nhập trạng thái sửa..." required>
-                </div>
+                </div> -->
 
+                    <select id="trang_thai_sua" name="trang_thai_sua" required>
+                        <option value="" disabled selected>Chọn trạng thái</option>
+                        <option value="pending">Chờ xử lý</option>
+                        <option value="processing">Đang xử lý</option>
+                        <option value="completed">Hoàn thành</option>
+                        <option value="canceled">Đã hủy</option>
+                    </select>
+                </div>
                 <button type="submit" class="btn-submit">Cập nhật</button>
             </form>
         </div>
@@ -378,22 +404,22 @@ if (json_last_error() !== JSON_ERROR_NONE) {
         const tableBody = document.querySelector(".table tbody");
 
         // Sửa vật tư
-        function openEditModal(id) {
+        function openEditModal(id, trangThai) {
             // Hiển thị modal sửa
             const modalEdit = document.getElementById("modalEdit");
-            modalEdit.style.display = "flex";
+            // modalEdit.style.display = "flex";
 
             // Gán ID vào input hidden
             document.getElementById("edit_ma_don_hang").value = id;
 
             // Lấy dữ liệu từ bảng và điền vào modal edit
-            const row = document.querySelector(`tr td:has(a.sua[onclick*="${id}"])`).closest('tr');
-            document.getElementById("ma_don_hang_sua").value = row.cells[0].innerText;
-            document.getElementById("ngay_dat_hang_sua").value = row.cells[2].innerText;
-            document.getElementById("ngay_giao_hang_sua").value = row.cells[3].innerText;
-            document.getElementById("tong_gia_tri_sua").value = row.cells[4].innerText;
-            document.getElementById("trang_thai_sua").value = row.cells[6].innerText;
-            document.getElementById("ma_nhan_vien_sua").value = row.cells[7].innerText;
+            //  const selectTrangThai = document.getElementById(`tr td:has(a.sua[onclick*="${id}"])`).closest('tr');
+
+            // const selectTrangThai = document.getElementById('trang_thai_sua');
+            selectTrangThai.value = trangThai;
+            //document.getElementById("trang_thai_sua").value = row.cells[0].innerText;
+            document.getElementById('trang_thai_sua').value = trangThai;
+            document.getElementById('modalEdit').style.display = 'flex';
         }
     </script>
     <script>
@@ -512,4 +538,113 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                 });
         });
     </script>
+    <script>
+        // Mở modal sửa đơn hàng
+        function openEditModal(maDonHang, trangThai) {
+            document.getElementById('edit_ma_don_hang').value = maDonHang;
+            document.getElementById('edit_trang_thai').value = trangThai;
+            document.getElementById('modalEdit').style.display = 'flex';
+        }
+
+        // Đóng modal sửa đơn hàng
+        document.getElementById('btnCloseModalEdit').addEventListener('click', function() {
+            document.getElementById('modalEdit').style.display = 'none';
+        });
+
+        // Xử lý sự kiện submit form sửa đơn hàng
+        document.getElementById('editOrderForm').addEventListener('submit', function(e) {
+            e.preventDefault(); //ngung gui form
+
+            const maDonHang = document.getElementById('edit_ma_don_hang').value;
+            const trangThai = document.getElementById('trang_thai_sua').value;
+
+            const data = {
+                ma_don_hang: maDonHang,
+                trang_thai: trangThai
+            };
+
+            fetch('http://localhost/quanlyvattu/controllers/DonHang_api.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                // .then(data => {
+                //     if (data.status === 200) {
+                //         alert('Cập nhật trạng thái đơn hàng thành công');
+                //         document.getElementById('modalEdit').style.display = 'none'; // Đóng modal
+                //         window.location.reload(); // Tải lại trang
+                //     } else {
+                //         alert('Lỗi khi cập nhật trạng thái đơn hàng: ' + data.message);
+                //     }
+                .then(data => {
+                    if (data.status === 200) {
+                        alert('Cập nhật trạng thái đơn hàng thành công');
+                        document.getElementById('modalEdit').style.display = 'none'; // Đóng modal
+                        window.location.reload(); // Tải lại trang
+
+                        // Cập nhật lại trạng thái hiển thị trên giao diện với trạng thái tiếng Việt
+                        const trangThaiViet = data.trang_thai_viet;
+                        // Ví dụ: Cập nhật trạng thái trong bảng hoặc phần tử nào đó trên giao diện
+                        document.getElementById('trang_thai_' + data.ma_don_hang).innerText = trangThaiViet;
+                    } else {
+                        alert('Lỗi khi cập nhật trạng thái đơn hàng: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi:', error);
+                    alert('Lỗi khi cập nhật trạng thái đơn hàng');
+                });
+        });
+    </script>
+
+    <!-- Modal tim kiem 
+    <script>
+        document.getElementById('btnSearch').addEventListener('click', function() {
+            var keyword = document.getElementById('txtTimKiem').value.trim();
+            var keywordMaDonHang = document.getElementById('don-hang').value;
+
+            // Tạo URL với cả từ khóa và ma don hang
+            var url =
+                `http://localhost/quanlyvattu/controllers/DonHang_api.php?keyword=${encodeURIComponent(keyword)}&ma_don_hang=${encodeURIComponent(keywordMaDonHang)}`;
+
+            // Gửi yêu cầu fetch
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    var donHangTableBody = document.getElementById('donHangTableBody');
+                    donHangTableBody.innerHTML = ''; // Xóa dữ liệu cũ trong bảng
+
+                    if (data.data && data.data.length > 0) {
+                        data.data.forEach(donHang => {
+                            var row = `
+                        <tr>
+                            <td>${donHang.ma_don_hang}</td>
+                            <td>${donhang.ten_khach_hang}</td>
+                            <td>${donHang.trang_thai}</td>
+                            <td>${donHang.ma_nhan_vien}</td>
+                            <td>${donHang.trang_thai}</td>
+                            <td>${donHang.ngay_dat_hang}</td>
+
+                            <td style="border-right: none;">
+                                <a href="#" class="xoa" data-id="${donHang.ma_don_hang}" onclick="deleteDonHangDonHang(event, ${donHang.ma_don_hang})">
+                                    <i class='bx bx-trash-alt'></i>
+                                </a>
+                                <a id="btnOpenModalEdit" onclick="openEditModal('${donHang.ma_don_hang}')" class="sua">
+                                    <i class='bx bx-edit'></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+                            donHangTableBody.innerHTML += row;
+                        });
+                    } else {
+                        donHangTableBody.innerHTML = '<tr><td colspan="10">Không tìm thấy đơn hànghàng</td></tr>';
+                    }
+                })
+                .catch(error => console.error('Lỗi:', error));
+        });
+    </script> -->
 </body>

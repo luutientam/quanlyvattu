@@ -124,17 +124,4 @@ class DonHangModel
             return false;
         }
     }
-
-
-    public function delete($ma_don_hang)
-    {
-        try {
-            $query = "DELETE FROM don_hang WHERE ma_don_hang = :ma_don_hang";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':ma_don_hang', $ma_don_hang);
-            return $stmt->execute();
-        } catch (Exception $e) {
-            return false;
-        }
-    }
 }

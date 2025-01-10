@@ -1,6 +1,8 @@
 <?php
-class GetDuLieu {
-    public function getLoaiVatTu() {
+class GetDuLieu
+{
+    public function getLoaiVatTu()
+    {
         $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
 
         if (!$conn) {
@@ -25,7 +27,8 @@ class GetDuLieu {
         }
     }
 
-    public function getMaNhaCungCap() {
+    public function getMaNhaCungCap()
+    {
         $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
 
         if (!$conn) {
@@ -50,7 +53,8 @@ class GetDuLieu {
         }
     }
 
-    public function getDonHang() {
+    public function getDonHang()
+    {
         $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
 
         if (!$conn) {
@@ -75,7 +79,8 @@ class GetDuLieu {
         }
     }
 
-    public function getChiTietDonHang() {
+    public function getChiTietDonHang()
+    {
         $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
 
         if (!$conn) {
@@ -101,22 +106,23 @@ class GetDuLieu {
     }
 
 
-    
 
-    public function getGiaVatTu($maVatTu) {
+
+    public function getGiaVatTu($maVatTu)
+    {
         $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
-    
+
         if (!$conn) {
             echo "Kết nối thất bại: " . mysqli_connect_error();
             return null;
         }
-    
+
         $sql = "SELECT gia FROM vat_tu WHERE ma_vat_tu = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $maVatTu); // Truyền tham số `ma_vat_tu`
         $stmt->execute();
         $result = $stmt->get_result();
-    
+
         if ($result && $row = $result->fetch_assoc()) {
             mysqli_close($conn);
             return $row['gia']; // Trả về giá
@@ -127,7 +133,8 @@ class GetDuLieu {
         }
     }
 
-    public function getVatTu() {
+    public function getVatTu()
+    {
         $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
 
         if (!$conn) {
@@ -151,5 +158,29 @@ class GetDuLieu {
             return [];
         }
     }
+
+    public function getMaKhachHang($makhachhang)
+    {
+        $conn = mysqli_connect("localhost", "root", "", "quanlyvattu");
+
+        if (!$conn) {
+            echo "Kết nối thất bại: " . mysqli_connect_error();
+            return null;
+        }
+
+        $sql = "SELECT ma_khach_hang FROM khach_hang WHERE ma_khach_hang = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $makhachhang); // Truyền tham số `ma_vat_tu`
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result && $row = $result->fetch_assoc()) {
+            mysqli_close($conn);
+            return $row['ma_khach_hang']; // Trả về 
+        } else {
+            echo "Không tìm thấy giá cho mã khách hàng " . $makhachhang;
+            mysqli_close($conn);
+            return null;
+        }
+    }
 }
-?>
