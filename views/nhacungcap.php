@@ -31,13 +31,13 @@ if (!isset($data['data'])) {
             <div class="search-bar">
                 <input type="text" placeholder="Tìm kiếm nhà cung cấp..." name="txtTimKiem">
                 <button class="btn-search">Tìm kiếm</button>
-                
+
             </div>
         </form>
 
         <h2>Danh Sách Nhà Cung Cấp</h2>
         <button class="btn-add" id="btnOpenModal">Thêm Nhà Cung Cấp</button>
-        
+
         <table class="table">
             <thead>
                 <tr>
@@ -48,27 +48,28 @@ if (!isset($data['data'])) {
                     <th>Địa chỉ</th>
                     <th>Ngày tạo</th>
                     <th style="border-right: none;">Thao tác</th>
-                    
+
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($dataNCC['data'] as $ncc) { ?>
-                    <tr>
-                        <td><?= $ncc['ma_nha_cung_cap'] ?></td>
-                        <td><?= $ncc['ten_nha_cung_cap'] ?></td>
-                        <td><?= $ncc['so_dien_thoai'] ?></td>
-                        <td><?= $ncc['email'] ?></td>
-                        <td><?= $ncc['dia_chi'] ?></td>
-                        <td><?= $ncc['ngay_tao'] ?></td>
-                        <td style="border-right: none;">
-                            <a href="#" class="xoa" data-id="<?= $ncc['ma_nha_cung_cap'] ?>" onclick="deleteNhaCungCap(event, <?= $ncc['ma_nha_cung_cap'] ?>)">
-                                <i class='bx bx-trash-alt'></i>
-                            </a>
-                            <a id="btnOpenModalEdit" onclick="openEditModal('<?= $ncc['ma_nha_cung_cap'] ?>')" class="sua">
-                                <i class='bx bx-edit'></i>
-                            </a>
-                        </td>
-                    </tr>
+                <tr>
+                    <td><?= $ncc['ma_nha_cung_cap'] ?></td>
+                    <td><?= $ncc['ten_nha_cung_cap'] ?></td>
+                    <td><?= $ncc['so_dien_thoai'] ?></td>
+                    <td><?= $ncc['email'] ?></td>
+                    <td><?= $ncc['dia_chi'] ?></td>
+                    <td><?= $ncc['ngay_tao'] ?></td>
+                    <td style="border-right: none;">
+                        <a href="#" class="xoa" data-id="<?= $ncc['ma_nha_cung_cap'] ?>"
+                            onclick="deleteNhaCungCap(event, <?= $ncc['ma_nha_cung_cap'] ?>)">
+                            <i class='bx bx-trash-alt'></i>
+                        </a>
+                        <a id="btnOpenModalEdit" onclick="openEditModal('<?= $ncc['ma_nha_cung_cap'] ?>')" class="sua">
+                            <i class='bx bx-edit'></i>
+                        </a>
+                    </td>
+                </tr>
                 <?php } ?>
             </tbody>
         </table>
@@ -115,10 +116,11 @@ if (!isset($data['data'])) {
                             </td>
                         </tr>
                     `;
-                    nhaCungCapTableBody.innerHTML += row;
+                        nhaCungCapTableBody.innerHTML += row;
                     });
                 } else {
-                    nhaCungCapTableBody.innerHTML = '<tr><td colspan="10">Không tìm thấy nhà cung cấp</td></tr>';
+                    nhaCungCapTableBody.innerHTML =
+                        '<tr><td colspan="10">Không tìm thấy nhà cung cấp</td></tr>';
                 }
             })
             .catch(error => console.error('Lỗi:', error));
@@ -134,15 +136,18 @@ if (!isset($data['data'])) {
             <form id="supplierForm" method="POST">
                 <div class="form-group">
                     <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
-                    <input type="text" id="ma_nha_cung_cap" name="ma_nha_cung_cap" placeholder="Nhập mã nhà cung cấp..." required>
+                    <input type="text" id="ma_nha_cung_cap" name="ma_nha_cung_cap" placeholder="Nhập mã nhà cung cấp..."
+                        required>
                 </div>
                 <div class="form-group">
                     <label for="ten_nha_cung_cap">Tên Nhà Cung Cấp:</label>
-                    <input type="text" id="ten_nha_cung_cap" name="ten_nha_cung_cap" placeholder="Nhập tên nhà cung cấp..." required>
+                    <input type="text" id="ten_nha_cung_cap" name="ten_nha_cung_cap"
+                        placeholder="Nhập tên nhà cung cấp..." required>
                 </div>
                 <div class="form-group">
                     <label for="so_dien_thoai">Số Điện Thoại:</label>
-                    <input type="text" id="so_dien_thoai" name="so_dien_thoai" placeholder="Nhập số điện thoại..." required>
+                    <input type="text" id="so_dien_thoai" name="so_dien_thoai" placeholder="Nhập số điện thoại..."
+                        required>
                 </div>
                 <div class="form-group">
                     <label for="email">Email:</label>
@@ -156,7 +161,7 @@ if (!isset($data['data'])) {
             </form>
         </div>
     </div>
-            
+
 
     <!-- Modal Sửa -->
     <div class="modal" id="modalEdit">
@@ -167,15 +172,18 @@ if (!isset($data['data'])) {
                 <input type="hidden" id="edit_nha_cung_cap" name="ma_nha_cung_cap">
                 <div class="form-group">
                     <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
-                    <input type="text" id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua" placeholder="Nhập mã nhà cung cấp..." readonly>
+                    <input type="text" id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua"
+                        placeholder="Nhập mã nhà cung cấp..." readonly>
                 </div>
                 <div class="form-group">
                     <label for="ten_nha_cung_cap">Tên Nhà Cung Cấp:</label>
-                    <input type="text" id="ten_nha_cung_cap_sua" name="ten_nha_cung_cap_sua" placeholder="Nhập tên nhà cung cấp..." required>
+                    <input type="text" id="ten_nha_cung_cap_sua" name="ten_nha_cung_cap_sua"
+                        placeholder="Nhập tên nhà cung cấp..." required>
                 </div>
                 <div class="form-group">
                     <label for="so_dien_thoai">Số Điện Thoại:</label>
-                    <input type="text" id="so_dien_thoai_sua" name="so_dien_thoai_sua" placeholder="Nhập số điện thoại..." required>
+                    <input type="text" id="so_dien_thoai_sua" name="so_dien_thoai_sua"
+                        placeholder="Nhập số điện thoại..." required>
                 </div>
                 <div class="form-group">
                     <label for="email">Email:</label>
@@ -205,7 +213,7 @@ if (!isset($data['data'])) {
             dia_chi: $("#dia_chi").val(),
         };
         // Kiểm tra nếu có trường nào trống
-        if (!supplierData.ma_nha_cung_cap || !supplierData.ten_nha_cung_cap|| !supplierData.so_dien_thoai) {
+        if (!supplierData.ma_nha_cung_cap || !supplierData.ten_nha_cung_cap || !supplierData.so_dien_thoai) {
             $("#responseMessage").html('<p style="color: red;">Vui lòng điền đầy đủ các trường bắt buộc.</p>');
             return;
         }
@@ -389,25 +397,24 @@ if (!isset($data['data'])) {
 
     // Sửa ncc
     function openEditModal(id) {
-    // Hiển thị modal sửa
-    const modalEdit = document.getElementById("modalEdit");
-    modalEdit.style.display = "flex";
+        // Hiển thị modal sửa
+        const modalEdit = document.getElementById("modalEdit");
+        modalEdit.style.display = "flex";
 
-    // Gán ID vào input hidden
-    document.getElementById("edit_nha_cung_cap").value = id;
+        // Gán ID vào input hidden
+        document.getElementById("edit_nha_cung_cap").value = id;
 
-    // Lấy dữ liệu từ bảng và điền vào modal edit
-    const row = document.querySelector(`tr td:has(a.sua[onclick*="${id}"])`).closest('tr');
-    
-    // Nếu bạn gặp lỗi, có thể là vấn đề của cách tìm phần tử trong bảng. Thử thay thế bằng cách khác:
-    const cells = row.querySelectorAll('td');
+        // Lấy dữ liệu từ bảng và điền vào modal edit
+        const row = document.querySelector(`tr td:has(a.sua[onclick*="${id}"])`).closest('tr');
 
-    document.getElementById("ma_nha_cung_cap_sua").value = cells[0].innerText;
-    document.getElementById("ten_nha_cung_cap_sua").value = cells[1].innerText;
-    document.getElementById("so_dien_thoai_sua").value = cells[2].innerText;
-    document.getElementById("email_sua").value = cells[3].innerText;
-    document.getElementById("dia_chi_sua").value = cells[4].innerText;
-}
+        // Nếu bạn gặp lỗi, có thể là vấn đề của cách tìm phần tử trong bảng. Thử thay thế bằng cách khác:
+        const cells = row.querySelectorAll('td');
 
+        document.getElementById("ma_nha_cung_cap_sua").value = cells[0].innerText;
+        document.getElementById("ten_nha_cung_cap_sua").value = cells[1].innerText;
+        document.getElementById("so_dien_thoai_sua").value = cells[2].innerText;
+        document.getElementById("email_sua").value = cells[3].innerText;
+        document.getElementById("dia_chi_sua").value = cells[4].innerText;
+    }
     </script>
 </body>
