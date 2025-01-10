@@ -9,9 +9,29 @@
 require_once '../controllers/MainController.php';
 require_once '../models/db.php';
 
-$controller = new MainController();
-$loaiVatTu = $controller->getLoaiVatTu();
-$maNhaCungCap = $controller->getMaNhaCungCap();
+// $controller = new MainController();
+// $loaiVatTu = $controller->getLoaiVatTu();
+
+
+$url = "http://localhost/quanlyvattu/controllers\LoaiVatTu_api.php";
+// Gửi yêu cầu GET để lấy dữ liệu từ API
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+$dataLoaiVatTu = json_decode($response, true);
+
+
+
+$url = "http://localhost/quanlyvattu/controllers/NhaCungCap_api.php";
+// Gửi yêu cầu GET để lấy dữ liệu từ API
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+$dataNCC = json_decode($response, true);
+
+
 
 $url = "http://localhost/quanlyvattu/controllers/VatTu_api.php";
 // Gửi yêu cầu GET để lấy dữ liệu từ API
@@ -32,7 +52,7 @@ $data = json_decode($response, true);
                 <button type="button" class="btn-search" id="btnSearch">Tìm kiếm</button>
                 <select name="loai-vat-tu" id="loai-vat-tu">
                     <option value="all">Tất cả loại vật tư</option>
-                    <?php foreach ($loaiVatTu as $loai) { ?>
+                    <?php foreach ($dataLoaiVatTu['data'] as $loai) { ?>
                         <option value="<?= $loai['ma_loai_vat_tu']  ?>">
                             <?= $loai['ten_loai_vat_tu'] ?>
                         </option>
@@ -71,7 +91,8 @@ $data = json_decode($response, true);
                         <td><?= $vatTu['ngay_tao'] ?></td>
                         <td><?= $vatTu['ten_loai_vat_tu'] ?></td>
                         <td style="border-right: none;">
-                            <a href="#" class="xoa" data-id="<?= $vatTu['ma_vat_tu'] ?>" onclick="deleteVatTu(event, <?= $vatTu['ma_vat_tu'] ?>)">
+                            <a href="#" class="xoa" data-id="<?= $vatTu['ma_vat_tu'] ?>"
+                                onclick="deleteVatTu(event, <?= $vatTu['ma_vat_tu'] ?>)">
                                 <i class='bx bx-trash-alt'></i>
                             </a>
                             <a id="btnOpenModalEdit" onclick="openEditModal('<?= $vatTu['ma_vat_tu'] ?>')" class="sua">
@@ -84,9 +105,6 @@ $data = json_decode($response, true);
         </table>
     </main>
 
-
-
-
     <!-- Modal tim kiem  -->
     <script>
         document.getElementById('btnSearch').addEventListener('click', function() {
@@ -94,7 +112,8 @@ $data = json_decode($response, true);
             var keywordLoaiVatTu = document.getElementById('loai-vat-tu').value;
 
             // Tạo URL với cả từ khóa và loại vật tư
-            var url = `http://localhost/quanlyvattu/controllers/VatTu_api.php?keyword=${encodeURIComponent(keyword)}&ma_loai_vat_tu=${encodeURIComponent(keywordLoaiVatTu)}`;
+            var url =
+                `http://localhost/quanlyvattu/controllers/VatTu_api.php?keyword=${encodeURIComponent(keyword)}&ma_loai_vat_tu=${encodeURIComponent(keywordLoaiVatTu)}`;
 
             // Gửi yêu cầu fetch
             fetch(url)
@@ -168,7 +187,7 @@ $data = json_decode($response, true);
                 <div class="form-group">
                     <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
                     <select id="ma_nha_cung_cap" name="ma_nha_cung_cap" required>
-                        <?php foreach ($maNhaCungCap as $mncc) { ?>
+                        <?php foreach ($dataNCC['data'] as $mncc) { ?>
                             <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
                                 <?= $mncc['ma_nha_cung_cap'] . ' - ' . $mncc['ten_nha_cung_cap'] ?>
                             </option>
@@ -182,7 +201,7 @@ $data = json_decode($response, true);
                 <div class="form-group">
                     <label for="loai_vat_tu">Loại Vật Tư:</label>
                     <select id="loai_vat_tu" name="ma_loai_vat_tu" required>
-                        <?php foreach ($loaiVatTu as $loai) { ?>
+                        <?php foreach ($dataLoaiVatTu['data']  as $loai) { ?>
                             <option value="<?= $loai['ma_loai_vat_tu'] ?>">
                                 <?= $loai['ten_loai_vat_tu'] ?>
                             </option>
@@ -195,7 +214,6 @@ $data = json_decode($response, true);
     </div>
 
     <!-- script thêm -->
-
     <script>
         // Gửi yêu cầu POST khi người dùng nhấn nút "Thêm Vật Tư"
         $("#materialForm").on("submit", function(event) {
@@ -302,9 +320,6 @@ $data = json_decode($response, true);
 
 
 
-
-
-
     <!-- Modal Sửa -->
     <div class="modal" id="modalEdit">
         <div class="modal-content">
@@ -340,7 +355,7 @@ $data = json_decode($response, true);
                 <div class="form-group">
                     <label for="ma_nha_cung_cap_sua">Mã Nhà Cung Cấp:</label>
                     <select id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua" required>
-                        <?php foreach ($maNhaCungCap as $mncc) { ?>
+                        <?php foreach ($dataNCC['data'] as $mncc) { ?>
                             <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
                                 <?= $mncc['ma_nha_cung_cap'] . ' - ' . $mncc['ten_nha_cung_cap'] ?>
                             </option>
@@ -350,7 +365,7 @@ $data = json_decode($response, true);
                 <div class="form-group">
                     <label for="edit_loai_vat_tu">Loại Vật Tư:</label>
                     <select id="edit_loai_vat_tu" name="loai_vat_tu_sua" required>
-                        <?php foreach ($loaiVatTu as $loai) { ?>
+                        <?php foreach ($dataLoaiVatTu['data']  as $loai) { ?>
                             <option value="<?= $loai['ma_loai_vat_tu'] ?>">
                                 <?= $loai['ten_loai_vat_tu'] ?>
                             </option>
@@ -361,6 +376,7 @@ $data = json_decode($response, true);
             </form>
         </div>
     </div>
+
 
 
     <!-- script sửa -->
@@ -414,7 +430,6 @@ $data = json_decode($response, true);
 
 
 
-    <!-- script xóa -->
     <!-- script xóa -->
     <script>
         // Lắng nghe sự kiện nhấp vào nút xóa vật tư
@@ -519,8 +534,7 @@ $data = json_decode($response, true);
             document.getElementById("mo_ta_sua").value = row.cells[2].innerText;
             document.getElementById("don_vi_sua").value = row.cells[3].innerText;
             document.getElementById("gia_sua").value = row.cells[4].innerText;
-            document.getElementById("so_luong_toi_thieu_sua").value = row.cells[6].innerText;
-            document.getElementById("so_luong_ton_sua").value = row.cells[7].innerText;
+            document.getElementById("so_luong_sua").value = row.cells[6].innerText;
         }
     </script>
 </body>

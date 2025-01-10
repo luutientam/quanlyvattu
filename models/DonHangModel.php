@@ -25,7 +25,7 @@ class DonHangModel
             khach_hang 
         ON 
             don_hang.ma_khach_hang = khach_hang.ma_khach_hang";
-        
+
         if (!empty($keyword)) {
             $query .= " WHERE don_hang.ma_don_hang LIKE :keyword OR khach_hang.ten_khach_hang LIKE :keyword";
         }
@@ -43,40 +43,39 @@ class DonHangModel
     {
         try {
             $this->db->beginTransaction();
-    
+
             // Thêm đơn hàng
             $query = "
-                INSERT INTO don_hang (ma_don_hang, ngay_dat_hang, ngay_giao_hang, tong_gia_tri, trang_thai, ma_nguoi_tao)
-                VALUES (:ma_don_hang, :ngay_dat_hang, :ngay_giao_hang, :tong_gia_tri, :trang_thai, :ma_nguoi_tao)";
-            
+                INSERT INTO don_hang (ma_don_hang, ngay_giao_hang, tong_gia_tri, trang_thai, ma_nhan_vien, ma_khach_hang)
+                VALUES (:ma_don_hang, :ngay_giao_hang, :tong_gia_tri, :trang_thai, :ma_nhan_vien, :ma_khach_hang)";
+
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':ma_don_hang', $data['ma_don_hang']);
-            $stmt->bindParam(':ngay_dat_hang', $data['ngay_dat_hang']);
             $stmt->bindParam(':ngay_giao_hang', $data['ngay_giao_hang']);
             $stmt->bindParam(':tong_gia_tri', $data['tong_gia_tri']);
             $stmt->bindParam(':trang_thai', $data['trang_thai']);
-            $stmt->bindParam(':ma_nguoi_tao', $data['ma_nguoi_tao']);
+            $stmt->bindParam(':ma_nhan_vien', $data['ma_nhan_vien']);
+            $stmt->bindParam(':ma_khach_hang', $data['ma_khach_hang']);
             $stmt->execute();
-    
+
             // Thêm chi tiết đơn hàng
             $queryChiTiet = "
-                INSERT INTO chi_tiet_don_hang (ma_don_hang, ma_vat_tu, so_luong, don_gia, thanh_tien)
-                VALUES (:ma_don_hang, :ma_vat_tu, :so_luong, :don_gia, :thanh_tien)";
-            
+                INSERT INTO chi_tiet_don_hang (ma_don_hang, ma_vat_tu, so_luong, thanh_tien)
+                VALUES (:ma_don_hang, :ma_vat_tu, :so_luong, :thanh_tien)";
+
             $stmtChiTiet = $this->db->prepare($queryChiTiet);
-    
-            foreach ($data['chi_tiet'] as $chiTiet) {
-                $thanh_tien = $chiTiet['so_luong'] * $chiTiet['don_gia'];
+
+            foreach ($data['chi_tiet_don_hang'] as $chiTiet) {
+                $thanh_tien = $chiTiet['so_luong'] * $chiTiet['gia'];
                 $stmtChiTiet->bindParam(':ma_don_hang', $data['ma_don_hang']);
                 $stmtChiTiet->bindParam(':ma_vat_tu', $chiTiet['ma_vat_tu']);
                 $stmtChiTiet->bindParam(':so_luong', $chiTiet['so_luong']);
-                $stmtChiTiet->bindParam(':don_gia', $chiTiet['don_gia']);
                 $stmtChiTiet->bindParam(':thanh_tien', $thanh_tien);
                 $stmtChiTiet->execute();
             }
-    
+
             $this->db->commit();
-    
+
             return json_encode([
                 'status' => 201,
                 'message' => 'Tạo đơn hàng thành công'
@@ -90,33 +89,42 @@ class DonHangModel
         }
     }
 
-    public function update($ma_don_hang, $data)
+    public function update($data)
     {
         try {
+            // Chuẩn bị câu lệnh SQL
             $query = "
-                UPDATE don_hang
-                SET 
-                    ma_nha_cung_cap = :ma_nha_cung_cap,
-                    ngay_dat_hang = :ngay_dat_hang,
-                    ngay_giao_hang = :ngay_giao_hang,
-                    tong_gia_tri = :tong_gia_tri,
-                    trang_thai = :trang_thai,
-                    ma_nguoi_tao = :ma_nguoi_tao
-                WHERE ma_don_hang = :ma_don_hang";
+            UPDATE don_hang
+            SET 
+                trang_thai = :trang_thai
+            WHERE ma_don_hang = :ma_don_hang";
 
+            // Chuẩn bị câu lệnh PDO
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':ma_don_hang', $ma_don_hang);
-            $stmt->bindParam(':ngay_dat_hang', $data['ngay_dat_hang']);
-            $stmt->bindParam(':ngay_giao_hang', $data['ngay_giao_hang']);
-            $stmt->bindParam(':tong_gia_tri', $data['tong_gia_tri']);
-            $stmt->bindParam(':trang_thai', $data['trang_thai']);
-            $stmt->bindParam(':ma_nhan_vien', $data['ma_nhan_vien']);
 
-            return $stmt->execute();
+            // Gắn các giá trị cho các tham số
+            $stmt->bindParam(':ma_don_hang', $data['ma_don_hang']);
+            $stmt->bindParam(':trang_thai', $data['trang_thai']);
+
+            // Thực thi câu lệnh SQL
+            $result = $stmt->execute();
+
+            // Kiểm tra kết quả
+            if ($result) {
+                return true;  // Cập nhật thành công
+            } else {
+                // Lấy thông tin lỗi nếu có
+                $errorInfo = $stmt->errorInfo();
+                error_log("Error updating order: " . $errorInfo[2]); // Ghi lại lỗi vào log
+                return false;  // Cập nhật thất bại
+            }
         } catch (Exception $e) {
+            // Ghi lại lỗi trong trường hợp ngoại lệ
+            error_log("Exception: " . $e->getMessage());
             return false;
         }
     }
+
 
     public function delete($ma_don_hang)
     {
@@ -130,4 +138,3 @@ class DonHangModel
         }
     }
 }
-?>
