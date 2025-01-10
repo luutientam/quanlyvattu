@@ -34,13 +34,7 @@ session_start();
                         class="<?= (isset($_GET['act']) && $_GET['act'] === 'nhacungcap') ? 'active' : '' ?>">Nhà Cung
                         Cấp</a>
                 </li>
-                <!-- Giỏ hàng với biểu tượng FontAwesome -->
-                <li>
-                    <a href="index.php?act=giohang"
-                        class="<?= (isset($_GET['act']) && $_GET['act'] === 'giohang') ? 'active' : '' ?>">
-                        <i class="fa fa-shopping-cart" style="font-size:24px;"></i>
-                    </a>
-                </li>
+                
             </ul>
         </nav>
         <div class="user-info">
