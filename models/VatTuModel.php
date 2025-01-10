@@ -18,15 +18,64 @@ class VatTuModel
     {
         $this->db = $db;
     }
+    // public function getDanhSachVatTu($keyword)
+    // {
+    //     $query = "SELECT * FROM vat_tu JOIN loai_vat_tu ON loai_vat_tu.ma_loai_vat_tu = vat_tu.ma_loai_vat_tu where ten_vat_tu like N'%" . $keyword . "%'";
+    //     $stmt = $this->db->prepare($query);
+    //     $stmt->execute();
+    //     return $stmt;
+    // }
 
 
-    public function getDanhSachVatTu($keyword)
+    public function getDanhSachVatTu($keyword = '', $maLoaiVatTu = 'all')
     {
-        $query = "SELECT * FROM vat_tu JOIN loai_vat_tu ON loai_vat_tu.ma_loai_vat_tu = vat_tu.ma_loai_vat_tu where ten_vat_tu like N'%" . $keyword . "%'";
+        $query = "
+            SELECT 
+                vat_tu.ma_vat_tu, 
+                vat_tu.ten_vat_tu, 
+                vat_tu.mo_ta, 
+                vat_tu.don_vi, 
+                vat_tu.gia, 
+                vat_tu.ma_nha_cung_cap, 
+                vat_tu.so_luong, 
+                vat_tu.ngay_tao, 
+                loai_vat_tu.ten_loai_vat_tu 
+            FROM 
+                vat_tu 
+            JOIN 
+                loai_vat_tu 
+            ON 
+                loai_vat_tu.ma_loai_vat_tu = vat_tu.ma_loai_vat_tu 
+            WHERE 
+                (vat_tu.ma_vat_tu LIKE :keyword OR 
+                vat_tu.ten_vat_tu LIKE :keyword OR 
+                vat_tu.mo_ta LIKE :keyword OR 
+                vat_tu.don_vi LIKE :keyword OR 
+                vat_tu.gia LIKE :keyword OR 
+                vat_tu.ma_nha_cung_cap LIKE :keyword OR 
+                vat_tu.so_luong LIKE :keyword OR 
+                vat_tu.ngay_tao LIKE :keyword OR 
+                loai_vat_tu.ten_loai_vat_tu LIKE :keyword)";
+
+        // Thêm điều kiện lọc theo mã loại vật tư nếu cần
+        if ($maLoaiVatTu !== 'all') {
+            $query .= " AND vat_tu.ma_loai_vat_tu = :maLoaiVatTu";
+        }
+
         $stmt = $this->db->prepare($query);
+
+        // Gán giá trị tham số
+        $keyword = "%$keyword%";
+        $stmt->bindParam(':keyword', $keyword, PDO::PARAM_STR);
+
+        if ($maLoaiVatTu !== 'all') {
+            $stmt->bindParam(':maLoaiVatTu', $maLoaiVatTu, PDO::PARAM_STR);
+        }
+
         $stmt->execute();
         return $stmt;
     }
+
     public function create($dataPOST)
     {
         // Kiểm tra trùng lặp `ma_vat_tu`

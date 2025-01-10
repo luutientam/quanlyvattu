@@ -46,7 +46,6 @@ $data = json_decode($response, true);
 ?>
 
 
-
 <body>
 
     <!-- Banner -->

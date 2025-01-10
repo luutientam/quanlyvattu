@@ -16,8 +16,10 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 
 switch ($requestMethod) {
     case 'GET':
-        $keyword = '';
-        $read = $vatTu->getDanhSachVatTu($keyword);
+        $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
+        $maLoaiVatTu = isset($_GET['ma_loai_vat_tu']) ? $_GET['ma_loai_vat_tu'] : 'all';
+
+        $read = $vatTu->getDanhSachVatTu($keyword, $maLoaiVatTu);
         $num = $read->rowCount();
 
         if ($num > 0) {
@@ -34,12 +36,15 @@ switch ($requestMethod) {
                     'ma_nha_cung_cap' => $ma_nha_cung_cap,
                     'so_luong' => $so_luong,
                     'ngay_tao' => $ngay_tao,
-                    'ma_loai_vat_tu' => $ma_loai_vat_tu
+                    'ten_loai_vat_tu' => $ten_loai_vat_tu
                 );
                 array_push($vatTu_array['data'], $vatTu_item);
             }
             echo json_encode($vatTu_array);
+        } else {
+            echo json_encode(['message' => 'Không tìm thấy vật tư']);
         }
+
         break;
 
     case 'POST':
