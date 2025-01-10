@@ -11,7 +11,13 @@ require_once '../models/db.php';
 
 $controller = new MainController();
 $loaiVatTu = $controller->getLoaiVatTu();
-$maNhaCungCap = $controller->getMaNhaCungCap();
+$url = "http://localhost/quanlyvattu/controllers/NhaCungCap_api.php";
+// Gửi yêu cầu GET để lấy dữ liệu từ API
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+$dataNCC = json_decode($response, true);
 
 $url = "http://localhost/quanlyvattu/controllers/VatTu_api.php";
 // Gửi yêu cầu GET để lấy dữ liệu từ API
@@ -119,7 +125,7 @@ $data = json_decode($response, true);
                 <div class="form-group">
                     <label for="ma_nha_cung_cap">Mã Nhà Cung Cấp:</label>
                     <select id="ma_nha_cung_cap" name="ma_nha_cung_cap" required>
-                        <?php foreach ($maNhaCungCap as $mncc) { ?>
+                        <?php foreach ($dataNCC['data'] as $mncc) { ?>
                         <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
                             <?= $mncc['ma_nha_cung_cap'] . ' - ' . $mncc['ten_nha_cung_cap'] ?>
                         </option>
@@ -180,7 +186,7 @@ $data = json_decode($response, true);
                 <div class="form-group">
                     <label for="ma_nha_cung_cap_sua">Mã Nhà Cung Cấp:</label>
                     <select id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua" required>
-                        <?php foreach ($maNhaCungCap as $mncc) { ?>
+                        <?php foreach ($dataNCC['data'] as $mncc) { ?>
                         <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
                             <?= $mncc['ma_nha_cung_cap'] . ' - ' . $mncc['ten_nha_cung_cap'] ?>
                         </option>

@@ -29,7 +29,6 @@ require_once '../models/db.php';
 
 $controller = new MainController();
 $loaiVatTu = $controller->getLoaiVatTu();
-$maNhaCungCap = $controller->getMaNhaCungCap();
 // if ($_SERVER['REQUEST_METHOD'] == "POST"){
 //     $keyword = $_POST['txtTimKiem'];
 //     $danhSachVatTu = $controller->getDanhSachVatTu($keyword);
