@@ -300,11 +300,6 @@ $data = json_decode($response, true);
     </script>
 
 
-
-
-
-
-
     <!-- Modal Sửa -->
     <div class="modal" id="modalEdit">
         <div class="modal-content">
@@ -414,7 +409,6 @@ $data = json_decode($response, true);
 
 
 
-    <!-- script xóa -->
     <!-- script xóa -->
     <script>
         // Lắng nghe sự kiện nhấp vào nút xóa vật tư
