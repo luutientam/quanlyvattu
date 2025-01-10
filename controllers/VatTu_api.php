@@ -17,7 +17,9 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 switch ($requestMethod) {
     case 'GET':
         $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
-        $read = $vatTu->getDanhSachVatTu($keyword);
+        $maLoaiVatTu = isset($_GET['ma_loai_vat_tu']) ? $_GET['ma_loai_vat_tu'] : 'all';
+
+        $read = $vatTu->getDanhSachVatTu($keyword, $maLoaiVatTu);
         $num = $read->rowCount();
 
         if ($num > 0) {
@@ -42,6 +44,7 @@ switch ($requestMethod) {
         } else {
             echo json_encode(['message' => 'Không tìm thấy vật tư']);
         }
+
         break;
 
     case 'POST':

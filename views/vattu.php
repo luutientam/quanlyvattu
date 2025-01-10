@@ -90,35 +90,42 @@ $data = json_decode($response, true);
     <!-- Modal tim kiem  -->
     <script>
         document.getElementById('btnSearch').addEventListener('click', function() {
-            var keyword = document.getElementById('txtTimKiem').value;
-            fetch(`http://localhost/quanlyvattu/controllers/VatTu_api.php?keyword=${keyword}`)
+            var keyword = document.getElementById('txtTimKiem').value.trim();
+            var keywordLoaiVatTu = document.getElementById('loai-vat-tu').value;
+
+            // Tạo URL với cả từ khóa và loại vật tư
+            var url = `http://localhost/quanlyvattu/controllers/VatTu_api.php?keyword=${encodeURIComponent(keyword)}&ma_loai_vat_tu=${encodeURIComponent(keywordLoaiVatTu)}`;
+
+            // Gửi yêu cầu fetch
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     var vatTuTableBody = document.getElementById('vatTuTableBody');
-                    vatTuTableBody.innerHTML = '';
-                    if (data.data) {
+                    vatTuTableBody.innerHTML = ''; // Xóa dữ liệu cũ trong bảng
+
+                    if (data.data && data.data.length > 0) {
                         data.data.forEach(vatTu => {
                             var row = `
-                                <tr>
-                                    <td>${vatTu.ma_vat_tu}</td>
-                                    <td>${vatTu.ten_vat_tu}</td>
-                                    <td>${vatTu.mo_ta}</td>
-                                    <td>${vatTu.don_vi}</td>
-                                    <td>${vatTu.gia}</td>
-                                    <td>${vatTu.ma_nha_cung_cap}</td>
-                                    <td>${vatTu.so_luong}</td>
-                                    <td>${vatTu.ngay_tao}</td>
-                                    <td>${vatTu.ten_loai_vat_tu}</td>
-                                    <td style="border-right: none;">
-                                        <a href="#" class="xoa" data-id="${vatTu.ma_vat_tu}" onclick="deleteVatTu(event, ${vatTu.ma_vat_tu})">
-                                            <i class='bx bx-trash-alt'></i>
-                                        </a>
-                                        <a id="btnOpenModalEdit" onclick="openEditModal('${vatTu.ma_vat_tu}')" class="sua">
-                                            <i class='bx bx-edit'></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            `;
+                        <tr>
+                            <td>${vatTu.ma_vat_tu}</td>
+                            <td>${vatTu.ten_vat_tu}</td>
+                            <td>${vatTu.mo_ta}</td>
+                            <td>${vatTu.don_vi}</td>
+                            <td>${vatTu.gia}</td>
+                            <td>${vatTu.ma_nha_cung_cap}</td>
+                            <td>${vatTu.so_luong}</td>
+                            <td>${vatTu.ngay_tao}</td>
+                            <td>${vatTu.ten_loai_vat_tu}</td>
+                            <td style="border-right: none;">
+                                <a href="#" class="xoa" data-id="${vatTu.ma_vat_tu}" onclick="deleteVatTu(event, ${vatTu.ma_vat_tu})">
+                                    <i class='bx bx-trash-alt'></i>
+                                </a>
+                                <a id="btnOpenModalEdit" onclick="openEditModal('${vatTu.ma_vat_tu}')" class="sua">
+                                    <i class='bx bx-edit'></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `;
                             vatTuTableBody.innerHTML += row;
                         });
                     } else {
