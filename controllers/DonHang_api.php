@@ -30,6 +30,15 @@ switch ($requestMethod) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Không tìm thấy giá sản phẩm']);
             }
+            if (isset($_GET['action']) && $_GET['action'] === 'getMaKhachHang') {
+                $maKhachHang = $_GET['ma_khach_hang'];
+                $ma = $getDuLieu->getMaKhachHang($maKhachHang);
+                if ($ma !== null) {
+                    echo json_encode(['status' => 'success', 'ma_khach_hang' => $ma]);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Không tìm thấy mã khách hàng']);
+                }
+            }
         } else {
             $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
             $read = $donHangModel->getDonHang($keyword);
@@ -56,8 +65,14 @@ switch ($requestMethod) {
 
     case 'POST':
         $inputData = json_decode(file_get_contents("php://input"), true);
+
         if (empty($inputData)) {
             echo json_encode(['message' => 'Dữ liệu không hợp lệ']);
+            exit();
+        }
+        // Kiểm tra nếu không có mã khách hàng
+        if (empty($inputData['ma_khach_hang'])) {
+            echo json_encode(['status' => 400, 'message' => 'Mã khách hàng là bắt buộc']);
             exit();
         }
         $response = $donHangModel->create($inputData);
@@ -65,27 +80,46 @@ switch ($requestMethod) {
         break;
 
     case 'PUT':
+        // Lấy dữ liệu từ body yêu cầu
         $inputData = json_decode(file_get_contents("php://input"), true);
+
+        // Kiểm tra dữ liệu có hợp lệ không
         if (empty($inputData) || !isset($inputData['ma_don_hang'])) {
-            echo json_encode(['message' => 'Dữ liệu không hợp lệ']);
+            // Trả về lỗi nếu dữ liệu không hợp lệ
+            echo json_encode(['status' => 400, 'message' => 'Dữ liệu không hợp lệ']);
             exit();
         }
 
+        // Lấy mã đơn hàng từ dữ liệu
         $ma_don_hang = $inputData['ma_don_hang'];
-        $response = $donHangModel->update($ma_don_hang, $inputData);
-        echo $response;
-        break;
 
-    case 'DELETE':
-        $inputData = json_decode(file_get_contents("php://input"), true);
-        if (empty($inputData) || !isset($inputData['ma_don_hang'])) {
-            echo json_encode(['message' => 'Dữ liệu không hợp lệ']);
-            exit();
+        // Dịch trạng thái từ tiếng Anh sang tiếng Việt
+        $status_mapping = [
+            "pending" => "Chờ xử lý",
+            "processing" => "Đang xử lý",
+            "completed" => "Hoàn thành",
+            "canceled" => "Đã hủy"
+        ];
+
+        // Kiểm tra trạng thái có hợp lệ không
+        if (isset($inputData['trang_thai'])) {
+            $trang_thai = $inputData['trang_thai']; // Trạng thái gửi lên từ frontend (tiếng Anh)
+            $trang_thai_viet = isset($status_mapping[$trang_thai]) ? $status_mapping[$trang_thai] : "Không xác định";
+            $inputData['trang_thai'] = $trang_thai_viet;  // Cập nhật lại trạng thái đã dịch sang tiếng Việt
+        } else {
+            $inputData['trang_thai'] = "Không xác định";  // Nếu không có trạng thái, gán mặc định
         }
 
-        $ma_don_hang = $inputData['ma_don_hang'];
-        $response = $donHangModel->delete($ma_don_hang);
-        echo $response;
+        // Gọi phương thức update để cập nhật đơn hàng
+        $response = $donHangModel->update($inputData);
+
+        // Kiểm tra phản hồi từ phương thức update
+        if ($response) {
+            // Trả về thông báo thành công
+            echo json_encode(['status' => 200, 'message' => 'Cập nhật đơn hàng thành công']);
+        } else {
+            // Trả về thông báo thất bại nếu không cập nhật được
+            echo json_encode(['status' => 500, 'message' => 'Lỗi khi cập nhật đơn hàng']);
+        }
         break;
 }
-?>
