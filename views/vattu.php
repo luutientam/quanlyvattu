@@ -202,62 +202,6 @@ $data = json_decode($response, true);
         </div>
     </div>
 
-    <!-- Modal Sửa -->
-    <div class="modal" id="modalEdit">
-        <div class="modal-content">
-            <span class="close" id="btnCloseModalEdit">&times;</span>
-            <h2>Sửa Vật Tư</h2>
-            <form id="editMaterialForm">
-                <input type="hidden" id="edit_ma_vat_tu" name="ma_vat_tu">
-                <div class="form-group">
-                    <label for="ma_vat_tu">Mã Vật tư:</label>
-                    <input type="text" id="ma_vat_tu_sua" name="ma_vat_tu_sua" placeholder="Nhập mã vật tư..." readonly>
-                </div>
-                <div class="form-group">
-                    <label for="ten_vat_tu">Tên Vật tư:</label>
-                    <input type="text" id="ten_vat_tu_sua" name="ten_vat_tu_sua" placeholder="Nhập tên vật tư..."
-                        required>
-                </div>
-                <div class="form-group">
-                    <label for="mo_ta">Mô tả:</label>
-                    <input type="text" id="mo_ta_sua" name="mo_ta_sua" placeholder="Nhập mô tả..." required>
-                </div>
-                <div class="form-group">
-                    <label for="don_vi">Đơn vị:</label>
-                    <input type="text" id="don_vi_sua" name="don_vi_sua" placeholder="Nhập đơn vị..." required>
-                </div>
-                <div class="form-group">
-                    <label for="gia">Giá:</label>
-                    <input type="number" id="gia_sua" name="gia_sua" placeholder="Nhập giá..." required>
-                </div>
-                <div class="form-group">
-                    <label for="so_luong_sua">Số lượng:</label>
-                    <input type="number" id="so_luong_sua" name="so_luong_sua" placeholder="Nhập số lượng..." required>
-                </div>
-                <div class="form-group">
-                    <label for="ma_nha_cung_cap_sua">Mã Nhà Cung Cấp:</label>
-                    <select id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua" required>
-                        <?php foreach ($maNhaCungCap as $mncc) { ?>
-                        <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
-                            <?= $mncc['ma_nha_cung_cap'] . ' - ' . $mncc['ten_nha_cung_cap'] ?>
-                        </option>
-                        <?php } ?>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="edit_loai_vat_tu">Loại Vật Tư:</label>
-                    <select id="edit_loai_vat_tu" name="loai_vat_tu_sua" required>
-                        <?php foreach ($loaiVatTu as $loai) { ?>
-                        <option value="<?= $loai['ma_loai_vat_tu'] ?>">
-                            <?= $loai['ten_loai_vat_tu'] ?>
-                        </option>
-                        <?php } ?>
-                    </select>
-                </div>
-                <button type="submit" class="btn-submit">Cập nhật</button>
-            </form>
-        </div>
-    </div>
 
     <script>
     // Gửi yêu cầu POST khi người dùng nhấn nút "Thêm Vật Tư"
@@ -365,9 +309,6 @@ $data = json_decode($response, true);
 
 
 
-
-
-
     <!-- Modal Sửa -->
     <div class="modal" id="modalEdit">
         <div class="modal-content">
@@ -403,7 +344,7 @@ $data = json_decode($response, true);
                 <div class="form-group">
                     <label for="ma_nha_cung_cap_sua">Mã Nhà Cung Cấp:</label>
                     <select id="ma_nha_cung_cap_sua" name="ma_nha_cung_cap_sua" required>
-                        <?php foreach ($maNhaCungCap as $mncc) { ?>
+                        <?php foreach ($dataNCC['data'] as $mncc) { ?>
                         <option value="<?= $mncc['ma_nha_cung_cap'] ?>">
                             <?= $mncc['ma_nha_cung_cap'] . ' - ' . $mncc['ten_nha_cung_cap'] ?>
                         </option>
@@ -424,6 +365,7 @@ $data = json_decode($response, true);
             </form>
         </div>
     </div>
+
 
 
     <!-- script sửa -->
@@ -477,7 +419,6 @@ $data = json_decode($response, true);
 
 
 
-    <!-- script xóa -->
     <!-- script xóa -->
     <script>
     // Lắng nghe sự kiện nhấp vào nút xóa vật tư
