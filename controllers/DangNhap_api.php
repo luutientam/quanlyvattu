@@ -27,12 +27,17 @@ switch ($requestMethod) {
             session_start();
             
             // Kiểm tra vai trò và thông tin người dùng
-            if (isset($response['data']['ma_nhan_vien']) && ($response['data']['ten_vai_tro'] == "Quản lý" || $response['data']['ten_vai_tro'] == "Nhân viên")) {
+            if (isset($response['data']['ma_nhan_vien']) && $response['data']['ten_vai_tro'] == "Nhân viên") {
                 // Lưu thông tin người dùng vào session
                 $_SESSION['maNV'] = $response['data']['ma_nhan_vien'];  // Mã người dùng
                 $_SESSION['tenNV'] = $response['data']['ten_nhan_vien']; // Tên người dùng
                 $_SESSION['role'] = $response['data']['ten_vai_tro']; // Vai trò
-            } else {
+            }else if($response['data']['ten_vai_tro'] == "Quản lý"){
+                $_SESSION['maADMIN'] = $response['data']['ma_nhan_vien'];  // Mã người dùng
+                $_SESSION['tenADMIN'] = $response['data']['ten_nhan_vien']; // Tên người dùng
+                $_SESSION['role'] = $response['data']['ten_vai_tro']; // Vai trò
+            }
+             else {
                 // Lưu thông tin người dùng vào session cho khách hàng
                 $_SESSION['maKH'] = $response['data']['ma_khach_hang'];  // Mã khách hàng
                 $_SESSION['tenKH'] = $response['data']['ten_khach_hang']; // Tên khách hàng

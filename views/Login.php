@@ -74,7 +74,7 @@ session_unset(); // Xóa tất cả các biến session
                     // $("#FormDangNhap")[0].reset();
                     // alert("Đăng nhập thành công.");
                     if (response.data.ten_vai_tro === "Quản lý") {
-                        window.location.href = "http://localhost/quanlyvattu";
+                        window.location.href = "http://localhost/quanlyvattu/views/Admin";
                     } else if (response.data.ten_vai_tro === "Nhân viên") {
                         window.location.href = "http://localhost/quanlyvattu";
                     } else if (response.data.ten_vai_tro === "Khách hàng") {
