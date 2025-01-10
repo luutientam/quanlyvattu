@@ -352,12 +352,12 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 
             // Lấy dữ liệu từ bảng và điền vào modal edit
             const row = document.querySelector(`tr td:has(a.sua[onclick*="${id}"])`).closest('tr');
-            document.getElementById("ma_don_hang_sua").value = row.cells[0].innerText;
-            document.getElementById("ngay_dat_hang_sua").value = row.cells[2].innerText;
-            document.getElementById("ngay_giao_hang_sua").value = row.cells[3].innerText;
-            document.getElementById("tong_gia_tri_sua").value = row.cells[4].innerText;
+            // document.getElementById("ma_don_hang_sua").value = row.cells[0].innerText;
+            // document.getElementById("ngay_dat_hang_sua").value = row.cells[2].innerText;
+            // document.getElementById("ngay_giao_hang_sua").value = row.cells[3].innerText;
+            // document.getElementById("tong_gia_tri_sua").value = row.cells[4].innerText;
             document.getElementById("trang_thai_sua").value = row.cells[6].innerText;
-            document.getElementById("ma_nhan_vien_sua").value = row.cells[7].innerText;
+            // document.getElementById("ma_nhan_vien_sua").value = row.cells[7].innerText;
         }
     </script>
     <script>
@@ -473,6 +473,54 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                 .catch(error => {
                     console.error('Lỗi:', error);
                     alert('Lỗi khi tạo đơn hàng');
+                });
+        });
+    </script>
+    <script>
+        // Mở modal sửa đơn hàng
+        function openEditModal(maDonHang, trangThai) {
+            document.getElementById('edit_ma_don_hang').value = maDonHang;
+            document.getElementById('edit_trang_thai').value = trangThai;
+            document.getElementById('modalEdit').style.display = 'flex';
+        }
+
+        // Đóng modal sửa đơn hàng
+        document.getElementById('btnCloseModalEdit').addEventListener('click', function() {
+            document.getElementById('modalEdit').style.display = 'none';
+        });
+
+        // Xử lý sự kiện submit form sửa đơn hàng
+        document.getElementById('editOrderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const maDonHang = document.getElementById('edit_ma_don_hang').value;
+            const trangThai = document.getElementById('edit_trang_thai').value;
+
+            const data = {
+                ma_don_hang: maDonHang,
+                trang_thai: trangThai
+            };
+
+            fetch('http://localhost/quanlyvattu/controllers/DonHang_api.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 200) {
+                        alert('Cập nhật trạng thái đơn hàng thành công');
+                        document.getElementById('modalEdit').style.display = 'none'; // Đóng modal
+                        window.location.reload(); // Tải lại trang
+                    } else {
+                        alert('Lỗi khi cập nhật trạng thái đơn hàng: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi:', error);
+                    alert('Lỗi khi cập nhật trạng thái đơn hàng');
                 });
         });
     </script>

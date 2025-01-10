@@ -95,34 +95,12 @@ class DonHangModel
             $query = "
                 UPDATE don_hang
                 SET 
-                    ma_nha_cung_cap = :ma_nha_cung_cap,
-                    ngay_dat_hang = :ngay_dat_hang,
-                    ngay_giao_hang = :ngay_giao_hang,
-                    tong_gia_tri = :tong_gia_tri,
-                    trang_thai = :trang_thai,
-                    ma_nguoi_tao = :ma_nguoi_tao
+                    trang_thai = :trang_thai
                 WHERE ma_don_hang = :ma_don_hang";
 
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':ma_don_hang', $ma_don_hang);
-            $stmt->bindParam(':ngay_dat_hang', $data['ngay_dat_hang']);
-            $stmt->bindParam(':ngay_giao_hang', $data['ngay_giao_hang']);
-            $stmt->bindParam(':tong_gia_tri', $data['tong_gia_tri']);
             $stmt->bindParam(':trang_thai', $data['trang_thai']);
-            $stmt->bindParam(':ma_nhan_vien', $data['ma_nhan_vien']);
-
-            return $stmt->execute();
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-
-    public function delete($ma_don_hang)
-    {
-        try {
-            $query = "DELETE FROM don_hang WHERE ma_don_hang = :ma_don_hang";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':ma_don_hang', $ma_don_hang);
             return $stmt->execute();
         } catch (Exception $e) {
             return false;

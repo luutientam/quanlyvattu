@@ -67,25 +67,34 @@ switch ($requestMethod) {
 
     case 'PUT':
         $inputData = json_decode(file_get_contents("php://input"), true);
-        if (empty($inputData) || !isset($inputData['ma_don_hang'])) {
-            echo json_encode(['message' => 'Dữ liệu không hợp lệ']);
-            exit();
+
+        if (!empty($inputData)) {
+            if (isset($inputData['ma_don_hang'])) {
+                $ma_don_hang = $inputData['ma_don_hang'];
+                $result = $donHangModel->update($ma_don_hang, $inputData);
+
+                if ($result) {
+                    echo json_encode([
+                        'status' => 200,
+                        'message' => 'Trạng thái đã được cập nhật thành công.'
+                    ]);
+                } else {
+                    echo json_encode([
+                        'status' => 500,
+                        'message' => 'Lỗi xảy ra khi cập nhật trạng thái.'
+                    ]);
+                }
+            } else {
+                echo json_encode([
+                    'status' => 400,
+                    'message' => 'Thiếu thông tin mã đơn hànghàng để cập nhật.'
+                ]);
+            }
+        } else {
+            echo json_encode([
+                'status' => 400,
+                'message' => 'Dữ liệu không hợp lệ.'
+            ]);
         }
-
-        $ma_don_hang = $inputData['ma_don_hang'];
-        $response = $donHangModel->update($ma_don_hang, $inputData);
-        echo $response;
-        break;
-
-    case 'DELETE':
-        $inputData = json_decode(file_get_contents("php://input"), true);
-        if (empty($inputData) || !isset($inputData['ma_don_hang'])) {
-            echo json_encode(['message' => 'Dữ liệu không hợp lệ']);
-            exit();
-        }
-
-        $ma_don_hang = $inputData['ma_don_hang'];
-        $response = $donHangModel->delete($ma_don_hang);
-        echo $response;
         break;
 }
