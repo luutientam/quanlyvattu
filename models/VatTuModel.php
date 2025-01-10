@@ -1,34 +1,36 @@
 <?php
+// Import file db.php để lấy đối tượng kết nối cơ sở dữ liệu
 require_once "db.php";
 
+// Định nghĩa class VatTuModel để quản lý dữ liệu của bảng `vat_tu`
 class VatTuModel
 {
+    // Thuộc tính kết nối cơ sở dữ liệu
     private $db;
-    public $ma_vat_tu;
-    public $ten_vat_tu;
-    public $mo_ta;
-    public $don_vi;
-    public $gia;
-    public $ma_nha_cung_cap;
-    public $so_luong;
-    public $ngay_tao;
-    public $ma_loai_vat_tu;
 
+    // Các thuộc tính đại diện cho các cột trong bảng `vat_tu`
+    public $ma_vat_tu;        // Mã vật tư
+    public $ten_vat_tu;       // Tên vật tư
+    public $mo_ta;            // Mô tả vật tư
+    public $don_vi;           // Đơn vị tính
+    public $gia;              // Giá
+    public $ma_nha_cung_cap;  // Mã nhà cung cấp
+    public $so_luong;         // Số lượng tồn kho
+    public $ngay_tao;         // Ngày tạo
+    public $ma_loai_vat_tu;   // Mã loại vật tư
+
+    // Constructor khởi tạo đối tượng với kết nối cơ sở dữ liệu
     public function __construct($db)
     {
-        $this->db = $db;
+        $this->db = $db; // Gán đối tượng kết nối cho thuộc tính $db
     }
-    // public function getDanhSachVatTu($keyword)
-    // {
-    //     $query = "SELECT * FROM vat_tu JOIN loai_vat_tu ON loai_vat_tu.ma_loai_vat_tu = vat_tu.ma_loai_vat_tu where ten_vat_tu like N'%" . $keyword . "%'";
-    //     $stmt = $this->db->prepare($query);
-    //     $stmt->execute();
-    //     return $stmt;
-    // }
 
-
+    /**
+     * Lấy danh sách vật tư với từ khóa tìm kiếm và lọc theo loại vật tư
+     */
     public function getDanhSachVatTu($keyword = '', $maLoaiVatTu = 'all')
     {
+        // Câu lệnh SQL để tìm kiếm vật tư theo từ khóa
         $query = "
             SELECT 
                 vat_tu.ma_vat_tu, 
@@ -57,43 +59,47 @@ class VatTuModel
                 vat_tu.ngay_tao LIKE :keyword OR 
                 loai_vat_tu.ten_loai_vat_tu LIKE :keyword)";
 
-        // Thêm điều kiện lọc theo mã loại vật tư nếu cần
+        // Thêm điều kiện lọc nếu mã loại vật tư không phải "all"
         if ($maLoaiVatTu !== 'all') {
             $query .= " AND vat_tu.ma_loai_vat_tu = :maLoaiVatTu";
         }
 
+        // Chuẩn bị truy vấn
         $stmt = $this->db->prepare($query);
 
-        // Gán giá trị tham số
+        // Gắn giá trị cho các tham số
         $keyword = "%$keyword%";
         $stmt->bindParam(':keyword', $keyword, PDO::PARAM_STR);
-
         if ($maLoaiVatTu !== 'all') {
             $stmt->bindParam(':maLoaiVatTu', $maLoaiVatTu, PDO::PARAM_STR);
         }
 
+        // Thực thi truy vấn và trả về đối tượng PDOStatement
         $stmt->execute();
         return $stmt;
     }
 
+    /**
+     * Tạo mới một vật tư
+     */
     public function create($dataPOST)
     {
-        // Kiểm tra trùng lặp `ma_vat_tu`
+        // Kiểm tra xem mã vật tư đã tồn tại trong bảng hay chưa
         $checkQuery = "SELECT COUNT(*) FROM vat_tu WHERE ma_vat_tu = :ma_vat_tu";
         $checkStmt = $this->db->prepare($checkQuery);
         $checkStmt->bindParam(':ma_vat_tu', $dataPOST['ma_vat_tu']);
         $checkStmt->execute();
         $count = $checkStmt->fetchColumn();
 
+        // Nếu mã vật tư đã tồn tại, trả về lỗi
         if ($count > 0) {
-            // Trả về lỗi nếu mã vật tư đã tồn tại
             return json_encode([
-                'status' => 409,
+                'status' => 409, // Conflict
                 'message' => 'Mã vật tư đã tồn tại. Vui lòng nhập mã khác.'
             ]);
         }
 
-        // Thực hiện chèn nếu không trùng lặp
+        // Thực hiện chèn dữ liệu mới vào bảng `vat_tu`
         $query = "INSERT INTO vat_tu SET
         ma_vat_tu = :ma_vat_tu, 
         ten_vat_tu = :ten_vat_tu, 
@@ -105,6 +111,8 @@ class VatTuModel
         ma_loai_vat_tu = :ma_loai_vat_tu";
 
         $stmt = $this->db->prepare($query);
+
+        // Gắn giá trị cho các tham số
         $stmt->bindParam(':ma_vat_tu', $dataPOST['ma_vat_tu']);
         $stmt->bindParam(':ten_vat_tu', $dataPOST['ten_vat_tu']);
         $stmt->bindParam(':mo_ta', $dataPOST['mo_ta']);
@@ -114,51 +122,54 @@ class VatTuModel
         $stmt->bindParam(':so_luong', $dataPOST['so_luong']);
         $stmt->bindParam(':ma_loai_vat_tu', $dataPOST['ma_loai_vat_tu']);
 
+        // Thực thi truy vấn
         if ($stmt->execute()) {
             return json_encode([
-                'status' => 201,
+                'status' => 201, // Created
                 'message' => 'Tạo vật tư thành công'
             ]);
         } else {
             return json_encode([
-                'status' => 500,
+                'status' => 500, // Internal Server Error
                 'message' => 'Lỗi khi tạo vật tư.'
             ]);
         }
     }
 
-
-
+    /**
+     * Xóa vật tư theo mã
+     */
     public function delete($ma_vat_tu)
     {
         try {
-            // Câu lệnh SQL để xóa vật tư
+            // Câu lệnh SQL để xóa vật tư theo mã
             $query = "DELETE FROM vat_tu WHERE ma_vat_tu = :ma_vat_tu";
-
-            // Chuẩn bị câu lệnh
             $stmt = $this->db->prepare($query);
 
-            // Gắn giá trị vào tham số
+            // Gắn giá trị tham số
             $stmt->bindParam(':ma_vat_tu', $ma_vat_tu);
 
             // Thực thi câu lệnh
             $stmt->execute();
 
-            // Kiểm tra số lượng bản ghi bị ảnh hưởng
+            // Kiểm tra xem có bản ghi nào bị xóa hay không
             if ($stmt->rowCount() > 0) {
                 return true; // Xóa thành công
             } else {
-                return false; // Không có bản ghi nào bị xóa (mã vật tư không tồn tại)
+                return false; // Mã vật tư không tồn tại
             }
         } catch (Exception $e) {
-            return false; // Bắt lỗi nếu xảy ra
+            return false; // Xử lý lỗi
         }
     }
 
+    /**
+     * Cập nhật thông tin vật tư
+     */
     public function update($ma_vat_tu, $data)
     {
         try {
-            // Câu lệnh SQL để cập nhật vật tư
+            // Câu lệnh SQL để cập nhật thông tin vật tư
             $query = "
                 UPDATE vat_tu
                 SET 
@@ -171,11 +182,9 @@ class VatTuModel
                     ma_loai_vat_tu = :ma_loai_vat_tu
                 WHERE ma_vat_tu = :ma_vat_tu
             ";
-
-            // Chuẩn bị câu lệnh
             $stmt = $this->db->prepare($query);
 
-            // Gắn giá trị vào các tham số
+            // Gắn giá trị cho các tham số
             $stmt->bindParam(':ma_vat_tu', $ma_vat_tu);
             $stmt->bindParam(':ten_vat_tu', $data['ten_vat_tu_sua']);
             $stmt->bindParam(':mo_ta', $data['mo_ta_sua']);
@@ -191,26 +200,7 @@ class VatTuModel
             }
             return false; // Cập nhật thất bại
         } catch (Exception $e) {
-            return false; // Bắt lỗi nếu xảy ra
+            return false; // Xử lý lỗi
         }
     }
-
-
-    // public function getDanhSachVatTu($keyword) {
-    //     $sql = "SELECT * FROM vat_tu JOIN loai_vat_tu ON loai_vat_tu.ma_loai_vat_tu = vat_tu.ma_loai_vat_tu where ten_vat_tu like N'%".$keyword."%'";
-    //     $result = mysqli_query($conn, $sql);
-
-    //     if ($result) {
-    //         $danhSachVatTu = [];
-    //         while ($row = mysqli_fetch_assoc($result)) {
-    //             $danhSachVatTu[] = $row;
-    //         }
-    //         mysqli_close($conn);
-    //         return $danhSachVatTu;
-    //     } else {
-    //         echo "Lỗi trong truy vấn getDanhSachVatTu: " . mysqli_error($conn);
-    //         mysqli_close($conn);
-    //         return [];
-    //     }
-    // }
 }
