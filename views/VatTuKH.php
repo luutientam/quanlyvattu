@@ -52,10 +52,10 @@ $data = json_decode($response, true);
     <!-- Nội dung chính -->
     <main class="content">
         <!-- Thanh tìm kiếm -->
-        <form method="POST">
+        <form id="searchForm" method="POST">
             <div class="search-bar">
-                <input type="text" placeholder="Tìm kiếm vật tư..." name="txtTimKiem">
-                <button class="btn-search">Tìm kiếm</button>
+                <input type="text" id="txtTimKiem" placeholder="Tìm kiếm vật tư..." name="txtTimKiem">
+                <button type="button" class="btn-search" id="btnSearch">Tìm kiếm</button>
                 <select name="loai-vat-tu" id="loai-vat-tu">
                     <option value="all">Tất cả loại vật tư</option>
                     <?php foreach ($loaiVatTu as $loai) { ?>
@@ -77,11 +77,12 @@ $data = json_decode($response, true);
                     <th>Mô tả</th>
                     <th>Giá</th>
                     <th>Đơn vị</th>
+                    <th>Loại vật tư</th>
                     <th class="size">Số lượng</th>
                     <th style="border-right: none;">Thao tác</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="vatTuTableBody">
                 <?php foreach ($data['data'] as $vatTu) { ?>
                 <tr>
                     <td><?= $vatTu['ma_vat_tu'] ?></td>
@@ -89,6 +90,7 @@ $data = json_decode($response, true);
                     <td><?= $vatTu['mo_ta'] ?></td>
                     <td><?= $vatTu['gia'] ?></td>
                     <td><?= $vatTu['don_vi'] ?></td>
+                    <td><?= $vatTu['ten_loai_vat_tu'] ?></td>
                     <td><input type="number" id="quantity_<?= $vatTu['ma_vat_tu'] ?>" name="quantity" min="1" value="1"
                             class="quantity-input"></td>
                     <td style="border-right: none;">
@@ -103,6 +105,48 @@ $data = json_decode($response, true);
             </tbody>
         </table>
     </main>
+    <!-- Modal tim kiem  -->
+    <script>
+        document.getElementById('btnSearch').addEventListener('click', function() {
+            var keyword = document.getElementById('txtTimKiem').value.trim();
+            var keywordLoaiVatTu = document.getElementById('loai-vat-tu').value;
+
+            // Tạo URL với cả từ khóa và loại vật tư
+            var url = `http://localhost/quanlyvattu/controllers/VatTu_api.php?keyword=${encodeURIComponent(keyword)}&ma_loai_vat_tu=${encodeURIComponent(keywordLoaiVatTu)}`;
+
+            // Gửi yêu cầu fetch
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    var vatTuTableBody = document.getElementById('vatTuTableBody');
+                    vatTuTableBody.innerHTML = ''; // Xóa dữ liệu cũ trong bảng
+
+                    if (data.data && data.data.length > 0) {
+                        data.data.forEach(vatTu => {
+                            var row = `
+                        <tr>
+                            <td>${vatTu.ma_vat_tu}</td>
+                            <td>${vatTu.ten_vat_tu}</td>
+                            <td>${vatTu.mo_ta}</td>
+                            <td>${vatTu.don_vi}</td>
+                            <td>${vatTu.gia}</td>
+                            <td>${vatTu.ten_loai_vat_tu}</td>
+                            <td><input type="number" id="quantity_${vatTu.ma_vat_tu}" name="quantity" min="1" value="1" class="quantity-input"></td>
+                            <td style="border-right: none;">
+                                <a href="#" class="addcart" onclick="themVatTu('${vatTu.ma_vat_tu}')">
+                                    <i class="fa fa-shopping-cart" style="font-size:24px;"></i>
+                                </a>
+                        </tr>
+                    `;
+                            vatTuTableBody.innerHTML += row;
+                        });
+                    } else {
+                        vatTuTableBody.innerHTML = '<tr><td colspan="10">Không tìm thấy vật tư</td></tr>';
+                    }
+                })
+                .catch(error => console.error('Lỗi:', error));
+        });
+    </script>
 
     <!-- Modal -->
     <div id="addCartModal" class="modal">
@@ -186,104 +230,8 @@ $data = json_decode($response, true);
         // Ẩn modal
         document.getElementById('addCartModal').style.display = 'none';
     }
-
-    // Thêm sự kiện submit cho form
-    // document.getElementById('addCartForm').addEventListener('submit', function(event) {
-    //     event.preventDefault();
-    //     const maVatTu = document.getElementById('maVatTu').value;
-    //     const quantity = document.getElementById('quantity').value;
-    //     const data = {
-    //         ma_vat_tu: maVatTu,
-    //         so_luong: quantity
-    //     };
-
-    //     fetch('/controllers/cart_api.php', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify(data)
-    //         })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             console.log('Success:', data);
-    //             alert('Vật tư đã được thêm vào giỏ hàng!');
-    //             closeAddModal();
-    //         })
-    //         .catch((error) => {
-    //             console.error('Error:', error);
-    //             alert('Có lỗi xảy ra khi thêm vật tư vào giỏ hàng.');
-    //         });
-    // });
     </script>
-    <!-- <script>
-        // Gửi yêu cầu POST khi người dùng nhấn nút "Thêm Vật Tư"
-        $("#materialForm").on("submit", function(event) {
-            event.preventDefault(); // Ngừng submit mặc định của form
-
-            // Lấy dữ liệu từ form
-            var materialData = {
-                ma_vat_tu: $("#ma_vat_tu").val(),
-                ten_vat_tu: $("#ten_vat_tu").val(),
-                mo_ta: $("#mo_ta").val(),
-                don_vi: $("#don_vi").val(),
-                gia: $("#gia").val(),
-                ma_nha_cung_cap: $("#ma_nha_cung_cap").val(),
-                so_luong_toi_thieu: $("#so_luong_toi_thieu").val(),
-                so_luong_ton: $("#so_luong_ton").val(),
-                ma_loai_vat_tu: $("#loai_vat_tu").val()
-            };
-
-            // Kiểm tra nếu có trường nào trống
-            if (!materialData.ma_vat_tu || !materialData.ten_vat_tu || !materialData.gia) {
-                $("#responseMessage").html('<p style="color: red;">Vui lòng điền đầy đủ các trường bắt buộc.</p>');
-                return;
-            }
-
-            // Gửi yêu cầu POST đến API
-            $.ajax({
-                url: 'http://localhost/quanlyvattu/controllers/create.php', // Địa chỉ của API
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(materialData),
-                success: function(response) {
-                    // Kiểm tra nếu phản hồi thành công
-                    if (response && response.status === 201) {
-                        alert("Thêm vật tư thành công!");
-
-                        // Đóng modal
-                        $("#modal").hide();
-
-                        // Reset form
-                        $("#materialForm")[0].reset();
-
-                        // Reload trang sau 2 giây để cập nhật dữ liệu
-                        setTimeout(function() {
-                            window.location.reload();
-                        }, 2);
-                    } else if (response && response.status === 409) {
-                        alert("Mã vật tư đã tồn tại. Vui lòng nhập mã khác.");
-                    } else {
-                        // Hiển thị thông báo lỗi nếu không có status 201
-                        $("#responseMessage").html(
-                            `<p style="color: red;">Lỗi: ${response.message || 'Không xác định lỗi'}</p>`
-                        );
-                    }
-                },
-                error: function(xhr, status, error) {
-                    // Xử lý lỗi từ phía server
-                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.message :
-                        "Đã có lỗi xảy ra.";
-                    $("#responseMessage").html(`<p style="color: red;">Lỗi: ${errorMessage}</p>`);
-                }
-            });
-
-            // Đóng modal khi nhấn vào nút "Đóng"
-            $("#btnCloseModal").click(function() {
-                $("#modal").hide();
-            });
-        });
-    </script> -->
+    
     <script>
     function openAddModal(maVatTu) {
         // Đặt giá trị mã vật tư vào trường ẩn
@@ -327,96 +275,4 @@ $data = json_decode($response, true);
     });
     </script>
 
-    <script>
-    // Lắng nghe sự kiện submit của form sửa vật tư
-    document.getElementById("editMaterialForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Ngừng gửi form theo cách truyền thống
-
-        // Tạo đối tượng FormData từ form
-        var formData = new FormData(this);
-
-        // Chuyển form data thành JSON
-        var formJSON = {};
-        formData.forEach((value, key) => {
-            formJSON[key] = value;
-        });
-
-        // Gửi yêu cầu PUT đến API để cập nhật vật tư
-        fetch("http://localhost/quanlyvattu/controllers/update.php", {
-                method: "PUT", // Sử dụng phương thức PUT để cập nhật
-                body: JSON.stringify(formJSON),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json()) // Phân tích dữ liệu JSON từ phản hồi
-            .then(data => {
-                // Kiểm tra trạng thái phản hồi từ server
-                if (data.status === 200) {
-                    alert(data.message); // Hiển thị thông báo thành công
-                    document.getElementById('modalEdit').style.display = 'none'; // Đóng modal
-                    window.location.href =
-                        "http://localhost/quanlyvattu/index.php"; // Điều hướng về trang chính
-                } else {
-                    alert(data.message); // Hiển thị thông báo lỗi
-                }
-            })
-            .catch(error => {
-                console.error('Lỗi khi gửi yêu cầu:', error);
-                alert('Đã xảy ra lỗi trong quá trình gửi yêu cầu.');
-            });
-    });
-
-    // Đóng modal khi nhấn nút đóng
-    document.getElementById("btnCloseModalEdit").addEventListener("click", function() {
-        document.getElementById("modalEdit").style.display = 'none';
-    });
-    </script>
-
-
-    <script>
-    // Lắng nghe sự kiện nhấp vào nút xóa vật tư
-    document.querySelectorAll('.xoa').forEach(function(element) {
-        element.addEventListener('click', function(event) {
-            event.preventDefault(); // Ngừng hành động mặc định của thẻ <a>
-
-            // Lấy mã vật tư từ thuộc tính data-id
-            var maVatTu = this.getAttribute('data-id');
-
-            // Cảnh báo trước khi xóa vật tư
-            if (confirm("Bạn có chắc chắn muốn xóa vật tư này không?")) {
-                // Gửi yêu cầu DELETE đến API
-                fetch("http://localhost/quanlyvattu/controllers/delete.php", {
-                        method: "DELETE", // Phương thức DELETE
-                        body: JSON.stringify({
-                            ma_vat_tu: maVatTu
-                        }), // Chuyển mã vật tư thành JSON
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => response.json()) // Phân tích phản hồi từ server dưới dạng JSON
-                    .then(data => {
-                        // Kiểm tra trạng thái phản hồi từ server
-                        if (data.status === 200) {
-                            alert(data.message); // Thông báo xóa thành công
-                            window.location.href =
-                                "http://localhost/quanlyvattu/index.php"; // Điều hướng về trang chính
-                        } else {
-                            alert(data.message); // Thông báo lỗi
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Lỗi khi gửi yêu cầu:', error);
-                        alert('Đã xảy ra lỗi trong quá trình gửi yêu cầu.');
-                    });
-            }
-        });
-    });
-
-    // Đóng modal khi nhấn nút đóng
-    document.getElementById("btnCloseModalDelete").addEventListener("click", function() {
-        document.getElementById("modalDelete").style.display = 'none';
-    });
-    </script>
 </body>
