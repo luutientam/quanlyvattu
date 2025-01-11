@@ -22,12 +22,12 @@ $data = json_decode($response, true);
     <!-- Nội dung chính -->
     <main class="content">
         <!-- Thanh tìm kiếm -->
-        <form id="searchForm" method="POST">
+        <!-- <form id="searchForm" method="POST">
             <div class="search-bar">
                 <input type="text" id="txtTimKiem" placeholder="Tìm kiếm nhân viên..." name="txtTimKiem">
                 <button type="button" class="btn-search" id="btnSearch">Tìm kiếm</button>
             </div>
-        </form>
+        </form> -->
 
         <!-- Bảng danh sách vật tư -->
         <h2>Danh sách thông tin và tài khoản Nhân viên</h2>

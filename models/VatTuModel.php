@@ -192,7 +192,7 @@ class VatTuModel
             $stmt->bindParam(':gia', $data['gia_sua']);
             $stmt->bindParam(':ma_nha_cung_cap', $data['ma_nha_cung_cap_sua']);
             $stmt->bindParam(':so_luong', $data['so_luong_sua']);
-            $stmt->bindParam(':ma_loai_vat_tu', $data['loai_vat_tu_sua']);
+            $stmt->bindParam(':ma_loai_vat_tu', $data['ma_loai_vat_tu_sua']);
 
             // Thực thi câu lệnh
             if ($stmt->execute()) {

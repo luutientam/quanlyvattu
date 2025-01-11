@@ -77,8 +77,8 @@ switch ($requestMethod) {
         $inputData = json_decode(file_get_contents("php://input"), true);
 
         if (!empty($inputData)) {
-            if (isset($inputData['ma_vat_tu'])) { // Kiểm tra mã vật tư
-                $ma_vat_tu = $inputData['ma_vat_tu'];
+            if (isset($inputData['ma_vat_tu_sua'])) { // Kiểm tra mã vật tư
+                $ma_vat_tu = $inputData['ma_vat_tu_sua'];
                 $result = $vatTu->update($ma_vat_tu, $inputData); // Gọi hàm cập nhật
 
                 if ($result) {
